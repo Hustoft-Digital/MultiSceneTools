@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace HH.MultiSceneTools
+namespace HH.MultiSceneTools.Examples
 {
     public class SceneTransition : MonoBehaviour
     {

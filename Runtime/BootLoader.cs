@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace HH.MultiSceneTools
+namespace HH.MultiSceneTools.Examples
 {
     public class BootLoader : MonoBehaviour
     {
