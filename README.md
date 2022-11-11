@@ -26,6 +26,10 @@
         - Replace
             - Unloads all scenes other than the boot scene, then loads all scenes additively.
 
+## Examples
+
+- Boot loader and scene transitions
+
 ## Setup
 
 - Install via Package Manager → Add package via git URL: 
