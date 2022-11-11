@@ -1,0 +1,37 @@
+# Multi Scene Management Tools
+
+## Features
+
+- Scene Collection ScriptableObjects
+    - Tracks which scenes are used together in runtime.
+    - (Comming) Tracks cross scene references
+
+- Multi Scene Management Window
+    - Display currently loaded scene collection
+    - Load scene collections
+    - Load scenes additively from a list
+    - Unload scenes
+    - Save and override loaded scene collection
+    - Create scene collections from loaded scenes
+    - Create new scenes and load it additively
+    - Add all open scenes to build settings
+
+- Multi Scene Loader
+    - Load scene collections with this static class
+    - Loading modes
+        - Additive
+            - Loads all scenes in a collection additive
+        - Difference
+            - Unloads all scenes the collections do not share, then load the missing scenes.
+        - Replace
+            - Unloads all scenes other than the boot scene, then loads all scenes additively.
+
+## Setup
+
+- Install via Package Manager → Add package via git URL: 
+    - https://github.com/HenrysHouses/MultiSceneManagement.git
+- Alternatively, download and put the folder in your Assets
+
+## Author
+
+- [Henrik Hustoft](https://www.linkedin.com/in/henrik-hustoft-2366ab220/)
