@@ -1,8 +1,9 @@
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
+using HH.MultiSceneTools;
 
-namespace HH.MultiSceneTools
+namespace HH.MultiSceneToolsEditor
 {
     [CustomEditor(typeof(MultiSceneEditorConfig))]
     public class MultiSceneEditorConfig_Editor : Editor

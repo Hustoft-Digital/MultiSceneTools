@@ -4,8 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using HH.MultiSceneTools;
 
-namespace HH.MultiSceneTools
+namespace HH.MultiSceneToolsEditor
 {
     [CustomEditor(typeof(SceneTransition))]
     public class SceneTransition_Editor : Editor

@@ -5,8 +5,9 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using System.Collections.Generic;
+using HH.MultiSceneTools;
 
-namespace HH.MultiSceneTools
+namespace HH.MultiSceneToolsEditor
 {
     [InitializeOnLoadAttribute]
     public class SceneManager_window : EditorWindow
@@ -236,7 +237,7 @@ namespace HH.MultiSceneTools
             SceneCollectionObject _NewCollection = SO as SceneCollectionObject;
             _NewCollection.Title = "Collection Nr " + _Collection.Length;
 
-            string asset = string.Format("Assets/Resources/SceneCollections/SceneCollectionObject ({0}).asset", _Collection.Length);
+            string asset = string.Format("Assets/Resources/SceneCollections/({0})_SceneCollection.asset", _Collection.Length);
             AssetDatabase.CreateAsset(_NewCollection, asset);
             AssetDatabase.SaveAssets();
             SaveCollection(_NewCollection);

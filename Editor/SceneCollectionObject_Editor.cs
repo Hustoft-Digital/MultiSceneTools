@@ -3,8 +3,9 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
+using HH.MultiSceneTools;
 
-namespace HH.MultiSceneTools
+namespace HH.MultiSceneToolsEditor
 {
     [CustomEditor(typeof(SceneCollectionObject))]
     public class SceneCollectionObject_Editor : Editor
