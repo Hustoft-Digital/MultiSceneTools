@@ -18,7 +18,7 @@ namespace HH.MultiSceneToolsEditor
                 configPath + configName, 
                 typeof(MultiSceneEditorConfig));
 
-            if(config is not null)            
+            if(config != null)            
                 config.setInstance();
             else
             {
