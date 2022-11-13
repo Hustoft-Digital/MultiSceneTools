@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 using UnityEditor;
 
 namespace HH.MultiSceneTools
@@ -58,6 +59,20 @@ namespace HH.MultiSceneTools
                 {
                     SceneNames.Add(Scenes[i].name);
                 }
+            }
+        }
+
+        public void LoadCollection()
+        {
+            if(Scenes.Count > 0)
+            {
+                EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(Scenes[0]), OpenSceneMode.Single);
+            }
+
+            if(Scenes.Count > 1)
+            {
+                for (int i = 1; i < Scenes.Count; i++)
+                    EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(Scenes[i]), OpenSceneMode.Additive);
             }
         }
         #endif

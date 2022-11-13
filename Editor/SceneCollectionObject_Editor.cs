@@ -21,7 +21,9 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using HH.MultiSceneTools;
+using UnityEditor.Callbacks;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -39,6 +41,11 @@ namespace HH.MultiSceneToolsEditor
         {
             base.OnInspectorGUI();
         
+            if(GUILayout.Button("Load Collection"))
+            {
+                script.LoadCollection();
+            }
+
             // Drawing custom list
             // EditorGUILayout.LabelField("Scenes");
             // var _collectedScenes = script.Scenes; // index of selected scenes
@@ -81,6 +88,19 @@ namespace HH.MultiSceneToolsEditor
             {
                 scenes[i] = System.IO.Path.GetFileNameWithoutExtension( SceneUtility.GetScenePathByBuildIndex( i ) );
             }
+        }
+
+        [OnOpenAsset]
+        //Handles opening the editor window when double-clicking project files
+        public static bool OnOpenAsset(int instanceID, int line)
+        {
+            SceneCollectionObject collection = EditorUtility.InstanceIDToObject(instanceID) as SceneCollectionObject;
+            if (collection != null)
+            {
+                collection.LoadCollection();
+                return true;
+            }
+            return false;
         }
     }
 }

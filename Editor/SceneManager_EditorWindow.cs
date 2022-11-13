@@ -23,6 +23,7 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using System.Collections.Generic;
+using System.IO;
 using HH.MultiSceneTools;
 
 namespace HH.MultiSceneToolsEditor
@@ -251,6 +252,9 @@ namespace HH.MultiSceneToolsEditor
 
         void CreateCollection()
         {
+            if(!Directory.Exists("Assets/Resources/SceneCollections/")) 
+                    Directory.CreateDirectory("Assets/Resources/SceneCollections/");
+
             ScriptableObject SO = CreateInstance(typeof(SceneCollectionObject));
             SceneCollectionObject _NewCollection = SO as SceneCollectionObject;
             _NewCollection.Title = "Collection Nr " + _Collection.Length;

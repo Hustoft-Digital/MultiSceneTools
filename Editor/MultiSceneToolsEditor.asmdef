@@ -1,7 +1,9 @@
 {
-    "name": "com.henrikhustoft.multi-scene-management-tools",
-    "rootNamespace": "HH.MultiSceneTools",
-    "references": [],
+    "name": "MultiSceneToolsEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3d61be0c52ad2ee409d26dae681f6697"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
