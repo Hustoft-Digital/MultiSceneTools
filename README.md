@@ -1,4 +1,4 @@
-# Multi Scene Management Tools
+# Multi Scene Tools
 
 <img src="Gizmos/MultiSceneTools%20Icon.png" alt="MultiSceneToolsIcon" width="200"/>
 
