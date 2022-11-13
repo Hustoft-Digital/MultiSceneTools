@@ -35,7 +35,7 @@
 ## Setup
 
 - Install via Package Manager → Add package via git URL: 
-    - https://github.com/HenrysHouses/MultiSceneManagement.git
+    - https://github.com/HenrysHouses/MultiSceneTools.git
 - Alternatively, download and put the folder in your Assets
 
 ## Author
