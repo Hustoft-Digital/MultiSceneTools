@@ -1,5 +1,7 @@
 # Multi Scene Management Tools
 
+![MultiSceneToolsIcon](Gizmos/MultiSceneTools%20Icon.png)
+
 ## Features
 
 - Scene Collection ScriptableObjects
