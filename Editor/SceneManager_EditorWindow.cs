@@ -38,7 +38,7 @@ namespace HH.MultiSceneToolsEditor
         string[] _sceneOptions;
         SceneAsset _SelectedScene;
         SceneAsset[] currLoadedAssets;
-        string[] buildSceneOptions;
+        string[] loadedSceneOptions;
         SceneCollection[] _Collection;
         string[] Collection = new string[0];
         public SceneCollection GetLoadedCollection()
@@ -188,10 +188,10 @@ namespace HH.MultiSceneToolsEditor
 
         void DrawPopupSelectUnload()
         {
-            if(buildSceneOptions != null)
+            if(loadedSceneOptions != null)
             {
-                if(buildSceneOptions.Length > 0)
-                    UnloadScene = EditorGUILayout.Popup("Un-Load" ,UnloadScene, buildSceneOptions);
+                if(loadedSceneOptions.Length > 0)
+                    UnloadScene = EditorGUILayout.Popup("Un-Load" ,UnloadScene, loadedSceneOptions);
             }
             else
                 EditorGUILayout.Popup(0, new string[]{"Unload Select"});
@@ -331,12 +331,12 @@ namespace HH.MultiSceneToolsEditor
             int sceneCount = EditorSceneManager.sceneCount;     
 
             LoadedScenes = new Scene[sceneCount+1];
-            buildSceneOptions = new string[sceneCount+1];
-            buildSceneOptions[0] = "Select";
+            loadedSceneOptions = new string[sceneCount+1];
+            loadedSceneOptions[0] = "Select";
             for (int i = 0; i < sceneCount; i++)
             {
                 LoadedScenes[i+1] = EditorSceneManager.GetSceneAt(i);
-                buildSceneOptions[i+1] = LoadedScenes[i+1].name;
+                loadedSceneOptions[i+1] = LoadedScenes[i+1].name;
             }
         }
 
