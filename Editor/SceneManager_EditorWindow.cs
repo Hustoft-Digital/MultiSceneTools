@@ -183,15 +183,18 @@ namespace HH.MultiSceneToolsEditor
         // Draw Popup functions
         void DrawFieldSelectLoadAdditive()
         {
-            if(_sceneOptions.Length > 0)
-                _SelectedScene = (SceneAsset)EditorGUILayout.ObjectField(new GUIContent("Scene"), _SelectedScene, typeof(SceneAsset), true);
-            else
-                EditorGUILayout.Popup(0, new string[]{"Unload Select"});
+            _SelectedScene = (SceneAsset)EditorGUILayout.ObjectField(new GUIContent("Scene"), _SelectedScene, typeof(SceneAsset), true);
         }
 
         void DrawPopupSelectUnload()
         {
-            UnloadScene = EditorGUILayout.Popup("Un-Load" ,UnloadScene, buildSceneOptions);
+            if(buildSceneOptions != null)
+            {
+                if(buildSceneOptions.Length > 0)
+                    UnloadScene = EditorGUILayout.Popup("Un-Load" ,UnloadScene, buildSceneOptions);
+            }
+            else
+                EditorGUILayout.Popup(0, new string[]{"Unload Select"});
         }
 
         // Button functions
