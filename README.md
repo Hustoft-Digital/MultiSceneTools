@@ -12,8 +12,8 @@
 - Multi Scene Management Window
     - Display currently loaded scene collection
     - Load scene collections
-    - Load scene collections additively from a list
-    - Unload scene collections
+    - Load scenes additively
+    - Unload scenes
     - Save and override loaded scene collection
     - Create scene collections from loaded scenes
     - Create new scenes and load it additively
