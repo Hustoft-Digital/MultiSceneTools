@@ -1,4 +1,4 @@
-# Version 0.2.1 14/11/2022
+# Version 0.2.1  -  14/11/2022
 
 - Re arranged SceneManager window
 - Refactored MultiSceneToolsConfig
