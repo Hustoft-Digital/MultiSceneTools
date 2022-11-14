@@ -191,13 +191,7 @@ namespace HH.MultiSceneToolsEditor
 
         void DrawPopupSelectUnload()
         {
-            if(buildSceneOptions != null)
-            {
-                if(buildSceneOptions.Length > 0)
-                    UnloadScene = EditorGUILayout.Popup("Un-Load" ,UnloadScene, buildSceneOptions);
-            }
-            else
-                EditorGUILayout.Popup(0, new string[]{"Unload Select"});
+            UnloadScene = EditorGUILayout.Popup("Un-Load" ,UnloadScene, buildSceneOptions);
         }
 
         // Button functions
