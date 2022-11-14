@@ -37,7 +37,7 @@ namespace HH.MultiSceneTools.Examples
                     MultiSceneLoader.BootGame();
                 else
                 {
-                    MultiSceneLoader.setCurrentlyLoaded(MultiSceneEditorConfig.instance.getCurrCollection());
+                    MultiSceneLoader.setCurrentlyLoaded(MultiSceneToolsConfig.instance.getCurrCollection());
                 }
             #endif
         }

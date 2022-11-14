@@ -27,7 +27,7 @@ using UnityEditor.Callbacks;
 namespace HH.MultiSceneToolsEditor
 {
     [CustomEditor(typeof(SceneCollection))]
-    public class SceneCollectionObject_Editor : Editor
+    public class SceneCollection_Editor : Editor
     {
         SceneCollection script;
 
@@ -66,6 +66,10 @@ namespace HH.MultiSceneToolsEditor
             if (collection != null)
             {
                 collection.LoadCollection();
+                MultiSceneToolsConfig.instance.setCurrCollection(collection);
+
+                if(SceneManager_window.Instance)
+                    SceneManager_window.Instance.SelectedCollection = collection;
                 return true;
             }
             return false;

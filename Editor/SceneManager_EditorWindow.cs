@@ -31,30 +31,30 @@ namespace HH.MultiSceneToolsEditor
     [InitializeOnLoadAttribute]
     public class SceneManager_window : EditorWindow
     {
-        public static SceneManager_window Instance{
-            get { return GetWindow<SceneManager_window>();}
-        }
-
+        public static SceneManager_window Instance;
+        string[] page = new string[]{"Tools", "Info"};
+        int pageIndex;
         Scene[] LoadedScenes;
         string[] _sceneOptions;
-        int SelectedScene;
+        SceneAsset _SelectedScene;
         SceneAsset[] currLoadedAssets;
         string[] buildSceneOptions;
         SceneCollection[] _Collection;
         string[] Collection = new string[0];
         public SceneCollection GetLoadedCollection()
         {
-            if(MultiSceneEditorConfig.instance)
-                return MultiSceneEditorConfig.instance.getCurrCollection();  
+            if(MultiSceneToolsConfig.instance)
+                return MultiSceneToolsConfig.instance.getCurrCollection();  
             else
                 return null;
         } 
-        [SerializeField, HideInInspector] SceneCollection SelectedCollection;
+        [SerializeField, HideInInspector] public SceneCollection SelectedCollection;
         int UnloadScene;
 
         SceneManager_window()
         {
             EditorApplication.playModeStateChanged += LogPlayModeState;
+            Instance = this;
         }
 
         [MenuItem("Multi Scene Workflow/Scene Manager")]
@@ -64,8 +64,8 @@ namespace HH.MultiSceneToolsEditor
             SceneManager_window window = (SceneManager_window)EditorWindow.GetWindow(typeof(SceneManager_window));
             window.titleContent = new GUIContent("Scene Manager", "Loads, Unloads, and Saves Scene Collections");
             window.Show();
-            if(!MultiSceneEditorConfig.instance)
-                MultiSceneEditorConfig.instance.setInstance();
+            // if(!MultiSceneEditorConfig.instance)
+            //     MultiSceneEditorConfig.instance.setInstance();
         }
 
         protected void OnEnable ()
@@ -89,18 +89,33 @@ namespace HH.MultiSceneToolsEditor
             if(PlayModeStateChange.ExitingEditMode.Equals(state))
             {
                 if(SelectedCollection)
-                    MultiSceneEditorConfig.instance.setCurrCollection(SelectedCollection);
-                // EditorLoadCollection();
+                    MultiSceneToolsConfig.instance.setCurrCollection(SelectedCollection);
             }
         }
 
         void OnGUI()
         {
-            DrawNameOfCurrCollection();
+            pageIndex = GUILayout.Toolbar(pageIndex, page);
+            DrawInfo();
+
+            if(pageIndex == 1)
+            {
+                // Project Settings
+                GUILayout.Space(8);
+                GUILayout.Label("Project Settings", EditorStyles.boldLabel);
+
+                if(GUILayout.Button("Add Open Scenes To Build"))
+                {
+                    SetEditorBuildSettingsScenes();
+                }
+                return;
+            }
 
             // Load Collection
             GUILayout.Space(8);
             GUILayout.Label("Loading", EditorStyles.boldLabel);
+
+            
 
             SelectedCollection = (SceneCollection)EditorGUILayout.ObjectField(new GUIContent("Collection"), SelectedCollection, typeof(SceneCollection), false);
             
@@ -112,9 +127,7 @@ namespace HH.MultiSceneToolsEditor
             // Load Scene
             loadBuildScenesAsOptions();
 
-            // # Change this into a scene object field?
-
-            DrawPopupSelectLoadAdditive();
+            DrawFieldSelectLoadAdditive();
 
             if(GUILayout.Button("Load Scene Additively"))
             {
@@ -122,9 +135,6 @@ namespace HH.MultiSceneToolsEditor
             }
 
             // Un-Load selected scene
-            GUILayout.Space(8);
-            GUILayout.Label("Un-Loading", EditorStyles.boldLabel);
-
             DrawPopupSelectUnload();
 
             if(GUILayout.Button("Unload Scene"))
@@ -132,9 +142,9 @@ namespace HH.MultiSceneToolsEditor
                 UnLoadSelectedScene();
             }
 
-            // Saving
+            // Asset Management
             GUILayout.Space(8);
-            GUILayout.Label("Saving", EditorStyles.boldLabel);
+            GUILayout.Label("Asset Management", EditorStyles.boldLabel);
 
             if(GUILayout.Button("Save Collection"))
             {
@@ -146,15 +156,6 @@ namespace HH.MultiSceneToolsEditor
                 CreateCollection();
             }
 
-            // Scenes
-            GUILayout.Space(8);
-            GUILayout.Label("Other", EditorStyles.boldLabel);
-
-            if(GUILayout.Button("Add Open Scenes To Build"))
-            {
-                SetEditorBuildSettingsScenes();
-            }
-
             if(GUILayout.Button("Create New Scene"))
             {
                 CreateNewScene();
@@ -162,21 +163,28 @@ namespace HH.MultiSceneToolsEditor
         }
 
         // Other Draw Functions
-        void DrawNameOfCurrCollection()
+        void DrawInfo()
         {
             var collection = GetLoadedCollection();
             if(collection)
-                EditorGUILayout.TextField("Current Loaded Collection: ", collection.Title, EditorStyles.boldLabel);
+                EditorGUILayout.TextField("Current Loaded Collection:", collection.Title, EditorStyles.boldLabel);
             else
-                EditorGUILayout.TextField("Current Loaded Collection: ", "None", EditorStyles.boldLabel);
+                EditorGUILayout.TextField("Current Loaded Collection:", "None", EditorStyles.boldLabel);
+
+            if(pageIndex == 0)
+                return;
+
+            EditorGUILayout.TextField("Allow References", (!EditorSceneManager.preventCrossSceneReferences).ToString(), EditorStyles.boldLabel);
+
+            EditorGUILayout.ObjectField(new GUIContent("Config"), MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
         }
 
 
         // Draw Popup functions
-        void DrawPopupSelectLoadAdditive()
+        void DrawFieldSelectLoadAdditive()
         {
             if(_sceneOptions.Length > 0)
-                SelectedScene = EditorGUILayout.Popup(new GUIContent("Scene") , SelectedScene, _sceneOptions);
+                _SelectedScene = (SceneAsset)EditorGUILayout.ObjectField(new GUIContent("Scene"), _SelectedScene, typeof(SceneAsset), true);
             else
                 EditorGUILayout.Popup(0, new string[]{"Unload Select"});
         }
@@ -186,7 +194,7 @@ namespace HH.MultiSceneToolsEditor
             if(buildSceneOptions != null)
             {
                 if(buildSceneOptions.Length > 0)
-                    UnloadScene = EditorGUILayout.Popup(UnloadScene, buildSceneOptions);
+                    UnloadScene = EditorGUILayout.Popup("Un-Load" ,UnloadScene, buildSceneOptions);
             }
             else
                 EditorGUILayout.Popup(0, new string[]{"Unload Select"});
@@ -198,7 +206,7 @@ namespace HH.MultiSceneToolsEditor
             if(SelectedCollection == null)
             {
                 EditorSceneManager.OpenScene("Assets/~Scenes/SampleScene.unity", OpenSceneMode.Single);
-                MultiSceneEditorConfig.instance.setCurrCollection(null);
+                MultiSceneToolsConfig.instance.setCurrCollection(null);
                 return;
             }
 
@@ -220,12 +228,14 @@ namespace HH.MultiSceneToolsEditor
             EditorUtility.FocusProjectWindow();
 
             Selection.activeObject = SelectedCollection;
-            MultiSceneEditorConfig.instance.setCurrCollection(SelectedCollection);
+            MultiSceneToolsConfig.instance.setCurrCollection(SelectedCollection);
         }
 
         void LoadSceneAdditively()
         {
-            string path = GetScenePath(_sceneOptions[SelectedScene]);
+            // string path = GetScenePath(_sceneOptions[SelectedScene]);
+            string path = AssetDatabase.GetAssetPath(_SelectedScene);
+
             EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
         }
 
@@ -234,7 +244,7 @@ namespace HH.MultiSceneToolsEditor
             if(EditorSceneManager.sceneCount > 1)
                 EditorSceneManager.CloseScene(LoadedScenes[UnloadScene], true);
             else
-                EditorSceneManager.OpenScene("Assets/~Scenes/SampleScene.unity", OpenSceneMode.Single);
+                EditorSceneManager.OpenScene(MultiSceneToolsConfig.instance._BootScenePath, OpenSceneMode.Single);
         }
 
         void SaveCollection(SceneCollection saveTarget)
@@ -250,18 +260,20 @@ namespace HH.MultiSceneToolsEditor
 
         void CreateCollection()
         {
-            if(!Directory.Exists("Assets/Resources/SceneCollections/")) 
-                    Directory.CreateDirectory("Assets/Resources/SceneCollections/");
+            string path = MultiSceneToolsConfig.instance._SceneCollectionPath;
+            if(!Directory.Exists(path)) 
+                    Directory.CreateDirectory(path);
 
             ScriptableObject SO = CreateInstance(typeof(SceneCollection));
             SceneCollection _NewCollection = SO as SceneCollection;
             _NewCollection.Title = "Collection Nr " + _Collection.Length;
 
-            string asset = string.Format("Assets/Resources/SceneCollections/({0})_SceneCollection.asset", _Collection.Length);
+            string asset = string.Format(path + "/({0})_SceneCollection.asset", _Collection.Length);
             AssetDatabase.CreateAsset(_NewCollection, asset);
             AssetDatabase.SaveAssets();
             SaveCollection(_NewCollection);
-            MultiSceneEditorConfig.instance.setCurrCollection(_NewCollection);
+
+            MultiSceneToolsConfig.instance.setCurrCollection(_NewCollection);
             
             EditorUtility.FocusProjectWindow();
 
@@ -297,7 +309,7 @@ namespace HH.MultiSceneToolsEditor
                 if(!found)
                 {
                     editorBuildSettingsScenes.Add(new EditorBuildSettingsScene(_addScene.path, true));            
-                    Debug.Log("Added scene: " + _addScene.name + "to build settings");
+                    Debug.Log("Added scene: " + _addScene.name + " to build settings");
                 }
             }
 
@@ -316,14 +328,8 @@ namespace HH.MultiSceneToolsEditor
         // Helper functions
         void OnInspectorUpdate()
         {
-            _Collection = Resources.LoadAll<SceneCollection>("SceneCollections");
-            // Storing collection Names
-            Collection = new string[_Collection.Length + 1];
-            Collection[0] = "Empty";
-            for (int i = 1; i < _Collection.Length + 1; i++)
-            {
-                Collection[i] = _Collection[i-1].Title;    
-            }
+
+
             // Storing loaded scenes
             int sceneCount = EditorSceneManager.sceneCount;     
 

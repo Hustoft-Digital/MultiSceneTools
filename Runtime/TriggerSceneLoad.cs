@@ -20,11 +20,25 @@ using UnityEngine;
 
 namespace HH.MultiSceneTools.Examples
 {
+
     public class TriggerSceneLoad : MonoBehaviour
     {
+        public string CollectionTitle;
+        
+        void Start()
+        {
+            MultiSceneLoader.loadCollection(CollectionTitle, collectionLoadMode.Replace, true);
+        }
+
         public void LoadScene(string collectionTitle)
         {
-            MultiSceneLoader.loadCollection(collectionTitle, collectionLoadMode.difference);
+            MultiSceneLoader.loadCollection(collectionTitle, collectionLoadMode.Difference);
+        }
+
+        void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.Space))
+                MultiSceneLoader.loadCollection(CollectionTitle, collectionLoadMode.Replace, true);
         }
     }
 }

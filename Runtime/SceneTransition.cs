@@ -72,7 +72,7 @@ namespace HH.MultiSceneTools.Examples
             animTime = 0;
 
             if(!TransitionToCollection.Equals(""))
-                MultiSceneLoader.loadCollection(TransitionToCollection, collectionLoadMode.difference);
+                MultiSceneLoader.loadCollection(TransitionToCollection, collectionLoadMode.Difference);
 
             if(!SceneState && TransitionToCollection.Equals(""))
                 Debug.LogWarning(this + ": is trying to transition to a scene named \"\"");

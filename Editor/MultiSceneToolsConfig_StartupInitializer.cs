@@ -25,16 +25,16 @@ using System.IO;
 namespace HH.MultiSceneToolsEditor
 {
     [InitializeOnLoad]
-    static class MultiSceneEditorConfig_StartupInitializer
+    static class MultiSceneToolsConfig_StartupInitializer
     {
-        static string configPath = "Assets/_ScriptableObjects/MultiScenesToolsConfig/";
-        static string configName = "MultiSceneToolsEditorConfig.asset";
+        static string configPath = "Assets/_ScriptableObjects/MultiSceneTools/Config/";
+        static string configName = "MultiSceneToolsConfig.asset";
 
-        static MultiSceneEditorConfig_StartupInitializer()
+        static MultiSceneToolsConfig_StartupInitializer()
         {
-            MultiSceneEditorConfig config = (MultiSceneEditorConfig)AssetDatabase.LoadAssetAtPath(
+            MultiSceneToolsConfig config = (MultiSceneToolsConfig)AssetDatabase.LoadAssetAtPath(
                 configPath + configName, 
-                typeof(MultiSceneEditorConfig));
+                typeof(MultiSceneToolsConfig));
 
             if(config != null)            
                 config.setInstance();
@@ -43,12 +43,13 @@ namespace HH.MultiSceneToolsEditor
                 if(!Directory.Exists(configPath)) 
                     Directory.CreateDirectory(configPath);
 
-                ScriptableObject SO = ScriptableObject.CreateInstance(typeof(MultiSceneEditorConfig));
-                MultiSceneEditorConfig _Config = SO as MultiSceneEditorConfig;
+                ScriptableObject SO = ScriptableObject.CreateInstance(typeof(MultiSceneToolsConfig));
+                MultiSceneToolsConfig _Config = SO as MultiSceneToolsConfig;
+                _Config.setAllowCrossSceneReferences(true);
 
                 AssetDatabase.CreateAsset(_Config, configPath + configName);
                 AssetDatabase.SaveAssets();
-            
+
                 Debug.Log("Created config ScriptableObject at: " + configPath + configName);
             }
         }
