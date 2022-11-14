@@ -31,7 +31,6 @@ namespace HH.MultiSceneTools
         [HideInInspector] public List<string> SceneNames = new List<string>();
 
         #if UNITY_EDITOR
-        // public List<SceneAsset> list = new List<SceneAsset>(); // # this actually works wth? No need for drawing a custom list
         public List<SceneAsset> Scenes = new List<SceneAsset>();
         public void saveCollection(SceneAsset[] scenes)
         {
