@@ -40,16 +40,16 @@ namespace HH.MultiSceneToolsEditor
         int SelectedScene;
         SceneAsset[] currLoadedAssets;
         string[] buildSceneOptions;
-        SceneCollectionObject[] _Collection;
+        SceneCollection[] _Collection;
         string[] Collection = new string[0];
-        public SceneCollectionObject GetLoadedCollection()
+        public SceneCollection GetLoadedCollection()
         {
             if(MultiSceneEditorConfig.instance)
                 return MultiSceneEditorConfig.instance.getCurrCollection();  
             else
                 return null;
         } 
-        [SerializeField, HideInInspector] SceneCollectionObject SelectedCollection;
+        [SerializeField, HideInInspector] SceneCollection SelectedCollection;
         int UnloadScene;
 
         SceneManager_window()
@@ -102,7 +102,7 @@ namespace HH.MultiSceneToolsEditor
             GUILayout.Space(8);
             GUILayout.Label("Loading", EditorStyles.boldLabel);
 
-            SelectedCollection = (SceneCollectionObject)EditorGUILayout.ObjectField(new GUIContent("Collection"), SelectedCollection, typeof(SceneCollectionObject), false);
+            SelectedCollection = (SceneCollection)EditorGUILayout.ObjectField(new GUIContent("Collection"), SelectedCollection, typeof(SceneCollection), false);
             
             if(GUILayout.Button("Load Collection"))
             {
@@ -202,8 +202,6 @@ namespace HH.MultiSceneToolsEditor
                 return;
             }
 
-            MultiSceneEditorConfig.instance.setCurrCollection(SelectedCollection);
-
             string[] paths = new string[SelectedCollection.Scenes.Count];
             
             for (int i = 0; i < paths.Length; i++)
@@ -239,7 +237,7 @@ namespace HH.MultiSceneToolsEditor
                 EditorSceneManager.OpenScene("Assets/~Scenes/SampleScene.unity", OpenSceneMode.Single);
         }
 
-        void SaveCollection(SceneCollectionObject saveTarget)
+        void SaveCollection(SceneCollection saveTarget)
         {
             if(saveTarget)
             {
@@ -255,15 +253,15 @@ namespace HH.MultiSceneToolsEditor
             if(!Directory.Exists("Assets/Resources/SceneCollections/")) 
                     Directory.CreateDirectory("Assets/Resources/SceneCollections/");
 
-            ScriptableObject SO = CreateInstance(typeof(SceneCollectionObject));
-            SceneCollectionObject _NewCollection = SO as SceneCollectionObject;
+            ScriptableObject SO = CreateInstance(typeof(SceneCollection));
+            SceneCollection _NewCollection = SO as SceneCollection;
             _NewCollection.Title = "Collection Nr " + _Collection.Length;
 
             string asset = string.Format("Assets/Resources/SceneCollections/({0})_SceneCollection.asset", _Collection.Length);
             AssetDatabase.CreateAsset(_NewCollection, asset);
             AssetDatabase.SaveAssets();
             SaveCollection(_NewCollection);
-            // LoadedCollection = _NewCollection;
+            MultiSceneEditorConfig.instance.setCurrCollection(_NewCollection);
             
             EditorUtility.FocusProjectWindow();
 
@@ -295,10 +293,12 @@ namespace HH.MultiSceneToolsEditor
                         found = true;
                         break;
                     }
-                    
                 }
                 if(!found)
+                {
                     editorBuildSettingsScenes.Add(new EditorBuildSettingsScene(_addScene.path, true));            
+                    Debug.Log("Added scene: " + _addScene.name + "to build settings");
+                }
             }
 
             // Set the Build Settings window Scene list
@@ -311,13 +311,12 @@ namespace HH.MultiSceneToolsEditor
             EditorSceneManager.SaveOpenScenes();
 
             SetEditorBuildSettingsScenes();
-            // # "Assets/~Scenes/GameScenes/New Scene.asset");
         }
 
         // Helper functions
         void OnInspectorUpdate()
         {
-            _Collection = Resources.LoadAll<SceneCollectionObject>("SceneCollections");
+            _Collection = Resources.LoadAll<SceneCollection>("SceneCollections");
             // Storing collection Names
             Collection = new string[_Collection.Length + 1];
             Collection[0] = "Empty";

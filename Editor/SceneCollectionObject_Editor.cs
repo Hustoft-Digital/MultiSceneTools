@@ -21,20 +21,19 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using HH.MultiSceneTools;
 using UnityEditor.Callbacks;
 
 namespace HH.MultiSceneToolsEditor
 {
-    [CustomEditor(typeof(SceneCollectionObject))]
+    [CustomEditor(typeof(SceneCollection))]
     public class SceneCollectionObject_Editor : Editor
     {
-        SceneCollectionObject script;
+        SceneCollection script;
 
         private void OnEnable()
         {
-            script = target as SceneCollectionObject;
+            script = target as SceneCollection;
         }
 
         public override void OnInspectorGUI()
@@ -45,37 +44,6 @@ namespace HH.MultiSceneToolsEditor
             {
                 script.LoadCollection();
             }
-
-            // Drawing custom list
-            // EditorGUILayout.LabelField("Scenes");
-            // var _collectedScenes = script.Scenes; // index of selected scenes
-            // int newCount = Mathf.Max(0, EditorGUILayout.DelayedIntField("    size", _collectedScenes.Count));
-            
-            // while (newCount < _collectedScenes.Count)
-            // {
-            //     _collectedScenes.RemoveAt( _collectedScenes.Count - 1 );
-            // }
-
-            // // List Management buttons
-            // if(GUILayout.Button("Add"))
-            // {
-            //     script.Scenes.Add(null);
-            // }
-
-            // if(GUILayout.Button("Remove"))
-            // {
-            //     script.Scenes.RemoveAt(script.Scenes.Count-1);
-            // }
-
-            // for(int i = 0; i < _collectedScenes.Count; i++)
-            // {
-            //     // Drawing Scene Object field
-            //     _collectedScenes[i] = (SceneAsset)EditorGUILayout.ObjectField(_collectedScenes[i], typeof(SceneAsset), false);
-            // }
-
-
-            // Save the changes back to the object
-            // EditorUtility.SetDirty(target);
         }
 
         void OnInspectorUpdate()
@@ -94,7 +62,7 @@ namespace HH.MultiSceneToolsEditor
         //Handles opening the editor window when double-clicking project files
         public static bool OnOpenAsset(int instanceID, int line)
         {
-            SceneCollectionObject collection = EditorUtility.InstanceIDToObject(instanceID) as SceneCollectionObject;
+            SceneCollection collection = EditorUtility.InstanceIDToObject(instanceID) as SceneCollection;
             if (collection != null)
             {
                 collection.LoadCollection();

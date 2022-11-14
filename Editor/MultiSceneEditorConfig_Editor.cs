@@ -37,7 +37,7 @@ namespace HH.MultiSceneToolsEditor
         {
             base.OnInspectorGUI();
 
-            EditorGUILayout.ObjectField("Current Instance", MultiSceneEditorConfig.instance, typeof(MultilineAttribute), false);
+            // EditorGUILayout.ObjectField("Current Instance", MultiSceneEditorConfig.instance, typeof(MultilineAttribute), false);
 
             if(GUILayout.Button("Set This As Instance"))
             {

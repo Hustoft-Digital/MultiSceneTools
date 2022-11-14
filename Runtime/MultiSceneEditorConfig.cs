@@ -25,13 +25,13 @@ namespace HH.MultiSceneTools
     {
         [SerializeField] public static MultiSceneEditorConfig instance;
 
-        [SerializeField] SceneCollectionObject currentLoadedCollection;
-        public void setCurrCollection(SceneCollectionObject newCollection)
+        [SerializeField] SceneCollection currentLoadedCollection;
+        public void setCurrCollection(SceneCollection newCollection)
         {
             currentLoadedCollection = newCollection;
         }
 
-        public SceneCollectionObject getCurrCollection()
+        public SceneCollection getCurrCollection()
         {
             if(currentLoadedCollection)
                 return currentLoadedCollection;

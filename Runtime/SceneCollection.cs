@@ -16,17 +16,15 @@
 // * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 using UnityEditor;
 
 namespace HH.MultiSceneTools
 {
-    [CreateAssetMenu(menuName = "Multi Scenes/SceneCollectionObject")]
-    public class SceneCollectionObject : ScriptableObject
+    [CreateAssetMenu(menuName = "Multi Scene Tools/SceneCollection")]
+    public class SceneCollection : ScriptableObject
     {
         public string Title;
 

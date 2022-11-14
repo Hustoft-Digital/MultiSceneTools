@@ -32,30 +32,31 @@ namespace HH.MultiSceneTools
     public static class MultiSceneLoader
     {
         public static UnityEvent OnSceneLoad = new UnityEvent();
-        static SceneCollectionObject[] Collection;
-        static SceneCollectionObject[] GetSceneCollections()
+        static SceneCollection[] Collection;
+        static SceneCollection[] GetSceneCollections()
         {
             if(Collection != null)
                 return Collection;
             else
             {
-                Collection = Resources.LoadAll<SceneCollectionObject>("SceneCollections");
+                Collection = Resources.LoadAll<SceneCollection>("SceneCollections");
+                Debug.Log("This will be changed to not use resources");
                 return Collection;
             }
         }
 
-        static SceneCollectionObject currentlyLoaded;
+        static SceneCollection currentlyLoaded;
         public static string getLoadedCollectionTitle => currentlyLoaded.Title;
 
         #if UNITY_EDITOR
-            public static SceneCollectionObject setCurrentlyLoaded(SceneCollectionObject collection) => currentlyLoaded = collection;
+            public static SceneCollection setCurrentlyLoaded(SceneCollection collection) => currentlyLoaded = collection;
         #endif
 
         public static void loadCollection(string CollectionTitle, collectionLoadMode mode)
         {
-            SceneCollectionObject TargetCollection = null;
+            SceneCollection TargetCollection = null;
 
-            foreach (SceneCollectionObject target in GetSceneCollections())
+            foreach (SceneCollection target in GetSceneCollections())
             {
                 if(target.Title.Equals(CollectionTitle))
                     TargetCollection = target;
@@ -85,7 +86,7 @@ namespace HH.MultiSceneTools
             OnSceneLoad?.Invoke();
         }
 
-        static void loadDifference(SceneCollectionObject Collection)
+        static void loadDifference(SceneCollection Collection)
         {
             if(currentlyLoaded == null)
             {
@@ -125,16 +126,16 @@ namespace HH.MultiSceneTools
             currentlyLoaded = Collection;
         }
 
-        static void loadReplace(SceneCollectionObject Collection) // ! unloading _Boot which is not good
+        static void loadReplace(SceneCollection Collection) // ! unloading _Boot which is not good
         {
-            SceneCollectionObject _Boot = FindCollection("_Boot");
+            SceneCollection _Boot = FindCollection("_Boot");
             loadDifference(_Boot);
             loadDifference(Collection);
         }
 
-        static SceneCollectionObject FindCollection(string CollectionTitle)
+        static SceneCollection FindCollection(string CollectionTitle)
         {
-            foreach (SceneCollectionObject target in GetSceneCollections())
+            foreach (SceneCollection target in GetSceneCollections())
             {
                 if(target.Title.Equals(CollectionTitle))
                     return target;
