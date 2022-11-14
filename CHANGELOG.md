@@ -1,3 +1,7 @@
+# Version 0.2.2  -  14/11/2022
+
+- Fixed scene selection field in the scene manager window 
+
 # Version 0.2.1  -  14/11/2022
 
 - Re arranged SceneManager window
