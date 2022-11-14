@@ -6,6 +6,7 @@
 
 - Scene Collection ScriptableObjects
     - Tracks which scenes are used together in runtime.
+    - Double Click to load collection
     - (Comming) Tracks cross scene references
 
 - Multi Scene Management Window
