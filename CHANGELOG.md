@@ -11,3 +11,7 @@
 - Added config setting: toggle OnSceneLoad logging
 - Added config setting: SceneCollection Load path
 - Added config setting: Boot scene path
+
+# Version 0.1.0
+
+- Initial Upload
