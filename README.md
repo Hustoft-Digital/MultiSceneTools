@@ -42,3 +42,7 @@
 ## Author
 
 - [Henrik Hustoft](https://www.linkedin.com/in/henrik-hustoft-2366ab220/)
+
+## License
+
+- GNU General Public License. Refer to the [LICENSE.md](https://github.com/HenrysHouses/MultiSceneTools/blob/main/LICENCE.md) file
