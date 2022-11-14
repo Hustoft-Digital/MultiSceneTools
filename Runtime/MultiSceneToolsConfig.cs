@@ -68,8 +68,6 @@ namespace HH.MultiSceneTools
         {
             if(!instance)    
                 instance = this;
-            // else
-            //     Debug.Log("MultiSceneEditorConfig: Instance already set.");
         }
 
         public void UpdateCollections()
