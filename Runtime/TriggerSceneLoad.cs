@@ -29,11 +29,5 @@ namespace HH.MultiSceneTools.Examples
         {
             MultiSceneLoader.loadCollection(collectionTitle, collectionLoadMode.Difference);
         }
-
-        void Update()
-        {
-            if(Input.GetKeyDown(KeyCode.Space))
-                MultiSceneLoader.loadCollection(CollectionTitle, collectionLoadMode.Replace, true);
-        }
     }
 }
