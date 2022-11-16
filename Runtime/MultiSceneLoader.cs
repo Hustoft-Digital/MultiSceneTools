@@ -31,7 +31,8 @@ namespace HH.MultiSceneTools
 
     public static class MultiSceneLoader
     {
-        public static UnityEvent<SceneCollection, collectionLoadMode> OnSceneLoad = new UnityEvent<SceneCollection, collectionLoadMode>();
+        private static UnityEvent<SceneCollection, collectionLoadMode> OnSceneLoad = new UnityEvent<SceneCollection, collectionLoadMode>();
+        public static UnityEvent<SceneCollection, collectionLoadMode> OnSceneCollectionLoad => OnSceneLoad;
         public static int OnSceneLoadMethodCount {get; private set;}
         private static bool IsLoggingOnSceneLoad;
         static SceneCollection currentlyLoaded;
