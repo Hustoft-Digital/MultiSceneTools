@@ -24,11 +24,6 @@ namespace HH.MultiSceneTools.Examples
     public class TriggerSceneLoad : MonoBehaviour
     {
         public string CollectionTitle;
-        
-        void Start()
-        {
-            MultiSceneLoader.loadCollection(CollectionTitle, collectionLoadMode.Replace, true);
-        }
 
         public void LoadScene(string collectionTitle)
         {
