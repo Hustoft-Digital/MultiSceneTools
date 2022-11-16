@@ -31,7 +31,7 @@ namespace HH.MultiSceneTools
 
     public static class MultiSceneLoader
     {
-        public static UnityEvent OnSceneCollectionLoad = new UnityEvent();
+        public static UnityEvent OnSceneCollectionLoaded = new UnityEvent();
         public static UnityEvent<SceneCollection, collectionLoadMode> OnSceneCollectionLoadDebug = new UnityEvent<SceneCollection, collectionLoadMode>();
         public static int getDebugEventCount {get; private set;}
         private static bool IsLoggingOnSceneLoad;
@@ -76,7 +76,7 @@ namespace HH.MultiSceneTools
                     break;
             }
             OnSceneCollectionLoadDebug?.Invoke(TargetCollection, mode);
-            OnSceneCollectionLoad?.Invoke();
+            OnSceneCollectionLoaded?.Invoke();
         }
 
         static void loadDifference(SceneCollection Collection)
