@@ -60,7 +60,7 @@ namespace HH.MultiSceneTools
 
             if(TargetCollection == null)
             {
-                Debug.LogWarning("Could not find Scene Collection of name: " + CollectionTitle);
+                Debug.LogError("Could not find Scene Collection of name: " + CollectionTitle);
                 return;
             }
 
