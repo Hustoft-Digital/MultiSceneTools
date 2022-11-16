@@ -2,7 +2,7 @@
 
 - Made OnSceneLoad public and accessible 
 - Changed name of OnSceneLoad -> OnSceneCollectionLoaded
-- Added another event, now there is two. one which outputs the scene collection data and one void.
+- Added another event (OnSceneCollectionLoadDebug), now there is two. one which outputs the scene collection data and one void.
 
 # Version 0.2.2  -  14/11/2022
 
