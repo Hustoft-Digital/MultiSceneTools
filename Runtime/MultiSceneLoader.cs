@@ -19,7 +19,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
-using System;
 
 namespace HH.MultiSceneTools
 {
@@ -32,8 +31,9 @@ namespace HH.MultiSceneTools
 
     public static class MultiSceneLoader
     {
-        
-        public static event Action<SceneCollection, collectionLoadMode> OnSceneCollectionLoaded; 
+        public static UnityEvent OnSceneCollectionLoad = new UnityEvent();
+        public static UnityEvent<SceneCollection, collectionLoadMode> OnSceneCollectionLoadDebug = new UnityEvent<SceneCollection, collectionLoadMode>();
+        public static int getDebugEventCount {get; private set;}
         private static bool IsLoggingOnSceneLoad;
         static SceneCollection currentlyLoaded;
         public static string getLoadedCollectionTitle => currentlyLoaded.Title;
@@ -75,7 +75,8 @@ namespace HH.MultiSceneTools
                     loadAdditive(TargetCollection);
                     break;
             }
-            OnSceneCollectionLoaded?.Invoke(TargetCollection, mode);
+            OnSceneCollectionLoadDebug?.Invoke(TargetCollection, mode);
+            OnSceneCollectionLoad?.Invoke();
         }
 
         static void loadDifference(SceneCollection Collection)
@@ -199,7 +200,7 @@ namespace HH.MultiSceneTools
             if(IsLoggingOnSceneLoad)
                 return;
 
-            OnSceneCollectionLoaded += logSceneChange;
+            OnSceneCollectionLoadDebug.AddListener(logSceneChange);
             IsLoggingOnSceneLoad = true;
         }
     }
