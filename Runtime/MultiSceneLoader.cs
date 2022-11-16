@@ -31,7 +31,7 @@ namespace HH.MultiSceneTools
 
     public static class MultiSceneLoader
     {
-        private static UnityEvent<SceneCollection, collectionLoadMode> OnSceneLoad = new UnityEvent<SceneCollection, collectionLoadMode>();
+        public static UnityEvent<SceneCollection, collectionLoadMode> OnSceneLoad = new UnityEvent<SceneCollection, collectionLoadMode>();
         public static int OnSceneLoadMethodCount {get; private set;}
         private static bool IsLoggingOnSceneLoad;
         static SceneCollection currentlyLoaded;
@@ -200,12 +200,6 @@ namespace HH.MultiSceneTools
 
             OnSceneLoad.AddListener(logSceneChange);
             IsLoggingOnSceneLoad = true;
-        }
-
-        public static void OnSceneLoadAddMethod(UnityAction<SceneCollection, collectionLoadMode> unityAction)
-        {
-            OnSceneLoad.AddListener(unityAction);
-            OnSceneLoadMethodCount++;
         }
     }
 }

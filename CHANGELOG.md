@@ -1,3 +1,7 @@
+# Version 0.2.3  -  14/11/2022
+
+- Made OnSceneLoad public and accessible 
+
 # Version 0.2.2  -  14/11/2022
 
 - Fixed scene selection field in the scene manager window 
