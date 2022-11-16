@@ -18,9 +18,11 @@
     - Create scene collections from loaded scenes
     - Create new scenes and load it additively
     - Add all open scenes to build settings
+    - See the current settings set in the config scriptable object
 
 - Multi Scene Loader
     - Load scene collections with this static class
+    - OnSceneCollectionLoaded & OnSceneCollectionLoadDebug<SceneCollection, collectionLoadMode> events triggered on sucessful loading
     - Loading modes
         - Additive
             - Loads all scenes in a collection additive
@@ -29,9 +31,23 @@
         - Replace
             - Unloads all scenes other than the boot scene, then loads all scenes additively.
 
+- Multi Scene Toools Config
+    - See and set current singleton instance
+    - See and set current loaded scene collection
+    - Toggle for allowing cross scene referencing (Cross scene referencing is not implemented)
+    - Toggle for logging scene collection loading
+    - Target path for boot scene or manager scene
+    - Target path for loading scene collections
+
 ## Examples
 
-- Boot loader and scene transitions
+- Boot loader
+    - Gets current collection when entering play in editor
+    - loads the main menu when the _Boot scene is started
+
+- Scene Transitioner
+    - Waits for the transition animation to finish before loading the next scene collection.
+    - Tracks the in and out transition state
 
 ## Setup
 
