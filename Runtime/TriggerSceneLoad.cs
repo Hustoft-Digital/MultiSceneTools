@@ -20,11 +20,8 @@ using UnityEngine;
 
 namespace HH.MultiSceneTools.Examples
 {
-
     public class TriggerSceneLoad : MonoBehaviour
     {
-        public string CollectionTitle;
-
         public void LoadScene(string collectionTitle)
         {
             MultiSceneLoader.loadCollection(collectionTitle, collectionLoadMode.Difference);
