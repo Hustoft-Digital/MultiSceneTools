@@ -32,11 +32,9 @@ namespace HH.MultiSceneTools.Examples
         public bool isTransitioning => isAnimating;
         float animTime;
 
-
         // Start is called before the first frame update
         void Start()
         {
-            // StartCoroutine(sceneTransition(false, "MainMenu"));
             StartCoroutine(sceneTransition(true));
         }
 
@@ -76,7 +74,6 @@ namespace HH.MultiSceneTools.Examples
 
             if(!SceneState && TransitionToCollection.Equals(""))
                 Debug.LogWarning(this + ": is trying to transition to a scene named \"\"");
-
         }
 
         bool waitForAnim(string animState)
