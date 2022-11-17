@@ -142,7 +142,13 @@ namespace HH.MultiSceneTools
 
             for (int i = 0; i < Collection.SceneNames.Count; i++)
             {
-                if(!loadBoot && i == 0)
+                if(loadBoot)
+                {
+                    if(Collection.SceneNames[i] == bootScene)
+                        continue;
+                    load(Collection.SceneNames[i], LoadSceneMode.Additive);
+                }
+                else if(i == 0)
                     load(Collection.SceneNames[i], LoadSceneMode.Single);
                 else
                     load(Collection.SceneNames[i], LoadSceneMode.Additive);
@@ -189,7 +195,7 @@ namespace HH.MultiSceneTools
         public static void BootGame()
         {
             currentlyLoaded = FindCollection("_Boot");
-            loadCollection("MainMenu", collectionLoadMode.Replace);
+            loadCollection("MainMenu", collectionLoadMode.Replace, true);
         }
 
         // * --- Debugging --- 
