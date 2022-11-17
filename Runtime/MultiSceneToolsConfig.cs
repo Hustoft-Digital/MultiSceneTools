@@ -72,26 +72,31 @@ namespace HH.MultiSceneTools
                 instance = this;
         }
 
-        public void UpdateCollections()
-        {
-            string[] assets = AssetDatabase.FindAssets("SceneCollection", new string[]{_SceneCollectionPath});
-            _Collections = new SceneCollection[assets.Length];
-
-            for (int i = 0; i < _Collections.Length; i++)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(assets[i]);
-                _Collections[i] = (SceneCollection)AssetDatabase.LoadAssetAtPath(path, typeof(SceneCollection));
-            }
-        }
 
         private void OnEnable() {
             setInstance();
-            UpdateCollections();
-            MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
+            #if UNITY_EDITOR
+                UpdateCollections();
+                MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
+            #endif
         }
 
-        private void OnValidate() {
-            UpdateCollections();
-        }
+        #if UNITY_EDITOR
+            private void OnValidate() {
+                UpdateCollections();
+            }
+            
+            public void UpdateCollections()
+            {
+                string[] assets = AssetDatabase.FindAssets("SceneCollection", new string[]{_SceneCollectionPath});
+                _Collections = new SceneCollection[assets.Length];
+
+                for (int i = 0; i < _Collections.Length; i++)
+                {
+                    string path = AssetDatabase.GUIDToAssetPath(assets[i]);
+                    _Collections[i] = (SceneCollection)AssetDatabase.LoadAssetAtPath(path, typeof(SceneCollection));
+                }
+            }
+        #endif
     }
 }
