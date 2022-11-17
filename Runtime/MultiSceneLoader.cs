@@ -168,7 +168,7 @@ namespace HH.MultiSceneTools
         {
             foreach (SceneCollection target in MultiSceneToolsConfig.instance.GetSceneCollections())
             {
-                if(target.Title.Equals(CollectionTitle))
+                if(target.Title == CollectionTitle)
                     return target;
             }
             Debug.LogWarning("Could not find collection");

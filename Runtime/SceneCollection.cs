@@ -32,7 +32,7 @@ namespace HH.MultiSceneTools
     {
         public string Title;
 
-        [HideInInspector] public List<string> SceneNames = new List<string>();
+        [SerializeField, HideInInspector] public List<string> SceneNames = new List<string>();
         // public Transform hiarchy;
         // public List<CrossSceneReference> references = new List<CrossSceneReference>();
 

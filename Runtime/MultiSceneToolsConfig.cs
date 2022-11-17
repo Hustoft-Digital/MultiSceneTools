@@ -30,7 +30,7 @@ namespace HH.MultiSceneTools
         [SerializeField] public static MultiSceneToolsConfig instance;
 
         SceneCollection currentLoadedCollection;
-        SceneCollection[] _Collections;
+        [SerializeField, HideInInspector] SceneCollection[] _Collections;
         public SceneCollection[] GetSceneCollections() => _Collections;
 
         public bool LogOnSceneChange {get; private set;}
