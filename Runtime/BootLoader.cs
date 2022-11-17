@@ -31,7 +31,7 @@ namespace HH.MultiSceneTools.Examples
         void Awake()
         {
             #if !UNITY_EDITOR
-                MultiSceneLoader.BootGame();
+                MultiSceneLoader.BootGame(config);
             #elif UNITY_EDITOR
                 // decide if it should boot or not in the editor.
                 if(SceneManager.GetActiveScene().name.Equals("_Boot"))
