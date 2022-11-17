@@ -24,6 +24,7 @@ namespace HH.MultiSceneTools.Examples
     public class BootLoader : MonoBehaviour
     {
         [SerializeField] MultiSceneToolsConfig config;
+        [SerializeField] string BootIntoCollection;
 
         void Awake()
         {
@@ -31,7 +32,7 @@ namespace HH.MultiSceneTools.Examples
                 // decide if it should boot or not in the editor.
                 if(SceneManager.GetActiveScene().name.Equals("_Boot"))
                 {
-                    MultiSceneLoader.BootGame(config);
+                    MultiSceneLoader.BootGame(config, BootIntoCollection);
                 }
                 else
                 {
@@ -39,7 +40,7 @@ namespace HH.MultiSceneTools.Examples
                 }
                 return;
             #endif
-            MultiSceneLoader.BootGame(config);
+            MultiSceneLoader.BootGame(config, BootIntoCollection);
             Debug.Log("Game Booted");
         }
     }
