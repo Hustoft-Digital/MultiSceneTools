@@ -153,6 +153,7 @@ namespace HH.MultiSceneTools
                 else
                     load(Collection.SceneNames[i], LoadSceneMode.Additive);
             }
+            currentlyLoaded = Collection;
         }
 
         static void loadAdditive(SceneCollection Collection)
