@@ -64,8 +64,6 @@ namespace HH.MultiSceneToolsEditor
             SceneManager_window window = (SceneManager_window)EditorWindow.GetWindow(typeof(SceneManager_window));
             window.titleContent = new GUIContent("Scene Manager", "Loads, Unloads, and Saves Scene Collections");
             window.Show();
-            // if(!MultiSceneEditorConfig.instance)
-            //     MultiSceneEditorConfig.instance.setInstance();
         }
 
         protected void OnEnable ()

@@ -15,10 +15,12 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Collections.Generic;
 using UnityEngine;
+
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
+#endif
 
 namespace HH.MultiSceneTools
 {

@@ -18,8 +18,12 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
+
+#if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.SceneManagement;
+#endif
 
 namespace HH.MultiSceneTools
 {
@@ -29,6 +33,8 @@ namespace HH.MultiSceneTools
         public string Title;
 
         [HideInInspector] public List<string> SceneNames = new List<string>();
+        // public Transform hiarchy;
+        // public List<CrossSceneReference> references = new List<CrossSceneReference>();
 
         #if UNITY_EDITOR
         public List<SceneAsset> Scenes = new List<SceneAsset>();
@@ -45,6 +51,8 @@ namespace HH.MultiSceneTools
             EditorUtility.FocusProjectWindow();
 
             Selection.activeObject = this;
+
+            // findCrossSceneReferences();
         }
 
         private void OnValidate() 
@@ -72,6 +80,69 @@ namespace HH.MultiSceneTools
                     EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(Scenes[i]), OpenSceneMode.Additive);
             }
         }
+
+        // public void findCrossSceneReferences()
+        // {
+        //     for (int i = 0; i < SceneManager.sceneCount; i++)
+        //     {
+        //         Scene currScene = SceneManager.GetSceneAt(i);
+        //         GameObject[] rootObjects = currScene.GetRootGameObjects();
+
+        //         for (int j = 0; j < rootObjects.Length; j++)
+        //         {
+        //             Debug.Log(logHiarchy(rootObjects[j].transform, 0));
+        //         }
+        //     }
+        // }
+        // public string logHiarchy(Transform next, int n)
+        // {
+        //     string branch;
+        //     if(next.childCount == 0)
+        //         return "";
+
+        //     if(n == 0)
+        //         branch = n+": " + next.name +", " +(n+1)+": ";
+        //     else
+        //         branch = n+": ";
+
+        //     for (int i = 0; i < next.childCount; i++)
+        //     {
+        //         branch += next.GetChild(i).name + ", ";
+        //     }
+
+        //     for (int i = 0; i < next.childCount; i++)
+        //     {
+        //         if(n== 0)
+        //             branch += logHiarchy(next.GetChild(i), n+2);
+        //         else
+        //             branch += logHiarchy(next.GetChild(i), n+1);
+        //     }
+        //     return branch;
+        // }
         #endif
     }
+
+    // public class Node
+    // {
+    //     public int Id {get; private set;}
+    //     public int ParentId {get; private set;}
+    //     public int Position {get; private set;}
+    //     public string Title {get; private set;}
+
+    //     public Node(int ID, int PARENTID, int POSITION, string TITLE)
+    //     {
+    //         this.Id = ID;
+    //         this.ParentId = PARENTID;
+    //         this.Position = POSITION;
+    //         this.Title = TITLE;
+    //     }
+    // }
+
+    // public class CrossSceneReference
+    // {
+    //     public Object Source;
+    //     public Object Target;
+    //     public string Path;
+    //     public string referenceID;
+    // }
 }
