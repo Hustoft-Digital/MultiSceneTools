@@ -42,7 +42,7 @@ namespace HH.MultiSceneToolsEditor
             EditorGUILayout.ObjectField("Current Instance", MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
             if(GUILayout.Button("Set This As Instance"))
             {
-                script.setInstance();
+                script.getInstance();
             }
             EditorGUILayout.ObjectField(new GUIContent("Loaded Collection", "Currently loaded collection, this will be overridden if saved"), script.getCurrCollection(), typeof(SceneCollection), false);
 

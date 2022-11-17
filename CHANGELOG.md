@@ -1,3 +1,7 @@
+# Version 0.2.4  -  17/11/2022
+
+- Fixed issue with config instance not being set when booting
+
 # Version 0.2.3  -  16/11/2022
 
 - Made OnSceneLoad public and accessible 

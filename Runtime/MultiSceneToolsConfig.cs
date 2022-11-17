@@ -67,18 +67,25 @@ namespace HH.MultiSceneTools
         }
 
         private void Awake() {
-            setInstance();
+            getInstance();
         }
 
-        public void setInstance()
+        public MultiSceneToolsConfig getInstance()
         {
             if(!instance)    
                 instance = this;
+            return instance;
+        }
+
+        public static void setInstance(MultiSceneToolsConfig configInstance)
+        {
+            if(configInstance != null)
+                instance = configInstance;
         }
 
 
         private void OnEnable() {
-            setInstance();
+            getInstance();
             #if UNITY_EDITOR
                 UpdateCollections();
                 MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);

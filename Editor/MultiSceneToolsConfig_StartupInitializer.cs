@@ -37,7 +37,7 @@ namespace HH.MultiSceneToolsEditor
                 typeof(MultiSceneToolsConfig));
 
             if(config != null)            
-                config.setInstance();
+                config.getInstance();
             else
             {
                 if(!Directory.Exists(configPath)) 

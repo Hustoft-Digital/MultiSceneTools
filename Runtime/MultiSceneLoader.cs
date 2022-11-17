@@ -193,8 +193,9 @@ namespace HH.MultiSceneTools
             SceneManager.LoadScene(SceneName, mode);
         }
 
-        public static void BootGame()
+        public static void BootGame(MultiSceneToolsConfig config)
         {
+            MultiSceneToolsConfig.setInstance(config);
             currentlyLoaded = FindCollection("_Boot");
             loadCollection("MainMenu", collectionLoadMode.Replace, true);
         }

@@ -23,6 +23,7 @@ namespace HH.MultiSceneTools.Examples
 {
     public class BootLoader : MonoBehaviour
     {
+        [SerializeField] MultiSceneToolsConfig config;
         #if UNITY_EDITOR
             [SerializeField] bool SkipBoot;        
         #endif
@@ -34,7 +35,9 @@ namespace HH.MultiSceneTools.Examples
             #elif UNITY_EDITOR
                 // decide if it should boot or not in the editor.
                 if(SceneManager.GetActiveScene().name.Equals("_Boot"))
-                    MultiSceneLoader.BootGame();
+                {
+                    MultiSceneLoader.BootGame(config);
+                }
                 else
                 {
                     MultiSceneLoader.setCurrentlyLoaded(MultiSceneToolsConfig.instance.getCurrCollection());
