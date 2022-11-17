@@ -66,6 +66,10 @@ namespace HH.MultiSceneTools
             return null;
         }
 
+        private void Awake() {
+            setInstance();
+        }
+
         public void setInstance()
         {
             if(!instance)    
