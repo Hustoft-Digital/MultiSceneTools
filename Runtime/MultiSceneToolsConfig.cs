@@ -35,8 +35,8 @@ namespace HH.MultiSceneTools
 
         public bool LogOnSceneChange {get; private set;}
         public bool AllowCrossSceneReferences {get; private set;}
-        [HideInInspector] public string _BootScenePath = "Assets/Scenes/SampleScene.unity";
-        [HideInInspector] public string _SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
+        public string _BootScenePath;
+        public string _SceneCollectionPath;
 
         #if UNITY_EDITOR
             public void setAllowCrossSceneReferences(bool state)

@@ -1,3 +1,7 @@
+# Version 0.2.4  -  18/11/2022
+
+- Fixed issue with config editor script always resetting the paths to default values.
+
 # Version 0.2.4  -  17/11/2022
 
 - Fixed issue with config instance not being set when booting

@@ -33,9 +33,17 @@ namespace HH.MultiSceneToolsEditor
             script = target as MultiSceneToolsConfig;
         }
 
+        void setDefaultPaths()
+        {
+            if(script._BootScenePath == "")
+                script._BootScenePath = "Assets/Scenes/SampleScene.unity";
+
+            if(script._SceneCollectionPath == "")
+                script._SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
+        }
+
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
 
             GUILayout.Label("Info", EditorStyles.boldLabel);
 
@@ -57,14 +65,17 @@ namespace HH.MultiSceneToolsEditor
                 new GUIContent("Log Scene Changes", "Adds a Debug.log to OnSceneLoad. Output: Loaded Collection, Collection Load Mode"), 
                 script.LogOnSceneChange));
 
-            script._BootScenePath = EditorGUILayout.TextField(
-                new GUIContent("Boot scene Path", "Keep this scene when loading differences. This scene will be loaded if all scenes are unloaded"), 
-                script._BootScenePath);
+            // script._BootScenePath = EditorGUILayout.TextField(
+            //     new GUIContent("Boot scene Path", "Keep this scene when loading differences. This scene will be loaded if all scenes are unloaded"), 
+            //     script._BootScenePath);
             
-            script._SceneCollectionPath = EditorGUILayout.TextField(
-                new GUIContent("Scene Collections Path", "Path where new scene collections will be created and loaded from"), 
-                script._SceneCollectionPath);
+            // script._SceneCollectionPath = EditorGUILayout.TextField(
+            //     new GUIContent("Scene Collections Path", "Path where new scene collections will be created and loaded from"), 
+            //     script._SceneCollectionPath);
 
+            base.OnInspectorGUI();
+
+            setDefaultPaths();
         }
     }
 }
