@@ -66,21 +66,21 @@ namespace HH.MultiSceneToolsEditor
             window.Show();
         }
 
-        // protected void OnEnable ()
-        // {
-        //     // Here we retrieve the data if it exists or we save the default field initialisers we set above
-        //     var data = EditorPrefs.GetString("MultiSceneManagerWindow", JsonUtility.ToJson(this, false));
-        //     // Then we apply them to this window
-        //     JsonUtility.FromJsonOverwrite(data, this);
-        // }
+        protected void OnEnable ()
+        {
+            // Here we retrieve the data if it exists or we save the default field initialisers we set above
+            var data = EditorPrefs.GetString("MultiSceneManagerWindow", JsonUtility.ToJson(this, false));
+            // Then we apply them to this window
+            JsonUtility.FromJsonOverwrite(data, this);
+        }
     
-        // protected void OnDisable ()
-        // {
-        //     // We get the Json data
-        //     var data = JsonUtility.ToJson(this, false);
-        //     // And we save it
-        //     EditorPrefs.SetString("MultiSceneManagerWindow", data);
-        // }
+        protected void OnDisable ()
+        {
+            // We get the Json data
+            var data = JsonUtility.ToJson(this, false);
+            // And we save it
+            EditorPrefs.SetString("MultiSceneManagerWindow", data);
+        }
 
         private void LogPlayModeState(PlayModeStateChange state)
         {
@@ -93,71 +93,71 @@ namespace HH.MultiSceneToolsEditor
 
         void OnGUI()
         {
-            // pageIndex = GUILayout.Toolbar(pageIndex, page);
-            // DrawInfo();
+            pageIndex = GUILayout.Toolbar(pageIndex, page);
+            DrawInfo();
 
-            // if(pageIndex == 1)
-            // {
-            //     // Project Settings
-            //     GUILayout.Space(8);
-            //     GUILayout.Label("Project Settings", EditorStyles.boldLabel);
+            if(pageIndex == 1)
+            {
+                // Project Settings
+                GUILayout.Space(8);
+                GUILayout.Label("Project Settings", EditorStyles.boldLabel);
 
-            //     if(GUILayout.Button("Add Open Scenes To Build"))
-            //     {
-            //         SetEditorBuildSettingsScenes();
-            //     }
-            //     return;
-            // }
+                if(GUILayout.Button("Add Open Scenes To Build"))
+                {
+                    SetEditorBuildSettingsScenes();
+                }
+                return;
+            }
 
-            // // Load Collection
-            // GUILayout.Space(8);
-            // GUILayout.Label("Loading", EditorStyles.boldLabel);
+            // Load Collection
+            GUILayout.Space(8);
+            GUILayout.Label("Loading", EditorStyles.boldLabel);
 
             
 
-            // SelectedCollection = (SceneCollection)EditorGUILayout.ObjectField(new GUIContent("Collection"), SelectedCollection, typeof(SceneCollection), false);
+            SelectedCollection = (SceneCollection)EditorGUILayout.ObjectField(new GUIContent("Collection"), SelectedCollection, typeof(SceneCollection), false);
             
-            // if(GUILayout.Button("Load Collection"))
-            // {
-            //     EditorLoadCollection();
-            // }
+            if(GUILayout.Button("Load Collection"))
+            {
+                EditorLoadCollection();
+            }
             
-            // // Load Scene
-            // loadBuildScenesAsOptions();
+            // Load Scene
+            loadBuildScenesAsOptions();
 
-            // DrawFieldSelectLoadAdditive();
+            DrawFieldSelectLoadAdditive();
 
-            // if(GUILayout.Button("Load Scene Additively"))
-            // {
-            //     LoadSceneAdditively();
-            // }
+            if(GUILayout.Button("Load Scene Additively"))
+            {
+                LoadSceneAdditively();
+            }
 
-            // // Un-Load selected scene
-            // DrawPopupSelectUnload();
+            // Un-Load selected scene
+            DrawPopupSelectUnload();
 
-            // if(GUILayout.Button("Unload Scene"))
-            // {
-            //     UnLoadSelectedScene();
-            // }
+            if(GUILayout.Button("Unload Scene"))
+            {
+                UnLoadSelectedScene();
+            }
 
-            // // Asset Management
-            // GUILayout.Space(8);
-            // GUILayout.Label("Asset Management", EditorStyles.boldLabel);
+            // Asset Management
+            GUILayout.Space(8);
+            GUILayout.Label("Asset Management", EditorStyles.boldLabel);
 
-            // if(GUILayout.Button("Save Collection"))
-            // {
-            //     SaveCollection(GetLoadedCollection());
-            // }
+            if(GUILayout.Button("Save Collection"))
+            {
+                SaveCollection(GetLoadedCollection());
+            }
 
-            // if(GUILayout.Button("Create Collection From Loaded Scenes"))
-            // {
-            //     CreateCollection();
-            // }
+            if(GUILayout.Button("Create Collection From Loaded Scenes"))
+            {
+                CreateCollection();
+            }
 
-            // if(GUILayout.Button("Create New Scene"))
-            // {
-            //     CreateNewScene();
-            // }
+            if(GUILayout.Button("Create New Scene"))
+            {
+                CreateNewScene();
+            }
         }
 
         // Other Draw Functions
