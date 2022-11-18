@@ -28,9 +28,14 @@ namespace HH.MultiSceneToolsEditor
     {
         MultiSceneToolsConfig script;
 
+        SerializedProperty bootPath, collectionPath;
+
         private void OnEnable()
         {
             script = target as MultiSceneToolsConfig;
+
+            bootPath = serializedObject.FindProperty("_BootScenePath");
+            collectionPath = serializedObject.FindProperty("_SceneCollectionPath");
         }
 
         void setDefaultPaths()
@@ -44,6 +49,7 @@ namespace HH.MultiSceneToolsEditor
 
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
 
             GUILayout.Label("Info", EditorStyles.boldLabel);
 
@@ -65,6 +71,15 @@ namespace HH.MultiSceneToolsEditor
                 new GUIContent("Log Scene Changes", "Adds a Debug.log to OnSceneLoad. Output: Loaded Collection, Collection Load Mode"), 
                 script.LogOnSceneChange));
 
+            serializedObject.UpdateIfRequiredOrScript();
+
+
+            EditorGUILayout.PropertyField(bootPath,
+                new GUIContent("Boot scene Path", "Keep this scene when loading differences. This scene will be loaded if all scenes are unloaded"));
+
+            EditorGUILayout.PropertyField(collectionPath,
+                new GUIContent("Scene Collections Path", "Path where new scene collections will be created and loaded from"));
+
             // script._BootScenePath = EditorGUILayout.TextField(
             //     new GUIContent("Boot scene Path", "Keep this scene when loading differences. This scene will be loaded if all scenes are unloaded"), 
             //     script._BootScenePath);
@@ -73,9 +88,10 @@ namespace HH.MultiSceneToolsEditor
             //     new GUIContent("Scene Collections Path", "Path where new scene collections will be created and loaded from"), 
             //     script._SceneCollectionPath);
 
-            base.OnInspectorGUI();
+            
 
             setDefaultPaths();
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }
