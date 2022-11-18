@@ -35,7 +35,9 @@ namespace HH.MultiSceneTools
 
         public bool LogOnSceneChange {get; private set;}
         public bool AllowCrossSceneReferences {get; private set;}
+        [Tooltip("Keep this scene when loading differences. This scene will be loaded if all scenes are unloaded")] 
         public string _BootScenePath;
+        [Tooltip("Path where new scene collections will be created and loaded from")] 
         public string _SceneCollectionPath;
 
         #if UNITY_EDITOR
