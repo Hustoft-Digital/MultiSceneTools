@@ -30,6 +30,7 @@
             - Unloads all scenes the collections do not share, then load the missing scenes.
         - Replace
             - Unloads all scenes other than the boot scene, then loads all scenes additively.
+    - (comming) Scene Node view, Connect scenes together with nodes to visualise adjacent scenes and automate when scenes should be loaded. 
 
 - Multi Scene Toools Config
     - See and set current singleton instance
