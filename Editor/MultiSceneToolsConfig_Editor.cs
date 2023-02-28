@@ -56,7 +56,9 @@ namespace HH.MultiSceneToolsEditor
 
             GUILayout.Label("Info", EditorStyles.boldLabel);
 
+            GUI.enabled = false;
             var config = EditorGUILayout.ObjectField("Current Instance", MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
+            GUI.enabled = true;
 
             if(config != MultiSceneToolsConfig.instance)
                 script.setInstance(config as MultiSceneToolsConfig);
@@ -65,7 +67,10 @@ namespace HH.MultiSceneToolsEditor
             {
                 script.setInstance(script);
             }
+
+            GUI.enabled = false;
             EditorGUILayout.ObjectField(new GUIContent("Loaded Collection", "Currently loaded collection, this will be overridden if saved"), script.getCurrCollection(), typeof(SceneCollection), false);
+            GUI.enabled = true;
 
             GUILayout.Space(8);
             GUILayout.Label("Settings", EditorStyles.boldLabel);
