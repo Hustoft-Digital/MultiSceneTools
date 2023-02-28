@@ -15,8 +15,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-// TODO remove unity editor stuff from this script
-
 using UnityEngine;
 using System;
 using System.Linq;
@@ -24,6 +22,7 @@ using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 #endif
 
 namespace HH.MultiSceneTools
@@ -35,6 +34,7 @@ namespace HH.MultiSceneTools
         [SerializeField, HideInInspector] MultiSceneToolsConfig currentInstance;
         public MultiSceneToolsConfig CurrentConfig {private set; get;}
         public SceneCollection currentLoadedCollection {private set; get;}
+        private static Scene previousActiveScene;
         private SceneCollection EditorStartedInCollection;
         [SerializeField, HideInInspector] SceneCollection[] _Collections;
         public SceneCollection[] GetSceneCollections() => _Collections;
@@ -46,11 +46,8 @@ namespace HH.MultiSceneTools
 
 
         private void Awake() {
-            Debug.Log(currentInstance);
             instance = currentInstance;
         }
-
-        
 
         #if UNITY_EDITOR
             public void setInstance(MultiSceneToolsConfig config)
@@ -86,20 +83,6 @@ namespace HH.MultiSceneTools
             return null;
         }
 
-
-        // public MultiSceneToolsConfig getInstance()
-        // {
-        //     if(!instance)    
-        //         instance = this;
-        //     return instance;
-        // }
-
-        // public static void setInstance(MultiSceneToolsConfig configInstance)
-        // {
-        //     if(configInstance != null)
-        //         instance = configInstance;
-        // }
-
         private void OnEnable() {
             #if UNITY_EDITOR
 
@@ -120,7 +103,6 @@ namespace HH.MultiSceneTools
 
             public void SetCurrentCollectionEmpty()
             {
-                Debug.LogWarning("Not tested yet, this may turn out to be an inconvenience");
                 currentLoadedCollection = ScriptableObject.CreateInstance<SceneCollection>();
                 MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
             }
@@ -144,6 +126,7 @@ namespace HH.MultiSceneTools
                     currentLoadedCollection = EditorStartedInCollection;
                 }
             }
+
 
             
             public void findOpenSceneCollection()

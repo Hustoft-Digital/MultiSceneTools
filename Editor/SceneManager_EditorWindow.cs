@@ -236,7 +236,6 @@ namespace HH.MultiSceneToolsEditor
 
         void LoadSceneAdditively()
         {
-            // string path = GetScenePath(_sceneOptions[SelectedScene]);
             string path = AssetDatabase.GetAssetPath(_SelectedScene);
 
             EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
@@ -375,19 +374,19 @@ namespace HH.MultiSceneToolsEditor
             return _paths;
         }
 
-        string GetScenePath(string scene)
-        {
-            int buildSceneCount = UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings;     
-            for (int i = 0; i < buildSceneCount; i++)
-            {
-                string currScene = System.IO.Path.GetFileNameWithoutExtension( UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex( i ) );
-                if(currScene.Equals(scene))
-                {
-                    return UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex( i );
-                }
-            }
-            return null;
-        }
+        // string GetScenePath(string scene)
+        // {
+        //     int buildSceneCount = UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings;     
+        //     for (int i = 0; i < buildSceneCount; i++)
+        //     {
+        //         string currScene = System.IO.Path.GetFileNameWithoutExtension( UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex( i ) );
+        //         if(currScene.Equals(scene))
+        //         {
+        //             return UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex( i );
+        //         }
+        //     }
+        //     return null;
+        // }
 
         void loadBuildScenesAsOptions()
         {

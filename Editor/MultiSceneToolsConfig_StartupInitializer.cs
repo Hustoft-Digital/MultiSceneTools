@@ -45,7 +45,6 @@ namespace HH.MultiSceneToolsEditor
                 ScriptableObject SO = ScriptableObject.CreateInstance(typeof(MultiSceneToolsConfig));
                 MultiSceneToolsConfig _Config = SO as MultiSceneToolsConfig;
                 // _Config.setAllowCrossSceneReferences(true);
-                // _Config.setInstance(_Config);
                 _Config.setInstance(_Config);
 
                 AssetDatabase.CreateAsset(_Config, configPath + configName);
