@@ -36,22 +36,25 @@ namespace HH.MultiSceneToolsEditor
                 configPath + configName, 
                 typeof(MultiSceneToolsConfig));
 
-            if(config != null)            
-                config.getInstance();
-            else
+
+            if(config == null)            
             {
                 if(!Directory.Exists(configPath)) 
                     Directory.CreateDirectory(configPath);
 
                 ScriptableObject SO = ScriptableObject.CreateInstance(typeof(MultiSceneToolsConfig));
                 MultiSceneToolsConfig _Config = SO as MultiSceneToolsConfig;
-                _Config.setAllowCrossSceneReferences(true);
+                // _Config.setAllowCrossSceneReferences(true);
+                // _Config.setInstance(_Config);
+                _Config.setInstance(_Config);
 
                 AssetDatabase.CreateAsset(_Config, configPath + configName);
                 AssetDatabase.SaveAssets();
 
-                Debug.Log("Created config ScriptableObject at: " + configPath + configName);
+                Debug.LogWarning("Created config ScriptableObject at: " + configPath + configName);
             }
+            else
+                config.setInstance(config);
         }
     }
 }

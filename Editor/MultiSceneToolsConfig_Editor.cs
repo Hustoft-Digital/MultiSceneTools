@@ -41,7 +41,10 @@ namespace HH.MultiSceneToolsEditor
         void setDefaultPaths()
         {
             if(script._BootScenePath == "")
+            {
+                Debug.Log("boot was changed");
                 script._BootScenePath = "Assets/Scenes/SampleScene.unity";
+            }
 
             if(script._SceneCollectionPath == "")
                 script._SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
@@ -53,10 +56,14 @@ namespace HH.MultiSceneToolsEditor
 
             GUILayout.Label("Info", EditorStyles.boldLabel);
 
-            EditorGUILayout.ObjectField("Current Instance", MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
+            var config = EditorGUILayout.ObjectField("Current Instance", MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
+
+            if(config != MultiSceneToolsConfig.instance)
+                script.setInstance(config as MultiSceneToolsConfig);
+
             if(GUILayout.Button("Set This As Instance"))
             {
-                script.getInstance();
+                script.setInstance(script);
             }
             EditorGUILayout.ObjectField(new GUIContent("Loaded Collection", "Currently loaded collection, this will be overridden if saved"), script.getCurrCollection(), typeof(SceneCollection), false);
 
@@ -88,7 +95,10 @@ namespace HH.MultiSceneToolsEditor
             //     new GUIContent("Scene Collections Path", "Path where new scene collections will be created and loaded from"), 
             //     script._SceneCollectionPath);
 
-            
+            if(script.currentLoadedCollection == null)
+            {
+                script.SetCurrentCollectionEmpty();
+            }
 
             setDefaultPaths();
             serializedObject.ApplyModifiedProperties();

@@ -37,11 +37,16 @@ namespace HH.MultiSceneTools.Examples
                 else
                 {
                     MultiSceneLoader.setCurrentlyLoaded(MultiSceneToolsConfig.instance.getCurrCollection());
+                    Debug.Log(MultiSceneToolsConfig.instance.getCurrCollection().Title);
                 }
-                return;
+            #else
+                MultiSceneLoader.BootGame(config, BootIntoCollection);
             #endif
-            MultiSceneLoader.BootGame(config, BootIntoCollection);
             Debug.Log("Game Booted");
+        }
+
+        private void OnInspectorUpdate() {
+            config = MultiSceneToolsConfig.instance;
         }
     }
 }

@@ -15,6 +15,8 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+// TODO remove unity editor stuff from this script
+
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -28,17 +30,37 @@ namespace HH.MultiSceneTools
     public class MultiSceneToolsConfig : ScriptableObject
     {
         [SerializeField] public static MultiSceneToolsConfig instance;
-
-        SceneCollection currentLoadedCollection;
+        [SerializeField, HideInInspector] MultiSceneToolsConfig currentInstance;
+        public MultiSceneToolsConfig CurrentConfig {private set; get;}
+        public SceneCollection currentLoadedCollection {private set; get;}
+        private SceneCollection EditorStartedInCollection;
         [SerializeField, HideInInspector] SceneCollection[] _Collections;
         public SceneCollection[] GetSceneCollections() => _Collections;
 
         public bool LogOnSceneChange {get; private set;}
         public bool AllowCrossSceneReferences {get; private set;}
-        [HideInInspector] public string _BootScenePath;
-        [HideInInspector] public string _SceneCollectionPath;
+        [HideInInspector] public string _BootScenePath = "Assets/Scenes/SampleScene.unity";
+        [HideInInspector] public string _SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
+
+
+        private void Awake() {
+            Debug.Log(currentInstance);
+            instance = currentInstance;
+            EditorStartedInCollection = currentLoadedCollection;
+        }
+
+        private void OnDisable() {
+            currentLoadedCollection = EditorStartedInCollection;
+            Debug.Log("something");
+        }
 
         #if UNITY_EDITOR
+            public void setInstance(MultiSceneToolsConfig config)
+            {
+                instance = config;
+                currentInstance = config;
+            }
+
             public void setAllowCrossSceneReferences(bool state)
             {
                 if(AllowCrossSceneReferences == state)
@@ -66,29 +88,28 @@ namespace HH.MultiSceneTools
             return null;
         }
 
-        private void Awake() {
-            getInstance();
-        }
 
-        public MultiSceneToolsConfig getInstance()
-        {
-            if(!instance)    
-                instance = this;
-            return instance;
-        }
+        // public MultiSceneToolsConfig getInstance()
+        // {
+        //     if(!instance)    
+        //         instance = this;
+        //     return instance;
+        // }
 
-        public static void setInstance(MultiSceneToolsConfig configInstance)
-        {
-            if(configInstance != null)
-                instance = configInstance;
-        }
-
+        // public static void setInstance(MultiSceneToolsConfig configInstance)
+        // {
+        //     if(configInstance != null)
+        //         instance = configInstance;
+        // }
 
         private void OnEnable() {
-            getInstance();
+            // getInstance();
             #if UNITY_EDITOR
                 UpdateCollections();
                 MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
+                
+                if(currentLoadedCollection == null)
+                    SetCurrentCollectionEmpty();
             #endif
         }
 
@@ -96,7 +117,14 @@ namespace HH.MultiSceneTools
             private void OnValidate() {
                 UpdateCollections();
             }
-            
+
+            public void SetCurrentCollectionEmpty()
+            {
+                Debug.LogWarning("Not tested yet, this may turn out to be an inconvenience");
+                currentLoadedCollection = ScriptableObject.CreateInstance<SceneCollection>();
+                MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
+            }
+
             public void UpdateCollections()
             {
                 string[] assets = AssetDatabase.FindAssets("SceneCollection", new string[]{_SceneCollectionPath});

@@ -80,6 +80,7 @@ namespace HH.MultiSceneTools
             }
             OnSceneCollectionLoadDebug?.Invoke(TargetCollection, mode);
             OnSceneCollectionLoaded?.Invoke();
+            MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
         }
 
         static void loadDifference(SceneCollection Collection)
@@ -117,6 +118,7 @@ namespace HH.MultiSceneTools
                     load(targetScene, LoadSceneMode.Additive);
             }
             currentlyLoaded = Collection;
+            MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
         }
 
         static void loadReplace(SceneCollection Collection, bool loadBoot = true)
@@ -154,6 +156,7 @@ namespace HH.MultiSceneTools
                     load(Collection.SceneNames[i], LoadSceneMode.Additive);
             }
             currentlyLoaded = Collection;
+            MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
         }
 
         static void loadAdditive(SceneCollection Collection)
@@ -162,6 +165,7 @@ namespace HH.MultiSceneTools
             {
                 load(Collection.SceneNames[i], LoadSceneMode.Additive);
             }
+            MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
         }
 
         static SceneCollection FindCollection(string CollectionTitle)
@@ -195,7 +199,6 @@ namespace HH.MultiSceneTools
 
         public static void BootGame(MultiSceneToolsConfig config, string Collection)
         {
-            MultiSceneToolsConfig.setInstance(config);
             currentlyLoaded = FindCollection("_Boot");
             loadCollection(Collection, collectionLoadMode.Replace, true);
         }
