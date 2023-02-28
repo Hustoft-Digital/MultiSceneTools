@@ -1,3 +1,10 @@
+# Version 0.2.6  -  28/02/2022
+
+- Made some object fields read only
+- Added automatic detection of collections that are open when no collection has been loaded manually. i.e: Automatically detect what collection was open in the previous editor session.
+- fixed the scene manager window not loading when opening the project/swapping layouts. 
+- fixed some smaller bugs and improved some code.
+
 # Version 0.2.4  -  18/11/2022
 
 - Fixed issue with config editor script always resetting the paths to default values.

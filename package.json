@@ -1,6 +1,6 @@
 {
   "name": "com.henrikhustoft.multi-scene-management-tools",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "displayName": "Multi Scene Management Tools",
   "description": "Adds a collection of scripts and editor tools to help manage a multi-scene workflow in unity",
   "unity": "2021.3",
