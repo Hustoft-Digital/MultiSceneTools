@@ -29,9 +29,9 @@ using HH.MultiSceneTools;
 namespace HH.MultiSceneToolsEditor
 {
     [InitializeOnLoadAttribute]
-    public class SceneManager_window : EditorWindow
+    public class SceneManager_EditorWindow : EditorWindow
     {
-        public static SceneManager_window Instance;
+        public static SceneManager_EditorWindow Instance;
         string[] page = new string[]{"Tools", "Info"};
         int pageIndex;
         Scene[] LoadedScenes;
@@ -51,7 +51,7 @@ namespace HH.MultiSceneToolsEditor
         [SerializeField, HideInInspector] public SceneCollection SelectedCollection;
         int UnloadScene;
 
-        SceneManager_window()
+        SceneManager_EditorWindow()
         {
             EditorApplication.playModeStateChanged += LogPlayModeState;
             Instance = this;
@@ -61,7 +61,7 @@ namespace HH.MultiSceneToolsEditor
         static void Init()
         {
             // Get existing open window or if none, make a new one:
-            SceneManager_window window = (SceneManager_window)EditorWindow.GetWindow(typeof(SceneManager_window));
+            SceneManager_EditorWindow window = (SceneManager_EditorWindow)EditorWindow.GetWindow(typeof(SceneManager_EditorWindow));
             window.titleContent = new GUIContent("Scene Manager", "Loads, Unloads, and Saves Scene Collections");
             window.Show();
         }

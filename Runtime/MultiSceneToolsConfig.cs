@@ -167,6 +167,7 @@ namespace HH.MultiSceneTools
                     if(isEqual)
                     {
                         currentLoadedCollection = collections[i];     
+                        MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
                         break;                   
                     }
                 }

@@ -68,8 +68,8 @@ namespace HH.MultiSceneToolsEditor
                 collection.LoadCollection();
                 MultiSceneToolsConfig.instance.setCurrCollection(collection);
 
-                if(SceneManager_window.Instance)
-                    SceneManager_window.Instance.SelectedCollection = collection;
+                if(SceneManager_EditorWindow.Instance)
+                    SceneManager_EditorWindow.Instance.SelectedCollection = collection;
                 return true;
             }
             return false;
