@@ -142,7 +142,6 @@ namespace HH.MultiSceneTools
                 if(EditorApplication.isPlaying && state == PlayModeStateChange.ExitingPlayMode)
                 {
                     currentLoadedCollection = EditorStartedInCollection;
-                    Debug.Log("something");
                 }
             }
 
