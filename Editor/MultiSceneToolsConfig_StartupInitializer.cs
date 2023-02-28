@@ -55,6 +55,9 @@ namespace HH.MultiSceneToolsEditor
             }
             else
                 config.setInstance(config);
+
+            config.findOpenSceneCollection();
+            EditorApplication.playModeStateChanged += MultiSceneToolsConfig.instance.resumeCurrentLoadedCollection;
         }
     }
 }

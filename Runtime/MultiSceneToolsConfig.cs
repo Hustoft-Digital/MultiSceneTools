@@ -18,6 +18,8 @@
 // TODO remove unity editor stuff from this script
 
 using UnityEngine;
+using System;
+using System.Linq;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -46,13 +48,9 @@ namespace HH.MultiSceneTools
         private void Awake() {
             Debug.Log(currentInstance);
             instance = currentInstance;
-            EditorStartedInCollection = currentLoadedCollection;
         }
 
-        private void OnDisable() {
-            currentLoadedCollection = EditorStartedInCollection;
-            Debug.Log("something");
-        }
+        
 
         #if UNITY_EDITOR
             public void setInstance(MultiSceneToolsConfig config)
@@ -103,13 +101,15 @@ namespace HH.MultiSceneTools
         // }
 
         private void OnEnable() {
-            // getInstance();
             #if UNITY_EDITOR
+
+                if(currentLoadedCollection == null)
+                    SetCurrentCollectionEmpty();
+                    
+                EditorStartedInCollection = currentLoadedCollection;
                 UpdateCollections();
                 MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
                 
-                if(currentLoadedCollection == null)
-                    SetCurrentCollectionEmpty();
             #endif
         }
 
@@ -134,6 +134,42 @@ namespace HH.MultiSceneTools
                 {
                     string path = AssetDatabase.GUIDToAssetPath(assets[i]);
                     _Collections[i] = (SceneCollection)AssetDatabase.LoadAssetAtPath(path, typeof(SceneCollection));
+                }
+            }
+
+            public void resumeCurrentLoadedCollection(PlayModeStateChange state)
+            {
+                if(EditorApplication.isPlaying && state == PlayModeStateChange.ExitingPlayMode)
+                {
+                    currentLoadedCollection = EditorStartedInCollection;
+                    Debug.Log("something");
+                }
+            }
+
+            
+            public void findOpenSceneCollection()
+            {
+                SceneAsset[] OpenScenes = new SceneAsset[EditorSceneManager.sceneCount];
+
+                for (int i = 0; i < EditorSceneManager.sceneCount; i++)
+                {
+                    string Scene = EditorSceneManager.GetSceneAt(i).path;
+                    OpenScenes[i] = AssetDatabase.LoadAssetAtPath<SceneAsset>(Scene);
+                }
+
+                SceneCollection[] collections = MultiSceneToolsConfig.instance.GetSceneCollections();
+
+                for (int i = 0; i < collections.Length; i++)
+                {
+                    SceneAsset[] collection = collections[i].Scenes.ToArray();
+
+                    bool isEqual = Enumerable.SequenceEqual(collection, OpenScenes);
+
+                    if(isEqual)
+                    {
+                        currentLoadedCollection = collections[i];     
+                        break;                   
+                    }
                 }
             }
         #endif
