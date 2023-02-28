@@ -54,21 +54,13 @@ namespace HH.MultiSceneToolsEditor
         {
             base.OnInspectorGUI();
 
+            GUILayout.Space(8);
             GUILayout.Label("Info", EditorStyles.boldLabel);
 
             GUI.enabled = false;
             var config = EditorGUILayout.ObjectField("Current Instance", MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
-            GUI.enabled = true;
 
-            if(config != MultiSceneToolsConfig.instance)
-                script.setInstance(config as MultiSceneToolsConfig);
 
-            if(GUILayout.Button("Set This As Instance"))
-            {
-                script.setInstance(script);
-            }
-
-            GUI.enabled = false;
             EditorGUILayout.ObjectField(new GUIContent("Loaded Collection", "Currently loaded collection, this will be overridden if saved"), script.getCurrCollection(), typeof(SceneCollection), false);
             GUI.enabled = true;
 
@@ -92,13 +84,14 @@ namespace HH.MultiSceneToolsEditor
             EditorGUILayout.PropertyField(collectionPath,
                 new GUIContent("Scene Collections Path", "Path where new scene collections will be created and loaded from"));
 
-            // script._BootScenePath = EditorGUILayout.TextField(
-            //     new GUIContent("Boot scene Path", "Keep this scene when loading differences. This scene will be loaded if all scenes are unloaded"), 
-            //     script._BootScenePath);
-            
-            // script._SceneCollectionPath = EditorGUILayout.TextField(
-            //     new GUIContent("Scene Collections Path", "Path where new scene collections will be created and loaded from"), 
-            //     script._SceneCollectionPath);
+            GUILayout.Space(10);
+            if(config != MultiSceneToolsConfig.instance)
+                script.setInstance(config as MultiSceneToolsConfig);
+
+            if(GUILayout.Button("Set This As Instance"))
+            {
+                script.setInstance(script);
+            }
 
             if(script.currentLoadedCollection == null)
             {
