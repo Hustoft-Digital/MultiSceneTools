@@ -133,7 +133,6 @@ namespace HH.MultiSceneTools
                     hasBootScene = true;
                     continue;
                 }
-                Debug.Log(scene);
                 unload(scene);
             }
 
