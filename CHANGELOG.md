@@ -5,6 +5,14 @@
 - fixed the scene manager window not loading when opening the project/swapping layouts. 
 - fixed some smaller bugs and improved some code.
 
+# Version 0.2.5  -  ??/??/20??
+
+- Step 1. Look at code
+- Step 2. Develop
+- Step 3. Forget you did anything
+- Step 4. Progress
+- Step ?. ???????
+
 # Version 0.2.4  -  18/11/2022
 
 - Fixed issue with config editor script always resetting the paths to default values.
