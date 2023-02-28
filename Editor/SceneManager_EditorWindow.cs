@@ -164,13 +164,21 @@ namespace HH.MultiSceneToolsEditor
         void DrawInfo()
         {
             var collection = GetLoadedCollection();
+
+            GUI.enabled = false;
+            EditorGUILayout.ObjectField("Current Loaded Collection:", collection, typeof(SceneCollection), false);
+            GUI.enabled = true;
+
             if(collection)
-                EditorGUILayout.TextField("Current Loaded Collection:", collection.Title, EditorStyles.boldLabel);
+                EditorGUILayout.TextField("Title:", collection.Title, EditorStyles.boldLabel);
             else
-                EditorGUILayout.TextField("Current Loaded Collection:", "None", EditorStyles.boldLabel);
+                EditorGUILayout.TextField("Title:", "None", EditorStyles.boldLabel);
 
             if(pageIndex == 0)
                 return;
+
+            GUILayout.Space(8);
+            GUILayout.Label("Settings", EditorStyles.boldLabel);
 
             EditorGUILayout.TextField("Allow References", (!EditorSceneManager.preventCrossSceneReferences).ToString(), EditorStyles.boldLabel);
 
