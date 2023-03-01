@@ -1,4 +1,4 @@
-# Version 0.2.6  -  28/02/2022
+# Version 0.2.6  -  28/02/2023
 
 - Made some object fields read only
 - Added automatic detection of collections that are open when no collection has been loaded manually. i.e: Automatically detect what collection was open in the previous editor session.
