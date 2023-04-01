@@ -16,8 +16,6 @@
 // * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#if UNITY_EDITOR
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
@@ -408,4 +406,3 @@ namespace HH.MultiSceneToolsEditor
         }
     }
 }
-#endif
