@@ -37,7 +37,7 @@ namespace HH.MultiSceneToolsEditor
                 typeof(MultiSceneToolsConfig));
 
 
-            if(config == null)            
+            if(config == null)
             {
                 if(!Directory.Exists(configPath)) 
                     Directory.CreateDirectory(configPath);
@@ -51,6 +51,10 @@ namespace HH.MultiSceneToolsEditor
                 AssetDatabase.SaveAssets();
 
                 Debug.LogWarning("Created config ScriptableObject at: " + configPath + configName);
+                // Make sure to load the created config so we can start using it
+                config = (MultiSceneToolsConfig)AssetDatabase.LoadAssetAtPath(
+                    configPath + configName, 
+                    typeof(MultiSceneToolsConfig));
             }
             else
                 config.setInstance(config);
