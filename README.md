@@ -62,4 +62,4 @@
 
 ## License
 
-- GNU General Public License. Refer to the [LICENSE.md](https://github.com/HenrysHouses/MultiSceneTools/blob/main/LICENCE.md) file
+- GNU General Public License. Refer to the [LICENSE](./LICENSE) file
