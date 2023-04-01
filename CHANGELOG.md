@@ -1,3 +1,6 @@
+# Unreleased
+- Made editor assembly only compile on Unity Editor platform.
+
 # Version 0.2.6  -  28/02/2023
 
 - Made some object fields read only
