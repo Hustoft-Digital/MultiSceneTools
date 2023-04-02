@@ -1,4 +1,5 @@
 # Unreleased
+- Updated the editor script for the config to add undo's to the toggles.
 - Made editor assembly only compile on Unity Editor platform.
 
 # Version 0.2.6  -  28/02/2023
