@@ -179,6 +179,7 @@ namespace HH.MultiSceneToolsEditor
             GUILayout.Label("Settings", EditorStyles.boldLabel);
 
             EditorGUILayout.TextField("Allow References", (!EditorSceneManager.preventCrossSceneReferences).ToString(), EditorStyles.boldLabel);
+            EditorGUILayout.TextField("Log Scene Changes", (MultiSceneToolsConfig.instance.LogOnSceneChange).ToString(), EditorStyles.boldLabel);
 
             EditorGUILayout.ObjectField(new GUIContent("Config"), MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
         }

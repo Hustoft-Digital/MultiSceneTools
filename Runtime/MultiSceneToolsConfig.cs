@@ -22,8 +22,8 @@ using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
 #endif
+using UnityEngine.SceneManagement;
 
 namespace HH.MultiSceneTools
 {
@@ -39,8 +39,9 @@ namespace HH.MultiSceneTools
         [SerializeField, HideInInspector] SceneCollection[] _Collections;
         public SceneCollection[] GetSceneCollections() => _Collections;
 
-        public bool LogOnSceneChange {get; private set;}
-        public bool AllowCrossSceneReferences {get; private set;}
+        [field:SerializeField, HideInInspector] public bool LogOnSceneChange {get; private set;}
+        [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
+
         [HideInInspector] public string _BootScenePath = "Assets/Scenes/SampleScene.unity";
         [HideInInspector] public string _SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
 
@@ -56,18 +57,18 @@ namespace HH.MultiSceneTools
                 currentInstance = config;
             }
 
-            public void setAllowCrossSceneReferences(bool state)
+            public bool setAllowCrossSceneReferences(bool state) => AllowCrossSceneReferences = state;
+            public void updateCrossSceneReferenceState() 
             {
-                if(AllowCrossSceneReferences == state)
-                    return;
-
-                AllowCrossSceneReferences = state;
-                EditorSceneManager.preventCrossSceneReferences = !AllowCrossSceneReferences;
-                Debug.Log("EditorSceneManager.preventCrossSceneReferences is set to: " + !AllowCrossSceneReferences);
+                if(EditorSceneManager.preventCrossSceneReferences == AllowCrossSceneReferences)
+                {
+                    EditorSceneManager.preventCrossSceneReferences = !AllowCrossSceneReferences;
+                    Debug.Log("EditorSceneManager.preventCrossSceneReferences = " + !AllowCrossSceneReferences);
+                }
             }
- 
+
             public void setLogOnSceneChange(bool state)
-            {
+            {   
                 LogOnSceneChange = state;
             }
         #endif

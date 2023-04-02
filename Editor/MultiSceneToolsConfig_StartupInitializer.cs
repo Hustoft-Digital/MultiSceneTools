@@ -26,7 +26,7 @@ namespace HH.MultiSceneToolsEditor
     [InitializeOnLoad]
     static class MultiSceneToolsConfig_StartupInitializer
     {
-        static string configPath = "Assets/_ScriptableObjects/MultiSceneTools/Config/";
+        static string configPath = "Assets/MultiSceneTools/Config/";
         static string configName = "MultiSceneToolsConfig.asset";
 
         static MultiSceneToolsConfig_StartupInitializer()
