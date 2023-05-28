@@ -25,11 +25,11 @@ namespace HH.MultiSceneToolsEditor
             MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
             _Wizard.titleContent = new GUIContent("Multi Scene Tools Setup", "Creates or updates the config");
             _Wizard.position = new Rect(Screen.currentResolution.width/3, Screen.currentResolution.height/4, _Wizard.position.width, _Wizard.position.height);
-            _Wizard.minSize = new Vector2(684, 420);
+            _Wizard.minSize = new Vector2(684, 430);
         }
 
         private void Awake() {
-            MultiSceneToolsIcon = Resources.Load<Texture2D>(TexturePath);
+            MultiSceneToolsIcon = Resources.Load<Texture2D>(TexturePath); // TODO change this to not use resources
             
             currentConfig = MultiSceneToolsConfig.instance;
 
@@ -66,7 +66,7 @@ namespace HH.MultiSceneToolsEditor
 
             drawTextfield(
                 ref _Rect, 
-                new GUIContent("Boot Scene Path", "This is scene acts similarly to an automatic Object.DontDestroyOnLoad"), 
+                new GUIContent("Boot Scene Path", "The boot scene is ignored by default when unloading/loading scene collections to always keep it loaded"), 
                 ref _bootScenePath);   
 
             drawTextfield(
@@ -74,7 +74,14 @@ namespace HH.MultiSceneToolsEditor
                 new GUIContent("Scene Collections Path", "Only scene collections within this folder will be detected as available for use"), 
                 ref _sceneCollectionsPath);   
 
-            _Rect.y += 50;
+            _Rect.y += 10;
+
+            if(MultiSceneToolsStartup.detectedUpdate)
+            {
+                drawLinkButton(ref _Rect, "Keep up to date with the changes!",0);
+            }
+
+            _Rect.y += 40;
 
             drawCheckbox(
                 ref _Rect,
@@ -182,9 +189,17 @@ namespace HH.MultiSceneToolsEditor
 
         bool drawButton(ref Rect currentPosition, string label)
         {
-            Rect toggle_Rect = new Rect(currentPosition.x + 10 , currentPosition.y, currentPosition.width, EditorGUIUtility.singleLineHeight);
-            bool result = GUI.Button(toggle_Rect, label);
+            Rect button_Rect = new Rect(currentPosition.x + 10 , currentPosition.y, currentPosition.width, EditorGUIUtility.singleLineHeight);
+            bool result = GUI.Button(button_Rect, label);
             currentPosition.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;        
+            return result;
+        }
+
+        bool drawLinkButton(ref Rect currentPosition, string label, int width)
+        {
+            Rect link_Rect = new Rect(currentPosition.x , currentPosition.y, label.Length * 6, EditorGUIUtility.singleLineHeight);
+            bool result = EditorGUI.LinkButton(link_Rect, label);
+            currentPosition.y += EditorGUIUtility.singleLineHeight+EditorGUIUtility.standardVerticalSpacing;
             return result;
         }
 

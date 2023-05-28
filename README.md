@@ -55,6 +55,7 @@
 - Install via Package Manager → Add package via git URL: 
     - https://github.com/HenrysHouses/MultiSceneTools.git
 - Alternatively, download and put the folder in your Assets
+- Create the config asset with the window popup
 
 ## Author
 
