@@ -9,7 +9,7 @@ namespace HH.MultiSceneToolsEditor
 {
     public class MultiSceneToolsSetup_Wizard: EditorWindow 
     {
-        const string TexturePath = "MultiSceneTools Icon";
+        const string TexturePath = "/Images/MultiSceneTools Icon.png";
         Texture MultiSceneToolsIcon;
         static GUIStyle TitleStyle;
         static GUIStyle WarningStyle;
@@ -19,18 +19,25 @@ namespace HH.MultiSceneToolsEditor
         string _bootScenePath = MultiSceneToolsConfig.bootPathDefault;
         string _sceneCollectionsPath = MultiSceneToolsConfig.collectionsPathDefault;
         bool preventPopupAgain;
+        static string GetFilePath([System.Runtime.CompilerServices.CallerFilePath] string callerFilePath = null) => callerFilePath;
 
         [MenuItem("Multi Scene Tools/Setup")]
-        public static void MenuEntryCall() {
+        public static void MenuEntryCall() 
+        {
             MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
             _Wizard.titleContent = new GUIContent("Multi Scene Tools Setup", "Creates or updates the config");
             _Wizard.position = new Rect(Screen.currentResolution.width/3, Screen.currentResolution.height/4, _Wizard.position.width, _Wizard.position.height);
             _Wizard.minSize = new Vector2(684, 430);
         }
 
-        private void Awake() {
-            MultiSceneToolsIcon = Resources.Load<Texture2D>(TexturePath); // TODO change this to not use resources
-            
+        private void Awake() 
+        {
+            MultiSceneToolsIcon = (Texture)AssetDatabase.LoadAssetAtPath("Packages/" + MultiSceneToolsStartup.packageName +TexturePath, typeof(Texture2D));
+            if(MultiSceneToolsIcon == null)
+            {
+                MultiSceneToolsIcon = (Texture)AssetDatabase.LoadAssetAtPath("Assets/MultiSceneManagementTools" +TexturePath, typeof(Texture2D));
+            }
+
             currentConfig = MultiSceneToolsConfig.instance;
 
             if(currentConfig)
@@ -38,6 +45,11 @@ namespace HH.MultiSceneToolsEditor
                 _bootScenePath = MultiSceneToolsConfig.instance._BootScenePath;
                 _sceneCollectionsPath = MultiSceneToolsConfig.instance._SceneCollectionPath;
                 preventPopupAgain = !MultiSceneToolsConfig.instance.startWizardOnUpdate;
+            
+                if(MultiSceneToolsStartup.packageVersion != "")
+                {
+                    currentConfig.versionNumber = MultiSceneToolsStartup.packageVersion;
+                }
             }
         }
 
@@ -47,6 +59,12 @@ namespace HH.MultiSceneToolsEditor
 
             Rect _Rect = new Rect(0,10, position.width, position.height);
 
+            Rect version_Rect = new Rect(10, 10, position.width, position.height);
+
+            if(currentConfig)
+                drawText(ref version_Rect, "V." + currentConfig.versionNumber, EditorStyles.miniLabel);
+            else
+                drawText(ref version_Rect, "V." + MultiSceneToolsStartup.packageVersion, EditorStyles.miniLabel);
             drawIcon(ref _Rect, 150);
 
             if(MultiSceneToolsStartup.detectedUpdate)
@@ -76,10 +94,12 @@ namespace HH.MultiSceneToolsEditor
 
             _Rect.y += 10;
 
+        #if UNITY_2021_1_OR_NEWER
             if(MultiSceneToolsStartup.detectedUpdate)
             {
                 drawLinkButton(ref _Rect, "Keep up to date with the changes!",0);
             }
+        #endif
 
             _Rect.y += 40;
 
@@ -152,6 +172,11 @@ namespace HH.MultiSceneToolsEditor
             config._SceneCollectionPath = _sceneCollectionsPath;
             config.startWizardOnUpdate = !preventPopupAgain;
 
+            if(MultiSceneToolsStartup.packageVersion != "")
+            {
+                config.versionNumber = MultiSceneToolsStartup.packageVersion;
+            }
+
             config.findOpenSceneCollection();
             EditorApplication.playModeStateChanged += MultiSceneToolsConfig.instance.resumeCurrentLoadedCollection;
             Debug.Log("Set confirmed settings", config);
@@ -195,6 +220,7 @@ namespace HH.MultiSceneToolsEditor
             return result;
         }
 
+    #if UNITY_2021_1_OR_NEWER
         bool drawLinkButton(ref Rect currentPosition, string label, int width)
         {
             Rect link_Rect = new Rect(currentPosition.x , currentPosition.y, label.Length * 6, EditorGUIUtility.singleLineHeight);
@@ -202,6 +228,7 @@ namespace HH.MultiSceneToolsEditor
             currentPosition.y += EditorGUIUtility.singleLineHeight+EditorGUIUtility.standardVerticalSpacing;
             return result;
         }
+    #endif
 
         private void OnDestroy() {
             MultiSceneToolsStartup.detectedUpdate = false;

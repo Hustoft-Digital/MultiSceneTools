@@ -10,7 +10,7 @@ namespace HH.MultiSceneToolsEditor
     {
         public static bool detectedUpdate;
         public static string packageVersion;
-        const string packageName = "com.henrikhustoft.multi-scene-management-tools";
+        public const string packageName = "com.henrikhustoft.multi-scene-management-tools";
         
         [InitializeOnLoadMethod]
         static void Startup()

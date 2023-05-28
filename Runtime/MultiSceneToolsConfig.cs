@@ -69,12 +69,12 @@ namespace HH.MultiSceneTools
         [field:SerializeField, HideInInspector] public bool LogOnSceneChange {get; private set;}
         [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
 
-        
-        [HideInInspector] public string _BootScenePath = "Assets/Scenes/SampleScene.unity";
-        [HideInInspector] public string _SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
+        public bool UseBootScene = false;
+        public string _BootScenePath = "Assets/Scenes/SampleScene.unity";
+        public string _SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
 
         #if UNITY_EDITOR
-
+            public string versionNumber;
             public bool setAllowCrossSceneReferences(bool state) => AllowCrossSceneReferences = state;
             public void updateCrossSceneReferenceState() 
             {
@@ -139,8 +139,6 @@ namespace HH.MultiSceneTools
 
             public void resumeCurrentLoadedCollection(PlayModeStateChange state)
             {
-                Debug.Log("resuming");
-
                 if(EditorApplication.isPlaying && state == PlayModeStateChange.ExitingPlayMode)
                 {
                     currentLoadedCollection = EditorStartedInCollection;

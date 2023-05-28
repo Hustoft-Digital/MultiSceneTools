@@ -30,36 +30,40 @@ namespace HH.MultiSceneToolsEditor
     {
         MultiSceneToolsConfig script;
 
+        SerializedProperty packageVersion, useBoot, wizardStartUp;
         SerializedProperty bootPath, collectionPath;
 
         private void OnEnable()
         {
             script = target as MultiSceneToolsConfig;
 
+            packageVersion = serializedObject.FindProperty("versionNumber");
+            wizardStartUp = serializedObject.FindProperty("startWizardOnUpdate");
+            useBoot = serializedObject.FindProperty("UseBootScene");
             bootPath = serializedObject.FindProperty("_BootScenePath");
             collectionPath = serializedObject.FindProperty("_SceneCollectionPath");
         }
 
         void setDefaultPaths()
         {
-            if(script._BootScenePath == "")
+            if(bootPath.stringValue == "")
             {
-                script._BootScenePath = MultiSceneToolsConfig.bootPathDefault;
+                bootPath.stringValue = MultiSceneToolsConfig.bootPathDefault;
             }
 
-            if(script._SceneCollectionPath == "")
-                script._SceneCollectionPath = MultiSceneToolsConfig.collectionsPathDefault;
+            if(collectionPath.stringValue == "")
+                collectionPath.stringValue = MultiSceneToolsConfig.collectionsPathDefault;
         }
 
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
             serializedObject.Update();
 
             GUILayout.Space(8);
             GUILayout.Label("Info", EditorStyles.boldLabel);
 
             GUI.enabled = false;
+            EditorGUILayout.PropertyField(packageVersion, new GUIContent("Version"));
             var config = EditorGUILayout.ObjectField("Current Instance", MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
 
 
@@ -69,6 +73,8 @@ namespace HH.MultiSceneToolsEditor
             GUILayout.Space(8);
             GUILayout.Label("Settings", EditorStyles.boldLabel);
 
+            EditorGUILayout.PropertyField(wizardStartUp, new GUIContent("Start Wizard On Update"));
+            serializedObject.ApplyModifiedProperties(); // ? not sure why i need another one here but it works
 
             // Allow Cross Scene References
             bool _CurrentAllowCrossSceneState = 
@@ -95,8 +101,13 @@ namespace HH.MultiSceneToolsEditor
 
             serializedObject.UpdateIfRequiredOrScript();
 
+            EditorGUILayout.PropertyField(useBoot, new GUIContent("Keep boot-scene loaded", "Requires the boot scene to appear in the boot scene collection"));
+
+            GUI.enabled = useBoot.boolValue;
             EditorGUILayout.PropertyField(bootPath,
                 new GUIContent("Boot scene Path", "Keep this scene when loading differences. This scene will be loaded if all scenes are unloaded"));
+            GUI.enabled = true;
+
 
             EditorGUILayout.PropertyField(collectionPath,
                 new GUIContent("Scene Collections Path", "Path where new scene collections will be created and loaded from"));

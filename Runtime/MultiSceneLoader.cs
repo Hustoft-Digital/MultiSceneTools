@@ -42,7 +42,7 @@ namespace HH.MultiSceneTools
             public static SceneCollection setCurrentlyLoaded(SceneCollection collection) => currentlyLoaded = collection;
         #endif
 
-        public static void loadCollection(string CollectionTitle, collectionLoadMode mode, bool keepBootScene = true)
+        public static void loadCollection(string CollectionTitle, collectionLoadMode mode)
         {
             if(MultiSceneToolsConfig.instance.LogOnSceneChange)
                 AddLogOnLoad();
@@ -71,7 +71,7 @@ namespace HH.MultiSceneTools
                     break;
 
                 case collectionLoadMode.Replace:
-                    loadReplace(TargetCollection, keepBootScene);
+                    loadReplace(TargetCollection);
                     break;
 
                 case collectionLoadMode.Additive:
@@ -89,19 +89,29 @@ namespace HH.MultiSceneTools
             {
                 throw new UnityException("No currently loaded scene collection.");
             }
+
+            bool shouldReplaceScene = false;
             // Unload Differences
-            foreach (string LoadedScene in currentlyLoaded.SceneNames)
+            for (int i = 0; i < currentlyLoaded.SceneNames.Count; i++)
             {
                 bool difference = true;
                 foreach (string targetScene in Collection.SceneNames)
                 {
-                    if(LoadedScene.Equals(targetScene))
+                    if(currentlyLoaded.SceneNames[i].Equals(targetScene))
                     {
                         difference = false;
                     }
                 }
-                if(difference)
-                    unload(LoadedScene);
+                if(!difference)
+                    continue;
+                
+                if(i != currentlyLoaded.SceneNames.Count-1)
+                    unload(currentlyLoaded.SceneNames[i]);
+                else
+                {
+                    shouldReplaceScene = true;
+                    break;
+                }
             }
             // load Differences
             foreach (string targetScene in Collection.SceneNames)
@@ -115,25 +125,38 @@ namespace HH.MultiSceneTools
                     }
                 }
                 if(difference)
-                    load(targetScene, LoadSceneMode.Additive);
+                {
+                    if(shouldReplaceScene)
+                        load(targetScene, LoadSceneMode.Single);
+                    else
+                        load(targetScene, LoadSceneMode.Additive);
+                }
             }
             currentlyLoaded = Collection;
             MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
         }
 
-        static void loadReplace(SceneCollection Collection, bool loadBoot = true)
+        static void loadReplace(SceneCollection Collection)
         {
+            bool loadBoot = MultiSceneToolsConfig.instance.UseBootScene;
             string bootScene = getBootSceneName();
             bool hasBootScene = false;
 
-            foreach (var scene in currentlyLoaded.SceneNames)
+            bool shouldReplaceScene = false;
+            for (int i = 0; i < currentlyLoaded.SceneNames.Count; i++)
             {
-                if(scene == bootScene && loadBoot)
+                if(currentlyLoaded.SceneNames[i] == bootScene && loadBoot)
                 {
                     hasBootScene = true;
                     continue;
                 }
-                unload(scene);
+                if(i != currentlyLoaded.SceneNames.Count-1)
+                    unload(currentlyLoaded.SceneNames[i]);
+                else
+                {
+                    shouldReplaceScene = true;
+                    break;
+                }
             }
 
             if(!hasBootScene && loadBoot)
@@ -143,11 +166,15 @@ namespace HH.MultiSceneTools
 
             for (int i = 0; i < Collection.SceneNames.Count; i++)
             {
-                if(loadBoot)
+                if(loadBoot) // ! problem code, consider reworking the boot scene functions
                 {
                     if(Collection.SceneNames[i] == bootScene)
                         continue;
-                    load(Collection.SceneNames[i], LoadSceneMode.Additive);
+
+                    if(shouldReplaceScene)
+                        load(Collection.SceneNames[i], LoadSceneMode.Single);
+                    else
+                        load(Collection.SceneNames[i], LoadSceneMode.Additive);
                 }
                 else if(i == 0)
                     load(Collection.SceneNames[i], LoadSceneMode.Single);
@@ -186,7 +213,6 @@ namespace HH.MultiSceneTools
             return bootName.Split('.')[0];
         }
 
-
         static void unload(string SceneName)
         {
             SceneManager.UnloadSceneAsync(SceneName);
@@ -195,12 +221,6 @@ namespace HH.MultiSceneTools
         static void load(string SceneName, LoadSceneMode mode)
         {
             SceneManager.LoadScene(SceneName, mode);
-        }
-
-        public static void BootGame(MultiSceneToolsConfig config, string Collection)
-        {
-            currentlyLoaded = FindCollection("_Boot");
-            loadCollection(Collection, collectionLoadMode.Replace, true);
         }
 
         // * --- Debugging --- 
@@ -219,4 +239,3 @@ namespace HH.MultiSceneTools
         }
     }
 }
-

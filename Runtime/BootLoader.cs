@@ -21,32 +21,32 @@ using UnityEngine.SceneManagement;
 
 namespace HH.MultiSceneTools.Examples
 {
-    public class BootLoader : MonoBehaviour
-    {
-        [SerializeField] MultiSceneToolsConfig config;
-        [SerializeField] string BootIntoCollection;
+    // public class BootLoader : MonoBehaviour
+    // {
+    //     [SerializeField] MultiSceneToolsConfig config;
+    //     [SerializeField] string BootIntoCollection;
 
-        void Awake()
-        {
-            #if UNITY_EDITOR
-                // decide if it should boot or not in the editor.
-                if(SceneManager.GetActiveScene().name.Equals("_Boot"))
-                {
-                    MultiSceneLoader.BootGame(config, BootIntoCollection);
-                }
-                else
-                {
-                    MultiSceneLoader.setCurrentlyLoaded(MultiSceneToolsConfig.instance.currentLoadedCollection);
-                    Debug.Log(MultiSceneToolsConfig.instance.currentLoadedCollection.Title);
-                }
-            #else
-                MultiSceneLoader.BootGame(config, BootIntoCollection);
-            #endif
-            Debug.Log("Game Booted");
-        }
+    //     void Awake()
+    //     {
+    //         #if UNITY_EDITOR
+    //             // decide if it should boot or not in the editor.
+    //             if(SceneManager.GetActiveScene().name.Equals("_Boot"))
+    //             {
+    //                 MultiSceneLoader.BootGame(config, BootIntoCollection);
+    //             }
+    //             else
+    //             {
+    //                 MultiSceneLoader.setCurrentlyLoaded(MultiSceneToolsConfig.instance.currentLoadedCollection);
+    //                 Debug.Log(MultiSceneToolsConfig.instance.currentLoadedCollection.Title);
+    //             }
+    //         #else
+    //             MultiSceneLoader.BootGame(config, BootIntoCollection);
+    //         #endif
+    //         Debug.Log("Game Booted");
+    //     }
 
-        private void OnInspectorUpdate() {
-            config = MultiSceneToolsConfig.instance;
-        }
-    }
+    //     private void OnInspectorUpdate() {
+    //         config = MultiSceneToolsConfig.instance;
+    //     }
+    // }
 }

@@ -138,6 +138,7 @@ namespace HH.MultiSceneTools
 
     namespace HH.MultiSceneTools.Internal 
     {
+#if UNITY_EDITOR
         internal class DoCreateNewCollection : UnityEditor.ProjectWindowCallback.EndNameEditAction
         {
             public override void Action(int instanceId, string pathName, string resourceFile)
@@ -158,5 +159,6 @@ namespace HH.MultiSceneTools
                 Selection.activeObject = null;
             }
         }
+#endif
     }
 }
