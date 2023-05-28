@@ -15,11 +15,14 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Reflection;
+using UnityEditorInternal;
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using HH.MultiSceneTools;
@@ -42,7 +45,7 @@ namespace HH.MultiSceneToolsEditor
         public SceneCollection GetLoadedCollection()
         {
             if(MultiSceneToolsConfig.instance)
-                return MultiSceneToolsConfig.instance.getCurrCollection();  
+                return MultiSceneToolsConfig.instance.currentLoadedCollection;  
             else
                 return null;
         } 
@@ -55,7 +58,7 @@ namespace HH.MultiSceneToolsEditor
             Instance = this;
         }
 
-        [MenuItem("Multi Scene Workflow/Scene Manager")]
+        [MenuItem("Multi Scene Tools/Scene Manager")]
         static void Init()
         {
             // Get existing open window or if none, make a new one:
@@ -94,6 +97,7 @@ namespace HH.MultiSceneToolsEditor
             pageIndex = GUILayout.Toolbar(pageIndex, page);
             DrawInfo();
 
+            // Draw Info Tab
             if(pageIndex == 1)
             {
                 // Project Settings
@@ -104,14 +108,32 @@ namespace HH.MultiSceneToolsEditor
                 {
                     SetEditorBuildSettingsScenes();
                 }
+
+
+                if(GUILayout.Button("Find All Collections"))
+                {
+                    // Get type
+                    var editorAssembly = typeof(EditorWindow).Assembly;
+                    System.Type projectBrowserType = editorAssembly.GetType("UnityEditor.ProjectBrowser");
+
+                    // Get window instance
+                    var WindowInstanceInfo = projectBrowserType.GetField("s_LastInteractedProjectBrowser");
+                    // https://github.com/Unity-Technologies/UnityCsReference/blob/master/Editor/Mono/ProjectBrowser.cs#L53
+
+                    // Call method
+                    MethodInfo setSearchInfo = projectBrowserType.GetMethod("SetSearch", new [] {typeof(string)});
+                    // https://github.com/Unity-Technologies/UnityCsReference/blob/master/Editor/Mono/ProjectBrowser.cs#L534
+                    setSearchInfo.Invoke(WindowInstanceInfo.GetValue(projectBrowserType), new object[]{"t:SceneCollection"});
+                }
                 return;
             }
+
+            // Draw Tools Tab
 
             // Load Collection
             GUILayout.Space(8);
             GUILayout.Label("Loading", EditorStyles.boldLabel);
 
-            
 
             SelectedCollection = (SceneCollection)EditorGUILayout.ObjectField(new GUIContent("Collection"), SelectedCollection, typeof(SceneCollection), false);
             
@@ -265,14 +287,10 @@ namespace HH.MultiSceneToolsEditor
             if(!Directory.Exists(path)) 
                     Directory.CreateDirectory(path);
 
-            ScriptableObject SO = CreateInstance(typeof(SceneCollection));
-            SceneCollection _NewCollection = SO as SceneCollection;
-            _NewCollection.Title = "Collection Nr " + _Collection.Length;
+            SceneCollection _NewCollection = SceneCollection.CreateSceneCollection();
 
-            string asset = string.Format(path + "/({0})_SceneCollection.asset", _Collection.Length);
-            AssetDatabase.CreateAsset(_NewCollection, asset);
-            AssetDatabase.SaveAssets();
             SaveCollection(_NewCollection);
+            AssetDatabase.SaveAssets();
 
             MultiSceneToolsConfig.instance.setCurrCollection(_NewCollection);
             

@@ -27,11 +27,68 @@ using UnityEditor.SceneManagement;
 
 namespace HH.MultiSceneTools
 {
-    [CreateAssetMenu(menuName = "Multi Scene Tools/SceneCollection")]
     public class SceneCollection : ScriptableObject
     {
-        public string Title;
+        #if UNITY_EDITOR
+        [MenuItem("Assets/Create/Multi Scene Tools/SceneCollection", false, 601)]
+        public static void CreateSceneCollectionIfProjectWindowExists()
+        {
+            SceneCollection newCollection = CreateInstance<SceneCollection>();
 
+            string path = "Assets";
+            var target = Selection.activeObject;
+            if(target != null) 
+                path = AssetDatabase.GetAssetPath(target.GetInstanceID());
+
+            string assetPath = "";
+
+            if(path.Length > 0) // If a location to create the object was selected
+            {
+                if(!System.IO.Directory.Exists(path)) // if selected is object, remove object from path
+                {
+                    string[] folders = path.Split('/');
+
+                    path = "";
+                    for (int i = 0; i < folders.Length-1; i++)
+                    {
+                        path += folders[i] + "/";
+                    }
+                }
+                else // if selected was a folder
+                {
+                    path += "/";
+                }
+
+                assetPath = AssetDatabase.GenerateUniqueAssetPath(path + "New SceneCollection.asset");
+                ProjectWindowUtil.StartNameEditingIfProjectWindowExists(newCollection.GetInstanceID(), ScriptableObject.CreateInstance<HH.MultiSceneTools.Internal.DoCreateNewCollection>(), assetPath, AssetPreview.GetMiniThumbnail(newCollection), null);
+
+                newCollection.Title = newCollection.name;
+                AssetDatabase.SaveAssets();
+            }
+        }
+
+        public static SceneCollection CreateSceneCollection()
+        {
+            SceneCollection newCollection = CreateInstance<SceneCollection>();
+
+            string path = "Assets";
+            var target = Selection.activeObject;
+            if(target != null) 
+                path = AssetDatabase.GetAssetPath(target.GetInstanceID());
+
+            string assetPath = AssetDatabase.GenerateUniqueAssetPath(MultiSceneToolsConfig.instance._SceneCollectionPath + "/New SceneCollection.asset");
+            AssetDatabase.CreateAsset(newCollection, assetPath);
+            Debug.Log("Created SceneCollection at: " + assetPath);
+            Selection.activeObject = newCollection;
+            newCollection.Title = newCollection.name;
+            string[] labels = {"MultiSceneTools", "SceneCollection"};
+            AssetDatabase.SetLabels(newCollection, labels);
+            AssetDatabase.SaveAssets();
+            return newCollection;    
+        }
+        #endif
+
+        public string Title;
         [SerializeField, HideInInspector] public List<string> SceneNames = new List<string>();
 
         #if UNITY_EDITOR
@@ -46,12 +103,12 @@ namespace HH.MultiSceneTools
                 SceneNames.Add(scenes[i].name);
             }
 
-            EditorUtility.FocusProjectWindow();
+            // EditorUtility.FocusProjectWindow();
 
-            Selection.activeObject = this;
+            // Selection.activeObject = this;
         }
 
-        private void OnValidate() 
+        private void OnValidate() // updates scene names if any scene would be renamed
         {
             if(SceneNames != null)
             {
@@ -77,5 +134,29 @@ namespace HH.MultiSceneTools
             }
         }
         #endif
+    }
+
+    namespace HH.MultiSceneTools.Internal 
+    {
+        internal class DoCreateNewCollection : UnityEditor.ProjectWindowCallback.EndNameEditAction
+        {
+            public override void Action(int instanceId, string pathName, string resourceFile)
+            {
+                Object obj = EditorUtility.InstanceIDToObject(instanceId);
+
+                AssetDatabase.CreateAsset(obj,
+                    AssetDatabase.GenerateUniqueAssetPath(pathName));
+
+                ProjectWindowUtil.ShowCreatedAsset(obj);
+            
+                string[] labels = {"MultiSceneTools", "SceneCollection"};
+                AssetDatabase.SetLabels(obj, labels);
+            }
+
+            public override void Cancelled(int instanceId, string pathName, string resourceFile)
+            {
+                Selection.activeObject = null;
+            }
+        }
     }
 }

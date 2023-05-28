@@ -30,41 +30,61 @@ namespace HH.MultiSceneTools
     [CreateAssetMenu(menuName = "Multi Scene Tools/Editor Config")]
     public class MultiSceneToolsConfig : ScriptableObject
     {
-        [SerializeField] public static MultiSceneToolsConfig instance;
-        [SerializeField, HideInInspector] MultiSceneToolsConfig currentInstance;
-        public MultiSceneToolsConfig CurrentConfig {private set; get;}
+        public const string configPath = "Assets/Resources/MultiSceneTools/Config/";
+        public const string configName = "MultiSceneToolsConfig"; // may need to add .asset when used
+        public const string configResourcesPath = "MultiSceneTools/Config/";
+        public const string bootPathDefault = "Assets/Scenes/SampleScene.unity";
+        public const string collectionsPathDefault = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
+        public bool startWizardOnUpdate = true;
+        public static MultiSceneToolsConfig instance 
+        {
+            get 
+            {
+                if(loadedConfig)
+                    return loadedConfig;
+                else
+                {
+                    MultiSceneToolsConfig config = Resources.Load<MultiSceneToolsConfig>(configResourcesPath+configName);
+
+                    if(config)
+                    {
+                        loadedConfig = config;
+                        return config;
+                    }
+
+                    Debug.LogError("Multi Scene Tools: could not find the config. Please run the setup to create a config asset. Find the setup in the menu bar at: Multi Scene Tools/Setup");
+                    return null;
+                }
+            }
+            private set 
+            {
+                loadedConfig = value;
+            }
+        }
+
+        static MultiSceneToolsConfig loadedConfig {set; get;}
         public SceneCollection currentLoadedCollection {private set; get;}
         private static Scene previousActiveScene;
         private SceneCollection EditorStartedInCollection;
         [SerializeField, HideInInspector] SceneCollection[] _Collections;
         public SceneCollection[] GetSceneCollections() => _Collections;
-
         [field:SerializeField, HideInInspector] public bool LogOnSceneChange {get; private set;}
         [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
 
+        
         [HideInInspector] public string _BootScenePath = "Assets/Scenes/SampleScene.unity";
         [HideInInspector] public string _SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
 
-
-        private void Awake() {
-            instance = currentInstance;
-        }
-
         #if UNITY_EDITOR
-            public void setInstance(MultiSceneToolsConfig config)
-            {
-                instance = config;
-                currentInstance = config;
-            }
 
             public bool setAllowCrossSceneReferences(bool state) => AllowCrossSceneReferences = state;
             public void updateCrossSceneReferenceState() 
             {
-                if(EditorSceneManager.preventCrossSceneReferences == AllowCrossSceneReferences)
-                {
-                    EditorSceneManager.preventCrossSceneReferences = !AllowCrossSceneReferences;
-                    Debug.Log("EditorSceneManager.preventCrossSceneReferences = " + !AllowCrossSceneReferences);
-                }
+                // if(EditorSceneManager.preventCrossSceneReferences == AllowCrossSceneReferences)
+                // {
+                //     EditorSceneManager.preventCrossSceneReferences = !AllowCrossSceneReferences;
+                //     Debug.Log("EditorSceneManager.preventCrossSceneReferences = " + !AllowCrossSceneReferences);
+                // }
             }
 
             public void setLogOnSceneChange(bool state)
@@ -77,34 +97,30 @@ namespace HH.MultiSceneTools
             currentLoadedCollection = newCollection;
         }
 
-        public SceneCollection getCurrCollection()
-        {
-            if(currentLoadedCollection)
-                return currentLoadedCollection;
-            return null;
-        }
-
-        private void OnEnable() {
-            #if UNITY_EDITOR
+        #if UNITY_EDITOR
+            private void OnEnable() {
 
                 if(currentLoadedCollection == null)
                     SetCurrentCollectionEmpty();
                     
                 EditorStartedInCollection = currentLoadedCollection;
                 UpdateCollections();
-                MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
-                
-            #endif
-        }
-
-        #if UNITY_EDITOR
-            private void OnValidate() {
-                UpdateCollections();
+                MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);      
             }
 
+            private void OnValidate() 
+            {
+                if(!loadedConfig)
+                    return;
+
+                UpdateCollections();
+                findOpenSceneCollection();
+            }
+            
             public void SetCurrentCollectionEmpty()
             {
                 currentLoadedCollection = ScriptableObject.CreateInstance<SceneCollection>();
+                currentLoadedCollection.name = "None";
                 MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
             }
 
@@ -122,14 +138,14 @@ namespace HH.MultiSceneTools
 
             public void resumeCurrentLoadedCollection(PlayModeStateChange state)
             {
+                Debug.Log("resuming");
+
                 if(EditorApplication.isPlaying && state == PlayModeStateChange.ExitingPlayMode)
                 {
                     currentLoadedCollection = EditorStartedInCollection;
                 }
             }
 
-
-            
             public void findOpenSceneCollection()
             {
                 SceneAsset[] OpenScenes = new SceneAsset[EditorSceneManager.sceneCount];

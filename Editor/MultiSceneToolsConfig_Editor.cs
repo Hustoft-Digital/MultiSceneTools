@@ -15,6 +15,8 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#if UNITY_EDITOR
+
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
@@ -42,11 +44,11 @@ namespace HH.MultiSceneToolsEditor
         {
             if(script._BootScenePath == "")
             {
-                script._BootScenePath = "Assets/Scenes/SampleScene.unity";
+                script._BootScenePath = MultiSceneToolsConfig.bootPathDefault;
             }
 
             if(script._SceneCollectionPath == "")
-                script._SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
+                script._SceneCollectionPath = MultiSceneToolsConfig.collectionsPathDefault;
         }
 
         public override void OnInspectorGUI()
@@ -61,7 +63,7 @@ namespace HH.MultiSceneToolsEditor
             var config = EditorGUILayout.ObjectField("Current Instance", MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
 
 
-            EditorGUILayout.ObjectField(new GUIContent("Loaded Collection", "Currently loaded collection, this will be overridden if saved"), script.getCurrCollection(), typeof(SceneCollection), false);
+            EditorGUILayout.ObjectField(new GUIContent("Loaded Collection", "Currently loaded collection, this will be overridden if saved"), script.currentLoadedCollection, typeof(SceneCollection), false);
             GUI.enabled = true;
 
             GUILayout.Space(8);
@@ -71,7 +73,7 @@ namespace HH.MultiSceneToolsEditor
             // Allow Cross Scene References
             bool _CurrentAllowCrossSceneState = 
                 EditorGUILayout.Toggle(
-                    new GUIContent("Allow Cross Referencing", "inverted of EditorSceneManager.preventCrossSceneReferences"), script.AllowCrossSceneReferences);
+                    new GUIContent("Allow Cross Referencing", "not implemented"), script.AllowCrossSceneReferences);
 
             if(_CurrentAllowCrossSceneState != script.AllowCrossSceneReferences)
             {
@@ -99,14 +101,7 @@ namespace HH.MultiSceneToolsEditor
             EditorGUILayout.PropertyField(collectionPath,
                 new GUIContent("Scene Collections Path", "Path where new scene collections will be created and loaded from"));
 
-            GUILayout.Space(10);
-            if(config != MultiSceneToolsConfig.instance)
-                script.setInstance(config as MultiSceneToolsConfig);
-
-            if(GUILayout.Button("Set This As Instance"))
-            {
-                script.setInstance(script);
-            }
+            // GUILayout.Space(10);
 
             if(script.currentLoadedCollection == null)
             {
@@ -123,3 +118,4 @@ namespace HH.MultiSceneToolsEditor
         }
     }
 }
+#endif

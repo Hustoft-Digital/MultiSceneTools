@@ -36,8 +36,8 @@ namespace HH.MultiSceneTools.Examples
                 }
                 else
                 {
-                    MultiSceneLoader.setCurrentlyLoaded(MultiSceneToolsConfig.instance.getCurrCollection());
-                    Debug.Log(MultiSceneToolsConfig.instance.getCurrCollection().Title);
+                    MultiSceneLoader.setCurrentlyLoaded(MultiSceneToolsConfig.instance.currentLoadedCollection);
+                    Debug.Log(MultiSceneToolsConfig.instance.currentLoadedCollection.Title);
                 }
             #else
                 MultiSceneLoader.BootGame(config, BootIntoCollection);
