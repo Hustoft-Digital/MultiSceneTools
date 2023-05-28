@@ -51,8 +51,6 @@ namespace HH.MultiSceneTools
                         loadedConfig = config;
                         return config;
                     }
-
-                    Debug.LogError("Multi Scene Tools: could not find the config. Please run the setup to create a config asset. Find the setup in the menu bar at: Multi Scene Tools/Setup");
                     return null;
                 }
             }
@@ -126,6 +124,9 @@ namespace HH.MultiSceneTools
 
             public void UpdateCollections()
             {
+                if(!System.IO.Directory.Exists(_SceneCollectionPath))
+                    return;
+
                 string[] assets = AssetDatabase.FindAssets("SceneCollection", new string[]{_SceneCollectionPath});
                 _Collections = new SceneCollection[assets.Length];
 

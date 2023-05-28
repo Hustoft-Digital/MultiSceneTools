@@ -11,7 +11,8 @@ namespace HH.MultiSceneToolsEditor
     {
         const string TexturePath = "MultiSceneTools Icon";
         Texture MultiSceneToolsIcon;
-        GUIStyle TitleStyle;
+        static GUIStyle TitleStyle;
+        static GUIStyle WarningStyle;
 
         // variables
         MultiSceneToolsConfig currentConfig;
@@ -24,28 +25,13 @@ namespace HH.MultiSceneToolsEditor
             MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
             _Wizard.titleContent = new GUIContent("Multi Scene Tools Setup", "Creates or updates the config");
             _Wizard.position = new Rect(Screen.currentResolution.width/3, Screen.currentResolution.height/4, _Wizard.position.width, _Wizard.position.height);
-            _Wizard.minSize = new Vector2(684, 400);
+            _Wizard.minSize = new Vector2(684, 420);
         }
 
         private void Awake() {
             MultiSceneToolsIcon = Resources.Load<Texture2D>(TexturePath);
             
-            TitleStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
-            TitleStyle.fontSize = 30;
-            TitleStyle.fontStyle = FontStyle.Bold;
-            TitleStyle.normal.textColor = Color.white;
-
-
-            try
-            {
-                currentConfig = MultiSceneToolsConfig.instance;
-            }
-            catch
-            {
-                currentConfig = null;
-            }
-
-
+            currentConfig = MultiSceneToolsConfig.instance;
 
             if(currentConfig)
             {
@@ -57,10 +43,17 @@ namespace HH.MultiSceneToolsEditor
 
         void OnGUI() 
         {
+            setCustomStyles();
+
             Rect _Rect = new Rect(0,10, position.width, position.height);
 
             drawIcon(ref _Rect, 150);
-            drawText(ref _Rect, "Thank you for using Multi Scene Tools!", TitleStyle);
+
+            if(MultiSceneToolsStartup.detectedUpdate)
+                drawText(ref _Rect, "Multi Scene Tools Updated: " + MultiSceneToolsStartup.packageVersion + "!", TitleStyle);
+            else
+                drawText(ref _Rect, "Thank you for using Multi Scene Tools!", TitleStyle);
+
             _Rect.y += 5;
             drawText(ref _Rect, "Created by Henrik Hustoft", EditorStyles.centeredGreyMiniLabel);
 
@@ -94,14 +87,32 @@ namespace HH.MultiSceneToolsEditor
                 drawText(ref _Rect, "The setup will not popup automatically when this plugin is updated", EditorStyles.helpBox);
             }
 
+            if(currentConfig == null)
+            {
+                drawText(ref _Rect, "There is currently no config asset in this project, please confirm to create one.", WarningStyle);
+            }
+
             _Rect.width = 150;
             _Rect.x = position.width - _Rect.width - 20;
             _Rect.y = position.height - 30;
 
-
             if(drawButton(ref _Rect, "Confirm"))
             {
                 confirm();
+            }
+        }
+
+        void setCustomStyles()
+        {
+            if(TitleStyle == null)
+            {
+                TitleStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
+                TitleStyle.fontSize = 30;
+                TitleStyle.fontStyle = FontStyle.Bold;
+                TitleStyle.normal.textColor = Color.white;
+
+                WarningStyle = new GUIStyle(EditorStyles.boldLabel);
+                WarningStyle.normal.textColor = Color.yellow;
             }
         }
 
@@ -175,6 +186,10 @@ namespace HH.MultiSceneToolsEditor
             bool result = GUI.Button(toggle_Rect, label);
             currentPosition.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;        
             return result;
+        }
+
+        private void OnDestroy() {
+            MultiSceneToolsStartup.detectedUpdate = false;
         }
     }
 }

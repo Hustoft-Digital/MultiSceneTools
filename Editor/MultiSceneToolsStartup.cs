@@ -1,11 +1,15 @@
+using UnityEngine;
 using UnityEditor;
 using HH.MultiSceneTools;
 using UnityEditor.PackageManager;
+using UnityEditor.EventSystems;
 
 namespace HH.MultiSceneToolsEditor
 {
     public class MultiSceneToolsStartup
     {
+        public static bool detectedUpdate;
+        public static string packageVersion;
         const string packageName = "com.henrikhustoft.multi-scene-management-tools";
         
         [InitializeOnLoadMethod]
@@ -22,12 +26,22 @@ namespace HH.MultiSceneToolsEditor
 
         static void CheckUpdates(PackageRegistrationEventArgs package)
         {
+            bool shouldOpenWizard = false;
+
             for (int i = 0; i < package.added.Count; i++)
             {
                 if(package.added[i].name == packageName)
                 {
-                    MultiSceneToolsSetup_Wizard.MenuEntryCall();
-                    return;
+                    packageVersion = package.added[i].version;
+
+                    if(MultiSceneToolsConfig.instance)
+                    {
+                        if(MultiSceneToolsConfig.instance.startWizardOnUpdate)
+                            shouldOpenWizard = true;
+                    }
+                    else
+                        shouldOpenWizard = true;
+                    break;
                 }
             }
 
@@ -35,10 +49,28 @@ namespace HH.MultiSceneToolsEditor
             {
                 if(package.changedTo[i].name == packageName)
                 {
-                    MultiSceneToolsSetup_Wizard.MenuEntryCall();
-                    return;
+                    packageVersion = package.changedTo[i].version;
+
+                    if(MultiSceneToolsConfig.instance)
+                    {
+
+                        if(MultiSceneToolsConfig.instance.startWizardOnUpdate)
+                            shouldOpenWizard = true;
+                    }
+                    else
+                        shouldOpenWizard = true;
+                    detectedUpdate = true;
+                    break;
                 }
             }
+
+            if(shouldOpenWizard)
+                OpenWizard();
+        }
+
+        static void OpenWizard()
+        {
+            MultiSceneToolsSetup_Wizard.MenuEntryCall();
         }
     }
 }
