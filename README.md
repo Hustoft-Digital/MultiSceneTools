@@ -1,6 +1,6 @@
 # Multi Scene Tools
 
-<img src="Gizmos/MultiSceneTools%20Icon.png" alt="MultiSceneToolsIcon" width="200"/>
+<img src="Images/MultiSceneTools%20Icon.png" alt="MultiSceneToolsIcon" width="200"/>
 
 ## Features
 
