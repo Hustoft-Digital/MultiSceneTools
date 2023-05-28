@@ -10,6 +10,7 @@
 - Updated the editor script for the config to add undo's to the toggles.
 - Changed the default config asset path
 - Made editor assembly only compile on Unity Editor platform.
+- Fixed issue when keeping boot scene on unloading
 
 # Version 0.2.6  -  28/02/2023
 

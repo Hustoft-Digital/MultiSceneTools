@@ -96,11 +96,20 @@ namespace HH.MultiSceneTools
                 throw new UnityException("No currently loaded scene collection.");
             }
 
+            bool loadBoot = MultiSceneToolsConfig.instance.UseBootScene;
+            string bootScene = getBootSceneName();
+            bool hasBootScene = false;
             bool shouldReplaceScene = false;
+            
             // Unload Differences
             for (int i = 0; i < currentlyLoaded.SceneNames.Count; i++)
             {
                 bool difference = true;
+                if(currentlyLoaded.SceneNames[i] == bootScene && loadBoot)
+                {
+                    hasBootScene = true;
+                    continue;
+                }
                 foreach (string targetScene in Collection.SceneNames)
                 {
                     if(currentlyLoaded.SceneNames[i].Equals(targetScene))
@@ -115,7 +124,8 @@ namespace HH.MultiSceneTools
                     unload(currentlyLoaded.SceneNames[i]);
                 else
                 {
-                    shouldReplaceScene = true;
+                    if(!hasBootScene)
+                        shouldReplaceScene = true;
                     break;
                 }
             }
@@ -160,7 +170,8 @@ namespace HH.MultiSceneTools
                     unload(currentlyLoaded.SceneNames[i]);
                 else
                 {
-                    shouldReplaceScene = true;
+                    if(!hasBootScene)
+                        shouldReplaceScene = true;
                     break;
                 }
             }
