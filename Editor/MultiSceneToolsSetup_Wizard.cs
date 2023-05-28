@@ -18,6 +18,7 @@ namespace HH.MultiSceneToolsEditor
         MultiSceneToolsConfig currentConfig;
         string _bootScenePath = MultiSceneToolsConfig.bootPathDefault;
         string _sceneCollectionsPath = MultiSceneToolsConfig.collectionsPathDefault;
+        bool useBootScene = false;
         bool preventPopupAgain;
         static string GetFilePath([System.Runtime.CompilerServices.CallerFilePath] string callerFilePath = null) => callerFilePath;
 
@@ -27,7 +28,7 @@ namespace HH.MultiSceneToolsEditor
             MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
             _Wizard.titleContent = new GUIContent("Multi Scene Tools Setup", "Creates or updates the config");
             _Wizard.position = new Rect(Screen.currentResolution.width/3, Screen.currentResolution.height/4, _Wizard.position.width, _Wizard.position.height);
-            _Wizard.minSize = new Vector2(684, 430);
+            _Wizard.minSize = new Vector2(684, 450);
         }
 
         private void Awake() 
@@ -45,8 +46,9 @@ namespace HH.MultiSceneToolsEditor
                 _bootScenePath = MultiSceneToolsConfig.instance._BootScenePath;
                 _sceneCollectionsPath = MultiSceneToolsConfig.instance._SceneCollectionPath;
                 preventPopupAgain = !MultiSceneToolsConfig.instance.startWizardOnUpdate;
-            
-                if(MultiSceneToolsStartup.packageVersion != "")
+                useBootScene = MultiSceneToolsConfig.instance.UseBootScene;
+
+                if(MultiSceneToolsStartup.packageVersion != "" && MultiSceneToolsStartup.packageVersion != null)
                 {
                     currentConfig.versionNumber = MultiSceneToolsStartup.packageVersion;
                 }
@@ -82,6 +84,12 @@ namespace HH.MultiSceneToolsEditor
 
             _Rect.y += 10;
 
+            drawCheckbox(
+                ref _Rect, 
+                new GUIContent("Use Boot Scene"),
+                ref useBootScene
+                );
+
             drawTextfield(
                 ref _Rect, 
                 new GUIContent("Boot Scene Path", "The boot scene is ignored by default when unloading/loading scene collections to always keep it loaded"), 
@@ -97,7 +105,8 @@ namespace HH.MultiSceneToolsEditor
         #if UNITY_2021_1_OR_NEWER
             if(MultiSceneToolsStartup.detectedUpdate)
             {
-                drawLinkButton(ref _Rect, "Keep up to date with the changes!",0);
+                if(drawLinkButton(ref _Rect, "Keep up to date with the changes!",0))
+                    Application.OpenURL("https://github.com/HenrysHouses/MultiSceneTools/blob/main/CHANGELOG.md");
             }
         #endif
 
@@ -116,6 +125,7 @@ namespace HH.MultiSceneToolsEditor
 
             if(currentConfig == null)
             {
+                _Rect.y += 10;
                 drawText(ref _Rect, "There is currently no config asset in this project, please confirm to create one.", WarningStyle);
             }
 
@@ -171,6 +181,7 @@ namespace HH.MultiSceneToolsEditor
             config._BootScenePath = _bootScenePath;
             config._SceneCollectionPath = _sceneCollectionsPath;
             config.startWizardOnUpdate = !preventPopupAgain;
+            config.UseBootScene = useBootScene;
 
             if(MultiSceneToolsStartup.packageVersion != "")
             {
@@ -179,7 +190,7 @@ namespace HH.MultiSceneToolsEditor
 
             config.findOpenSceneCollection();
             EditorApplication.playModeStateChanged += MultiSceneToolsConfig.instance.resumeCurrentLoadedCollection;
-            Debug.Log("Set confirmed settings", config);
+            Debug.Log("Confirmed settings", config);
 
             Close();
         }
@@ -223,8 +234,10 @@ namespace HH.MultiSceneToolsEditor
     #if UNITY_2021_1_OR_NEWER
         bool drawLinkButton(ref Rect currentPosition, string label, int width)
         {
-            Rect link_Rect = new Rect(currentPosition.x , currentPosition.y, label.Length * 6, EditorGUIUtility.singleLineHeight);
-            bool result = EditorGUI.LinkButton(link_Rect, label);
+            GUIContent content = new GUIContent(label);
+            var size = EditorStyles.linkLabel.CalcSize(content);
+            Rect link_Rect = new Rect(currentPosition.x , currentPosition.y, size.x, EditorGUIUtility.singleLineHeight);
+            bool result = EditorGUI.LinkButton(link_Rect, content);
             currentPosition.y += EditorGUIUtility.singleLineHeight+EditorGUIUtility.standardVerticalSpacing;
             return result;
         }

@@ -1,4 +1,12 @@
-# Unreleased
+# Version 0.3.0  -  28/05/2023
+- Refactored config instance and initialization
+- Boot Loader example is now deprecated. 
+- Refactored Scene Collection creation.
+    - Known issue: Duplication is not working as intended.
+- Added setup window that automatically opens on install and updates to confirm new settings.
+    - Has option to not show again
+- Fixed bugs with loading without boot scene
+- Fixed bugs when unloading a collection with a single or no scenes.
 - Updated the editor script for the config to add undo's to the toggles.
 - Changed the default config asset path
 - Made editor assembly only compile on Unity Editor platform.

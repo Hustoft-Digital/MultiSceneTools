@@ -15,38 +15,34 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 namespace HH.MultiSceneTools.Examples
 {
-    // public class BootLoader : MonoBehaviour
-    // {
-    //     [SerializeField] MultiSceneToolsConfig config;
-    //     [SerializeField] string BootIntoCollection;
+    [Obsolete("This class has no function after version 0.3.0", true)]
+    public class BootLoader : MonoBehaviour
+    {
+        [SerializeField] string BootIntoCollection;
 
-    //     void Awake()
-    //     {
-    //         #if UNITY_EDITOR
-    //             // decide if it should boot or not in the editor.
-    //             if(SceneManager.GetActiveScene().name.Equals("_Boot"))
-    //             {
-    //                 MultiSceneLoader.BootGame(config, BootIntoCollection);
-    //             }
-    //             else
-    //             {
-    //                 MultiSceneLoader.setCurrentlyLoaded(MultiSceneToolsConfig.instance.currentLoadedCollection);
-    //                 Debug.Log(MultiSceneToolsConfig.instance.currentLoadedCollection.Title);
-    //             }
-    //         #else
-    //             MultiSceneLoader.BootGame(config, BootIntoCollection);
-    //         #endif
-    //         Debug.Log("Game Booted");
-    //     }
-
-    //     private void OnInspectorUpdate() {
-    //         config = MultiSceneToolsConfig.instance;
-    //     }
-    // }
+        void Awake()
+        {
+            #if UNITY_EDITOR
+                // decide if it should boot or not in the editor.
+                if(SceneManager.GetActiveScene().name.Equals("_Boot"))
+                {
+                    MultiSceneLoader.loadCollection(BootIntoCollection, collectionLoadMode.Replace);
+                }
+                else
+                {
+                    MultiSceneLoader.setCurrentlyLoaded(MultiSceneToolsConfig.instance.currentLoadedCollection);
+                    Debug.Log(MultiSceneToolsConfig.instance.currentLoadedCollection.Title);
+                }
+            #else
+                MultiSceneLoader.loadCollection(BootIntoCollection, collectionLoadMode.Replace);
+            #endif
+            Debug.Log("Game Booted");
+        }
+    }
 }

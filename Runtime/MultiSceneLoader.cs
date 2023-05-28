@@ -64,6 +64,12 @@ namespace HH.MultiSceneTools
                 return;
             }
 
+            if(TargetCollection.SceneNames.Count == 0)
+            {
+                Debug.LogWarning("Attempted to load a scene collection that contains no scenes", TargetCollection);
+                return;
+            }
+
             switch(mode)
             {
                 case collectionLoadMode.Difference:
