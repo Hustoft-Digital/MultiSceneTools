@@ -97,6 +97,14 @@ namespace HH.MultiSceneTools
             }
         #endif
 
+        /// <summary>This should not be used at runtime, used to set the a default collection when nothing has loaded yet</summary>
+        public void SetCurrentCollectionEmpty()
+        {
+            currentLoadedCollection = ScriptableObject.CreateInstance<SceneCollection>();
+            currentLoadedCollection.name = "None";
+            MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
+        }
+
         #if UNITY_EDITOR
             private void OnEnable() {
                 if(currentLoadedCollection == null)
@@ -124,12 +132,7 @@ namespace HH.MultiSceneTools
                 #endif
             }
             
-            public void SetCurrentCollectionEmpty()
-            {
-                currentLoadedCollection = ScriptableObject.CreateInstance<SceneCollection>();
-                currentLoadedCollection.name = "None";
-                MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
-            }
+            
 
             public void UpdateCollections()
             {
