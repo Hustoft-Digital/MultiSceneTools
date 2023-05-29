@@ -58,7 +58,7 @@ namespace HH.MultiSceneToolsEditor
             Instance = this;
         }
 
-        [MenuItem("Multi Scene Tools/Scene Manager")]
+        [MenuItem("Multi Scene Tools/Scene Manager", false, 1)]
         static void Init()
         {
             // Get existing open window or if none, make a new one:
@@ -125,6 +125,11 @@ namespace HH.MultiSceneToolsEditor
                     // https://github.com/Unity-Technologies/UnityCsReference/blob/master/Editor/Mono/ProjectBrowser.cs#L534
                     setSearchInfo.Invoke(WindowInstanceInfo.GetValue(projectBrowserType), new object[]{"t:SceneCollection"});
                 }
+
+                if(GUILayout.Button("Reload Project Collections"))
+                {
+                    MultiSceneToolsConfig.instance.UpdateCollections();
+                }
                 return;
             }
 
@@ -137,28 +142,42 @@ namespace HH.MultiSceneToolsEditor
 
             SelectedCollection = (SceneCollection)EditorGUILayout.ObjectField(new GUIContent("Collection"), SelectedCollection, typeof(SceneCollection), false);
             
+            if(!SelectedCollection)
+                GUI.enabled = false;
             if(GUILayout.Button("Load Collection"))
             {
                 EditorLoadCollection();
             }
+            if(!SelectedCollection)
+                GUI.enabled = true;
+
             
             // Load Scene
             loadBuildScenesAsOptions();
 
             DrawFieldSelectLoadAdditive();
 
+
+            if(!_SelectedScene)
+                GUI.enabled = false;
             if(GUILayout.Button("Load Scene Additively"))
             {
                 LoadSceneAdditively();
             }
+            if(!_SelectedScene)
+                GUI.enabled = true;
 
             // Un-Load selected scene
             DrawPopupSelectUnload();
 
+            if(UnloadScene == 0)
+                GUI.enabled = false;
             if(GUILayout.Button("Unload Scene"))
             {
                 UnLoadSelectedScene();
             }
+            if(UnloadScene == 0)
+                GUI.enabled = true;
 
             // Asset Management
             GUILayout.Space(8);
@@ -199,13 +218,18 @@ namespace HH.MultiSceneToolsEditor
 
             GUILayout.Space(8);
             GUILayout.Label("Settings", EditorStyles.boldLabel);
-
-            EditorGUILayout.TextField("Allow References", (!EditorSceneManager.preventCrossSceneReferences).ToString(), EditorStyles.boldLabel);
-            EditorGUILayout.TextField("Log Scene Changes", (MultiSceneToolsConfig.instance.LogOnSceneChange).ToString(), EditorStyles.boldLabel);
-
             GUI.enabled = false;
             EditorGUILayout.ObjectField(new GUIContent("Config"), MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
+
+            EditorGUILayout.Toggle("Start Wizard On Update", MultiSceneToolsConfig.instance.startWizardOnUpdate);
+            EditorGUILayout.Toggle("Allow References", !EditorSceneManager.preventCrossSceneReferences);
+            EditorGUILayout.Toggle("Log Scene Changes", MultiSceneToolsConfig.instance.LogOnSceneChange);
+            EditorGUILayout.Toggle("Keep Boot-Scene", MultiSceneToolsConfig.instance.UseBootScene);
+            EditorGUILayout.ObjectField("Target Boot Scene", MultiSceneToolsConfig.instance._TargetBootScene, typeof(SceneAsset), false);
+            EditorGUILayout.TextField("Boot Scene Path", MultiSceneToolsConfig.instance._BootScenePath);
+            EditorGUILayout.TextField("Scene Collection Path", MultiSceneToolsConfig.instance._SceneCollectionPath);
             GUI.enabled = true;
+
         }
 
 

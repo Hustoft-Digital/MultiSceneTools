@@ -22,7 +22,7 @@ namespace HH.MultiSceneToolsEditor
         bool preventPopupAgain;
         static string GetFilePath([System.Runtime.CompilerServices.CallerFilePath] string callerFilePath = null) => callerFilePath;
 
-        [MenuItem("Multi Scene Tools/Setup")]
+        [MenuItem("Multi Scene Tools/Setup", false, 1)]
         public static void MenuEntryCall() 
         {
             MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
@@ -106,7 +106,7 @@ namespace HH.MultiSceneToolsEditor
             if(MultiSceneToolsStartup.detectedUpdate)
             {
                 if(drawLinkButton(ref _Rect, "Keep up to date with the changes!",0))
-                    Application.OpenURL("https://github.com/HenrysHouses/MultiSceneTools/blob/main/CHANGELOG.md");
+                    MultiSceneToolsMenuItems.OpenChangelog();
             }
         #endif
 

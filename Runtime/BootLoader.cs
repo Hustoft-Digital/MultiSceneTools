@@ -37,7 +37,7 @@ namespace HH.MultiSceneTools.Examples
                 else
                 {
                     MultiSceneLoader.setCurrentlyLoaded(MultiSceneToolsConfig.instance.currentLoadedCollection);
-                    Debug.Log(MultiSceneToolsConfig.instance.currentLoadedCollection.Title);
+                    Debug.Log(MultiSceneLoader.currentlyLoaded.Title);
                 }
             #else
                 MultiSceneLoader.loadCollection(BootIntoCollection, collectionLoadMode.Replace);

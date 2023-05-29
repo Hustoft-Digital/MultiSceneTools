@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 using HH.MultiSceneTools;
 
 namespace HH.MultiSceneToolsEditor
@@ -31,7 +32,7 @@ namespace HH.MultiSceneToolsEditor
         MultiSceneToolsConfig script;
 
         SerializedProperty packageVersion, useBoot, wizardStartUp;
-        SerializedProperty bootPath, collectionPath;
+        SerializedProperty bootPath, targetBootScene, collectionPath;
 
         private void OnEnable()
         {
@@ -41,6 +42,7 @@ namespace HH.MultiSceneToolsEditor
             wizardStartUp = serializedObject.FindProperty("startWizardOnUpdate");
             useBoot = serializedObject.FindProperty("UseBootScene");
             bootPath = serializedObject.FindProperty("_BootScenePath");
+            targetBootScene = serializedObject.FindProperty("_TargetBootScene");
             collectionPath = serializedObject.FindProperty("_SceneCollectionPath");
         }
 
@@ -103,6 +105,9 @@ namespace HH.MultiSceneToolsEditor
 
             EditorGUILayout.PropertyField(useBoot, new GUIContent("Keep boot-scene loaded", "Requires the boot scene to appear in the boot scene collection"));
 
+            GUI.enabled = false;
+            EditorGUILayout.ObjectField(new GUIContent("Target Boot Scene", "This the scene located at the boot scene path"), script._TargetBootScene, typeof(SceneAsset), false);
+            GUI.enabled = true;
             GUI.enabled = useBoot.boolValue;
             EditorGUILayout.PropertyField(bootPath,
                 new GUIContent("Boot scene Path", "Keep this scene when loading differences. This scene will be loaded if all scenes are unloaded"));

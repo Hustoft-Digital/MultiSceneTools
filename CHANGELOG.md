@@ -5,12 +5,16 @@
     - Known issue: Duplication is not working as intended.
 - Added setup window that automatically opens on install and updates to confirm new settings.
     - Has option to not show again
+- Added menu new menu items
+    - Changelog
+    - Reload Project Collections
 - Fixed bugs with loading without boot scene
+- Fixed issues relating to new way to manage the boot scene.
 - Fixed bugs when unloading a collection with a single or no scenes.
 - Updated the editor script for the config to add undo's to the toggles.
 - Changed the default config asset path
 - Made editor assembly only compile on Unity Editor platform.
-- Fixed issue when keeping boot scene on unloading
+- Apache 2.0 License
 
 # Version 0.2.6  -  28/02/2023
 

@@ -27,7 +27,7 @@ using UnityEngine.SceneManagement;
 
 namespace HH.MultiSceneTools
 {
-    [CreateAssetMenu(menuName = "Multi Scene Tools/Editor Config")]
+    // [CreateAssetMenu(menuName = "Multi Scene Tools/Editor Config", order = 2)]
     public class MultiSceneToolsConfig : ScriptableObject
     {
         public const string configPath = "Assets/Resources/MultiSceneTools/Config/";
@@ -71,6 +71,10 @@ namespace HH.MultiSceneTools
 
         public bool UseBootScene = false;
         public string _BootScenePath = "Assets/Scenes/SampleScene.unity";
+        #if UNITY_EDITOR
+        public SceneAsset _TargetBootScene {private set; get;}
+        #endif
+        public Scene BootScene;
         public string _SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
 
         #if UNITY_EDITOR
@@ -89,21 +93,25 @@ namespace HH.MultiSceneTools
             {   
                 LogOnSceneChange = state;
             }
+            public void setCurrCollection(SceneCollection newCollection)
+            {
+                currentLoadedCollection = newCollection;
+            }
         #endif
-        public void setCurrCollection(SceneCollection newCollection)
-        {
-            currentLoadedCollection = newCollection;
-        }
 
         #if UNITY_EDITOR
             private void OnEnable() {
-
                 if(currentLoadedCollection == null)
                     SetCurrentCollectionEmpty();
                     
                 EditorStartedInCollection = currentLoadedCollection;
                 UpdateCollections();
                 MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);      
+
+                #if UNITY_EDITOR
+                _TargetBootScene = (SceneAsset)AssetDatabase.LoadAssetAtPath(_BootScenePath, typeof(SceneAsset));
+                BootScene = SceneManager.GetSceneByPath(_BootScenePath);
+                #endif
             }
 
             private void OnValidate() 
@@ -113,6 +121,11 @@ namespace HH.MultiSceneTools
 
                 UpdateCollections();
                 findOpenSceneCollection();
+
+                #if UNITY_EDITOR
+                _TargetBootScene = (SceneAsset)AssetDatabase.LoadAssetAtPath(_BootScenePath, typeof(SceneAsset));
+                BootScene = SceneManager.GetSceneByPath(_BootScenePath);
+                #endif
             }
             
             public void SetCurrentCollectionEmpty()
@@ -125,15 +138,24 @@ namespace HH.MultiSceneTools
             public void UpdateCollections()
             {
                 if(!System.IO.Directory.Exists(_SceneCollectionPath))
+                {
+                    Debug.LogWarning("Scene Collection Path Does not exist!", this);
                     return;
+                }
 
-                string[] assets = AssetDatabase.FindAssets("SceneCollection", new string[]{_SceneCollectionPath});
+                string[] assets = AssetDatabase.FindAssets("", new string[]{_SceneCollectionPath});
                 _Collections = new SceneCollection[assets.Length];
 
                 for (int i = 0; i < _Collections.Length; i++)
                 {
                     string path = AssetDatabase.GUIDToAssetPath(assets[i]);
                     _Collections[i] = (SceneCollection)AssetDatabase.LoadAssetAtPath(path, typeof(SceneCollection));
+
+                    if(_Collections[i] == null)
+                    {
+                        var ExceptionObject = AssetDatabase.LoadAssetAtPath(path, typeof(UnityEngine.Object));
+                        Debug.LogException(new Exception(path + " is not a scene collection asset. Please remove it from the collections folder"), ExceptionObject);
+                    }
                 }
             }
 

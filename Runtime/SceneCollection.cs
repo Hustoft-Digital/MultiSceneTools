@@ -30,7 +30,7 @@ namespace HH.MultiSceneTools
     public class SceneCollection : ScriptableObject
     {
         #if UNITY_EDITOR
-        [MenuItem("Assets/Create/Multi Scene Tools/SceneCollection", false, 601)]
+        [MenuItem("Assets/Create/Multi Scene Tools/SceneCollection", false, 1)]
         public static void CreateSceneCollectionIfProjectWindowExists()
         {
             SceneCollection newCollection = CreateInstance<SceneCollection>();
