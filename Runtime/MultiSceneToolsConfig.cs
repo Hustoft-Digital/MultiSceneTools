@@ -67,7 +67,6 @@ namespace HH.MultiSceneTools
         public SceneCollection[] GetSceneCollections() => _Collections;
         [field:SerializeField, HideInInspector] public bool LogOnSceneChange {get; private set;}
         [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
-
         public bool UseBootScene = false;
         public string _BootScenePath = "Assets/Scenes/SampleScene.unity";
         #if UNITY_EDITOR
@@ -107,10 +106,8 @@ namespace HH.MultiSceneTools
                 UpdateCollections();
                 MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);      
 
-                #if UNITY_EDITOR
                 _TargetBootScene = (SceneAsset)AssetDatabase.LoadAssetAtPath(_BootScenePath, typeof(SceneAsset));
                 BootScene = SceneManager.GetSceneByPath(_BootScenePath);
-                #endif
             }
 
             private void OnValidate() 

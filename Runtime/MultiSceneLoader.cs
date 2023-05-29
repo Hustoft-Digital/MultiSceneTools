@@ -43,6 +43,9 @@ namespace HH.MultiSceneTools
 
         public static void loadCollection(string CollectionTitle, collectionLoadMode mode)
         {
+            if(currentlyLoaded == null)
+                MultiSceneToolsConfig.instance.SetCurrentCollectionEmpty(); 
+
             if(MultiSceneToolsConfig.instance.LogOnSceneChange)
                 AddLogOnLoad();
 
