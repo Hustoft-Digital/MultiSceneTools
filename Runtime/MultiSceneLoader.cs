@@ -44,7 +44,10 @@ namespace HH.MultiSceneTools
         public static void loadCollection(string CollectionTitle, collectionLoadMode mode)
         {
             if(currentlyLoaded == null)
-                MultiSceneToolsConfig.instance.SetCurrentCollectionEmpty(); 
+            {
+                currentlyLoaded = ScriptableObject.CreateInstance<SceneCollection>(); 
+                currentlyLoaded.name = "None";
+            }
 
             if(MultiSceneToolsConfig.instance.LogOnSceneChange)
                 AddLogOnLoad();
@@ -96,6 +99,12 @@ namespace HH.MultiSceneTools
 
         public static void loadCollection(SceneCollection Collection, collectionLoadMode mode)
         {
+            if(currentlyLoaded == null)
+            {
+                currentlyLoaded = ScriptableObject.CreateInstance<SceneCollection>(); 
+                currentlyLoaded.name = "None";
+            }
+
             if(MultiSceneToolsConfig.instance.LogOnSceneChange)
                 AddLogOnLoad();
 
