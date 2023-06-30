@@ -41,7 +41,7 @@ namespace HH.MultiSceneTools.Examples
             #else
                 MultiSceneLoader.loadCollection(BootIntoCollection, collectionLoadMode.Replace);
             #endif
-            Debug.Log("Game Booted");
+            Debug.Log("Game Booted", gameObject);
         }
     }
 }

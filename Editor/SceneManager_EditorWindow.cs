@@ -41,6 +41,11 @@ namespace HH.MultiSceneToolsEditor
         string[] Collection = new string[0];
         public SceneCollection GetLoadedCollection()
         {
+            if(EditorApplication.isPlaying)
+            {
+                return MultiSceneLoader.currentlyLoaded;
+            }
+
             if(MultiSceneToolsConfig.instance)
                 return MultiSceneToolsConfig.instance.currentLoadedCollection;  
             else
