@@ -19,6 +19,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
+
+// using Cysharp.Threading.Tasks; // TODO use an older unity version
 
 using HH.MultiSceneTools.Internal;
 
@@ -28,29 +31,26 @@ namespace HH.MultiSceneTools
     {
         Difference,
         Replace,
-        Additive
+        Additive,
+        Merge
     }
 
     public static class MultiSceneLoader
     {
         public static UnityEvent<SceneCollection, collectionLoadMode> OnSceneCollectionLoaded = new UnityEvent<SceneCollection, collectionLoadMode>();
         public static UnityEvent<SceneCollection, collectionLoadMode> OnSceneCollectionLoadDebug = new UnityEvent<SceneCollection, collectionLoadMode>();
-        public static int getDebugEventCount {get; private set;}
         private static bool IsLoggingOnSceneLoad;
         private static Scene loadedBootScene;
         public static SceneCollection currentlyLoaded {private set; get;}
         static bool isEnablingLoadedCollection;
-        public static string getLoadedCollectionTitle => currentlyLoaded.Title;
 
         #if UNITY_EDITOR
             public static SceneCollection setCurrentlyLoaded(SceneCollection collection) => currentlyLoaded = collection;
         #endif
 
-        // # Async
-        static List<AsyncOperation> asyncOperations = new List<AsyncOperation>(1023);
-        static public List<AsyncCollection> asyncOperationCollections = new List<AsyncCollection>(10);
+        static AsyncCollection asyncLoadingTask;
+        static public AsyncCollection currentAsyncTask => asyncLoadingTask;
 
-    #region Loading
         public static void loadCollection(string CollectionTitle, collectionLoadMode mode)
         {
             if(currentlyLoaded == null)
@@ -147,7 +147,7 @@ namespace HH.MultiSceneTools
         {
             if(currentlyLoaded == null)
             {
-                throw new UnityException("No currently loaded scene collection.");
+                throw new MultiSceneToolsException("No currently loaded scene collection.");
             }
 
             string bootScene = getBootSceneName();
@@ -299,20 +299,95 @@ namespace HH.MultiSceneTools
             // }
             // MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
         }
-    #endregion
-    #region Async
-        // private await
 
-        public static void loadCollectionAsync(string CollectionTitle, collectionLoadMode mode, bool preload = true)
-        {}
-
-        public static async Task loadCollectionAsync(SceneCollection Collection, collectionLoadMode mode, bool preload = true)
+        public static async Task loadCollectionAsync(string CollectionTitle, collectionLoadMode mode, bool preload = false)
         {
-            Debug.Log("starting");
+            CancellationTokenSource source = new CancellationTokenSource();
+
+            if(asyncLoadingTask != null)
+                return;
+
+            while(isEnablingLoadedCollection)
+            {
+                await Task.Yield();
+                UnityEngine.Debug.Log("waiting to start loading");
+            }
 
             if(currentlyLoaded == null)
             {
-                currentlyLoaded = ScriptableObject.CreateInstance<SceneCollection>(); 
+                currentlyLoaded = ScriptableObject.CreateInstance<SceneCollection>();
+                currentlyLoaded.name = "None";
+            }
+
+            if(MultiSceneToolsConfig.instance.LogOnSceneChange)
+                AddLogOnLoad();
+
+            SceneCollection TargetCollection = null;
+
+            foreach (SceneCollection target in MultiSceneToolsConfig.instance.GetSceneCollections())
+            {
+                if(target.Title.Equals(CollectionTitle))
+                {
+                    TargetCollection = target;
+                    break;
+                }
+            }
+
+            if(TargetCollection == null)
+            {
+                Debug.LogError("Could not find Scene Collection of name: " + CollectionTitle);
+                return;
+            }
+
+            CheckException_NoScenesInCollection(TargetCollection);
+
+            switch(mode)
+            {
+                case collectionLoadMode.Difference:
+                    await loadDifferenceAsync(TargetCollection, source.Token, preload);
+                    break;
+
+                case collectionLoadMode.Replace:
+                    await loadReplaceAsync(TargetCollection, source.Token, preload);
+                    break;
+
+                case collectionLoadMode.Additive:
+                    loadAdditive(TargetCollection);
+                    break;
+            }
+
+            while(asyncLoadingTask.getProgress() != 1)
+            {
+                await Task.Delay(1);
+            }
+
+            OnSceneCollectionLoadDebug?.Invoke(TargetCollection, mode);
+            OnSceneCollectionLoaded?.Invoke(TargetCollection, mode);
+            
+            #if UNITY_EDITOR
+            MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
+            #endif
+        }
+
+        // TODO check out UniTask for load methods
+        public static async Task loadCollectionAsync(SceneCollection Collection, collectionLoadMode mode, bool preload = false)
+        {
+            CancellationTokenSource source = new CancellationTokenSource();
+            
+            string s = getBootSceneName();
+
+            if(asyncLoadingTask != null)
+                return;
+
+            while(isEnablingLoadedCollection)
+            {
+                await Task.Yield();
+                UnityEngine.Debug.Log("waiting to start loading");
+            }
+
+            if(currentlyLoaded == null)
+            {
+                currentlyLoaded = ScriptableObject.CreateInstance<SceneCollection>();
                 currentlyLoaded.name = "None";
             }
 
@@ -320,25 +395,28 @@ namespace HH.MultiSceneTools
                 AddLogOnLoad();
 
             if(Collection == null)
-            {
                 throw new System.NullReferenceException();
-            }
 
             CheckException_NoScenesInCollection(Collection);
 
             switch(mode)
             {
                 case collectionLoadMode.Difference:
-                    await loadDifferenceAsync(Collection, preload);
+                    await loadDifferenceAsync(Collection, source.Token, preload);
                     break;
 
                 case collectionLoadMode.Replace:
-                    // loadReplace(Collection);
+                    await loadReplaceAsync(Collection, source.Token, preload);
                     break;
 
                 case collectionLoadMode.Additive:
-                    // loadAdditive(Collection);
+                    loadAdditive(Collection); // ! not implemented
                     break;
+            }
+
+            while(asyncLoadingTask.getProgress() != 1)
+            {
+                await Task.Delay(1);
             }
 
             OnSceneCollectionLoadDebug?.Invoke(Collection, mode);
@@ -348,12 +426,84 @@ namespace HH.MultiSceneTools
             MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
             #endif
         }
-    
-        static async Task loadDifferenceAsync(SceneCollection Collection, bool preload = true)
+
+        public static async Task loadCollectionAsync(SceneCollection Collection, collectionLoadMode mode, CancellationToken cancellationToken, bool preload = false)
+        {
+            if(asyncLoadingTask != null)
+                return;
+
+            while(isEnablingLoadedCollection)
+            {
+                await Task.Yield();
+                
+                if(cancellationToken != null)
+                    if(cancellationToken.IsCancellationRequested)
+                        return;
+
+                UnityEngine.Debug.Log("waiting to start loading");
+            }
+
+            if(currentlyLoaded == null)
+            {
+                currentlyLoaded = ScriptableObject.CreateInstance<SceneCollection>();
+                currentlyLoaded.name = "None";
+            }
+
+            if(MultiSceneToolsConfig.instance.LogOnSceneChange)
+                AddLogOnLoad();
+
+            if(Collection == null)
+                throw new System.NullReferenceException();
+
+            CheckException_NoScenesInCollection(Collection);
+
+            switch(mode)
+            {
+                case collectionLoadMode.Difference:
+                    await loadDifferenceAsync(Collection, cancellationToken, preload);
+                    break;
+
+                case collectionLoadMode.Replace:
+                    await loadReplaceAsync(Collection, cancellationToken, preload);
+                    break;
+
+                case collectionLoadMode.Additive:
+                    loadAdditive(Collection); // ! not implemented
+                    break;
+            }
+
+            while(asyncLoadingTask.getProgress() != 1)
+            {
+                await Task.Delay(1);
+
+                if(cancellationToken != null)
+                    if(cancellationToken.IsCancellationRequested)
+                    {
+                        Debug.Log("should cancel loading");
+                        return;
+                    }
+            }
+
+            if(cancellationToken != null)
+                if(cancellationToken.IsCancellationRequested)
+                {
+                    Debug.Log("should cancel loading");
+                    return;
+                }
+
+            OnSceneCollectionLoadDebug?.Invoke(Collection, mode);
+            OnSceneCollectionLoaded?.Invoke(Collection, mode);
+            
+            #if UNITY_EDITOR
+            MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
+            #endif
+        }
+
+        static async Task loadDifferenceAsync(SceneCollection Collection, CancellationToken cancellationToken, bool preload = true)
         {
             if(currentlyLoaded == null)
             {
-                throw new UnityException("No currently loaded scene collection.");
+                throw new MultiSceneToolsException("No currently loaded scene collection.");
             }
 
             string bootScene = getBootSceneName();
@@ -388,100 +538,155 @@ namespace HH.MultiSceneTools
                 }
             }
 
-            await asyncCollection.readyToUnload();
+            asyncLoadingTask = asyncCollection;
+
+            await asyncCollection.readyToUnload(cancellationToken);
+
+            if(cancellationToken != null)
+                    if(cancellationToken.IsCancellationRequested)
+                        return;
 
             if(preload)
-            {
-                asyncOperationCollections.Add(asyncCollection);
                 return;
-            }
 
-            asyncCollection.enableLoadedScenes();
-
-            await asyncCollection.waitUntilIsCompleteAsync();
-
-            Debug.Log(asyncCollection.UnloadScenes.Count);
-            for (int i = 0; i < asyncCollection.UnloadScenes.Count; i++)
-            {
-                await Task.Run(() => unloadAsync(asyncCollection.UnloadScenes[i]));
-                Debug.Log("unloading: " + asyncCollection.UnloadScenes[i]);
-            }
-
-            currentlyLoaded = Collection;
+            await enableLoadedCollectionAsync(cancellationToken);
         }
 
-        static public async Task enableLoadedCollectionAsync(SceneCollection collection)
+        static async Task loadReplaceAsync(SceneCollection Collection, CancellationToken cancellationToken, bool preload)
         {
-            if(collection == null)
-                throw new System.NullReferenceException();
+            bool loadBoot = MultiSceneToolsConfig.instance.UseBootScene;
+            string bootScene = getBootSceneName();
 
-            AsyncCollection PreloadedCollection = null;
-            for (int i = 0; i < asyncOperationCollections.Count; i++)
+            if(currentlyLoaded.SceneNames.Contains(bootScene) && loadBoot)
             {
-                if(asyncOperationCollections[i].LoadingCollection.Equals(collection))
-                {
-                    PreloadedCollection = asyncOperationCollections[i];
-                    break;
-                }
+                loadedBootScene = MultiSceneToolsConfig.instance.BootScene;
             }
 
-            if(PreloadedCollection.isBeingEnabled)
+            AsyncCollection asyncCollection = new AsyncCollection(Collection, collectionLoadMode.Replace);
+
+            // Unload Scenes
+            if(!preload)
+                setCurrentUnloadingScenes(ref asyncCollection);
+
+            for (int i = 0; i < Collection.SceneNames.Count; i++)
+            {
+                if(loadBoot)
+                {
+                    if(Collection.SceneNames[i] == bootScene)
+                        continue;
+
+                    asyncCollection.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive));
+                }
+                else
+                    asyncCollection.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive));
+            }
+
+            asyncLoadingTask = asyncCollection;
+
+            await asyncCollection.readyToUnload(cancellationToken);
+
+            if(cancellationToken != null)
+                    if(cancellationToken.IsCancellationRequested)
+                        return;
+
+            if(preload)
                 return;
 
-            while(isEnablingLoadedCollection)
-            {
-                await Task.Delay(1);
-                UnityEngine.Debug.Log("waiting to enable");
-            }
+            await enableLoadedCollectionAsync(cancellationToken);
+        }
 
-            if(PreloadedCollection == null)
+        static public async Task enableLoadedCollectionAsync()
+        {
+            if(asyncLoadingTask.isBeingEnabled)
+                return;
+
+            if(asyncLoadingTask == null)
             {
-                Debug.LogWarning(collection.Title + " has not been loaded yet", collection);
+                Debug.LogWarning("Attempted to enable an asynchronously loaded SceneCollection, but none was loaded");
                 return;
             }
             
-            float progress = PreloadedCollection.getProgress();
+            float progress = asyncLoadingTask.getProgress();
+            CancellationTokenSource source = new CancellationTokenSource();
             
             if(progress < 0.9f)
             {
-                Debug.LogWarning(collection.Title + " is still loading.\nIf you want to use allowSceneActivation, set preload to false,", collection);
+                Debug.LogWarning(asyncLoadingTask.LoadingCollection.Title + " is still loading.\nIf you want to use allowSceneActivation, set preload to false.", asyncLoadingTask.LoadingCollection);
                 return;
             }
             else if(progress > 0.9f)
             {
-                Debug.LogWarning(collection.Title + " is already being enabled", collection);
+                Debug.LogWarning(asyncLoadingTask.LoadingCollection.Title + " is already being enabled", asyncLoadingTask.LoadingCollection);
                 return;
             }
 
             isEnablingLoadedCollection = true;
-            PreloadedCollection.enableLoadedScenes();
-            await PreloadedCollection.waitUntilIsCompleteAsync();
+            asyncLoadingTask.enableLoadedScenes();
+            await asyncLoadingTask.waitUntilIsCompleteAsync(source.Token);
 
-            if(PreloadedCollection.loadMode == collectionLoadMode.Difference)
-                setCurrentUnloadingScenes(ref PreloadedCollection);
+            setCurrentUnloadingScenes(ref asyncLoadingTask);
 
-            Task[] unloads = new Task[PreloadedCollection.UnloadScenes.Count];
-            temp = new Task[PreloadedCollection.UnloadScenes.Count];
-            for (int i = 0; i < PreloadedCollection.UnloadScenes.Count; i++)
+            Task[] unloads = new Task[asyncLoadingTask.UnloadScenes.Count];
+            for (int i = 0; i < asyncLoadingTask.UnloadScenes.Count; i++)
             {
-                temp[i] = unloadAsync(PreloadedCollection.UnloadScenes[i]);
-                // unloads[i] = unloadAsync(PreloadedCollection.UnloadScenes[i]);
-                Debug.Log("unloading: " + PreloadedCollection.UnloadScenes[i] + ": " + temp[i].Status);
+                unloads[i] = unloadAsync(asyncLoadingTask.UnloadScenes[i], source.Token);
             }
-
-            UnityEngine.Debug.LogError("never passes this await");
             await Task.WhenAll(unloads);
 
-            asyncOperationCollections.Remove(PreloadedCollection);
-
-            UnityEngine.Debug.Log(PreloadedCollection.LoadingCollection);
-            currentlyLoaded = PreloadedCollection.LoadingCollection;
-            UnityEngine.Debug.Log(currentlyLoaded);
+            currentlyLoaded = asyncLoadingTask.LoadingCollection;
+            asyncLoadingTask = null;
             isEnablingLoadedCollection = false;
-
         }
 
-        static public Task[] temp;
+        static public async Task enableLoadedCollectionAsync(CancellationToken cancellationToken)
+        {
+            if(asyncLoadingTask.isBeingEnabled)
+                return;
+
+            if(asyncLoadingTask == null)
+            {
+                Debug.LogWarning("Attempted to enable an asynchronously loaded SceneCollection, but none was loaded");
+                return;
+            }
+            
+            float progress = asyncLoadingTask.getProgress();
+            
+            if(progress < 0.9f)
+            {
+                Debug.LogWarning(asyncLoadingTask.LoadingCollection.Title + " is still loading.\nIf you want to use allowSceneActivation, set preload to false.", asyncLoadingTask.LoadingCollection);
+                return;
+            }
+            else if(progress > 0.9f)
+            {
+                Debug.LogWarning(asyncLoadingTask.LoadingCollection.Title + " is already being enabled", asyncLoadingTask.LoadingCollection);
+                return;
+            }
+
+            isEnablingLoadedCollection = true;
+            asyncLoadingTask.enableLoadedScenes();
+            await asyncLoadingTask.waitUntilIsCompleteAsync(cancellationToken);
+
+            if(cancellationToken != null)
+                    if(cancellationToken.IsCancellationRequested)
+                        return;
+
+            setCurrentUnloadingScenes(ref asyncLoadingTask);
+
+            Task[] unloads = new Task[asyncLoadingTask.UnloadScenes.Count];
+            for (int i = 0; i < asyncLoadingTask.UnloadScenes.Count; i++)
+            {
+                unloads[i] = unloadAsync(asyncLoadingTask.UnloadScenes[i], cancellationToken);
+            }
+            await Task.WhenAll(unloads);
+
+            if(cancellationToken != null)
+                    if(cancellationToken.IsCancellationRequested)
+                        return;
+
+            currentlyLoaded = asyncLoadingTask.LoadingCollection;
+            asyncLoadingTask = null;
+            isEnablingLoadedCollection = false;
+        }
 
         static void setCurrentUnloadingScenes(ref AsyncCollection asyncCollection)
         {
@@ -523,43 +728,42 @@ namespace HH.MultiSceneTools
                             asyncCollection.UnloadScenes.Add(currentlyLoaded.SceneNames[i]);
                         }
                     }
-                break;
+                    break;
 
                 case collectionLoadMode.Replace:
-                    if(asyncCollection.loadMode == collectionLoadMode.Replace)
-                    {
-                        // TODO copy instead of this loop
-                        // asyncCollection.UnloadScenes = System.Object.MemberwiseClone(); / currentlyLoaded.SceneNames.CopyTo();
+                    // TODO copy instead of this loop
+                    // asyncCollection.UnloadScenes = System.Object.MemberwiseClone(); / currentlyLoaded.SceneNames.CopyTo();
 
-                        for (int i = 0; i < currentlyLoaded.SceneNames.Count; i++)
-                        {
-                            asyncCollection.UnloadScenes.Add(currentlyLoaded.SceneNames[i]);
-                        }
-                        
-                        if(shouldKeepBoot)
-                            asyncCollection.UnloadScenes.Remove(bootScene);
-                    }
-                break;
+                    asyncCollection.UnloadScenes = new List<string>(currentlyLoaded.SceneNames);
+
+                    if(shouldKeepBoot)
+                        asyncCollection.UnloadScenes.Remove(bootScene);
+                    break;
 
                 case collectionLoadMode.Additive:
-                break;
+                    break;
             }
         }
-    #endregion
 
         static void unload(string SceneName)
         {
             SceneManager.UnloadSceneAsync(SceneName);
         }
 
-        static async Task unloadAsync(string SceneName)
+        static async Task unloadAsync(string SceneName, CancellationToken cancellationToken)
         {
             AsyncOperation operation = SceneManager.UnloadSceneAsync(SceneName);
 
             while(!operation.isDone)
             {
-                UnityEngine.Debug.Log("unloading: " + operation.progress );
                 await Task.Delay(1);
+
+                if(cancellationToken != null)
+                    if(cancellationToken.IsCancellationRequested)
+                    {
+                        Debug.Log("end operation?");
+                        return;
+                    }
             }
         }
 
@@ -600,8 +804,7 @@ namespace HH.MultiSceneTools
             if(target.SceneNames.Count != 0)
                 return;
             
-            Debug.LogWarning("Had no scenes in collection", target);
-            throw new UnityException("Attempted to load a scene collection that contains no scenes");
+            throw new MultiSceneToolsException("Attempted to load a scene collection that contains no scenes", target);
         }
 
         private static void logSceneChange(SceneCollection collection, collectionLoadMode mode)
