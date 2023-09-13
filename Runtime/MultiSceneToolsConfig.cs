@@ -165,6 +165,9 @@ namespace HH.MultiSceneTools
 
             public void findOpenSceneCollection()
             {
+                if(instance == null)
+                    return;
+
                 SceneAsset[] OpenScenes = new SceneAsset[EditorSceneManager.sceneCount];
 
                 for (int i = 0; i < EditorSceneManager.sceneCount; i++)
@@ -174,6 +177,9 @@ namespace HH.MultiSceneTools
                 }
 
                 SceneCollection[] collections = MultiSceneToolsConfig.instance.GetSceneCollections();
+
+                if(collections == null)
+                    return;
 
                 for (int i = 0; i < collections.Length; i++)
                 {

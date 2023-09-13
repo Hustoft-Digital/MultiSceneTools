@@ -55,12 +55,12 @@ namespace HH.MultiSceneToolsEditor
             Instance = this;
         }
 
-        [MenuItem("Multi Scene Tools/Scene Manager", false, 1)]
+        [MenuItem("Tools/Multi Scene Tools/Manager", false, 1)]
         static void Init()
         {
             // Get existing open window or if none, make a new one:
             SceneManager_EditorWindow window = (SceneManager_EditorWindow)EditorWindow.GetWindow(typeof(SceneManager_EditorWindow));
-            window.titleContent = new GUIContent("Scene Manager", "Loads, Unloads, and Saves Scene Collections");
+            window.titleContent = new GUIContent("Multi Scene Manager", "Loads, Unloads, and Saves Scene Collections");
             window.Show();
         }
 

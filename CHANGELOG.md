@@ -1,3 +1,9 @@
+# Version 0.3.1 - 13/09/2023
+- Fixed trying to find currently open scenes when there is no config in the project, resulting in errors on first time setup.
+- Fixed Version number not being saved in the config
+- Changed the Scene Manager window name to "Multi Scene Manager"
+- Moved the menu items into Tools/MultiSceneTools/... 
+
 # Version 0.3.0  -  28/05/2023
 - Refactored config instance and initialization
 - Boot Loader example is now deprecated. 

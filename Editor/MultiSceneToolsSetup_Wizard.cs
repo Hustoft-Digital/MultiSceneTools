@@ -36,7 +36,7 @@ namespace HH.MultiSceneToolsEditor
         bool preventPopupAgain;
         static string GetFilePath([System.Runtime.CompilerServices.CallerFilePath] string callerFilePath = null) => callerFilePath;
 
-        [MenuItem("Multi Scene Tools/Setup", false, 1)]
+        [MenuItem("Tools/Multi Scene Tools/Setup", false, 1)]
         public static void MenuEntryCall() 
         {
             MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
@@ -62,7 +62,7 @@ namespace HH.MultiSceneToolsEditor
                 preventPopupAgain = !MultiSceneToolsConfig.instance.startWizardOnUpdate;
                 useBootScene = MultiSceneToolsConfig.instance.UseBootScene;
 
-                if(MultiSceneToolsStartup.packageVersion != "" && MultiSceneToolsStartup.packageVersion != null)
+                if(MultiSceneToolsStartup.packageVersion != "" && MultiSceneToolsStartup.packageVersion != null && MultiSceneToolsStartup.packageVersion != MultiSceneToolsConfig.instance.versionNumber)
                 {
                     currentConfig.versionNumber = MultiSceneToolsStartup.packageVersion;
                 }
@@ -200,6 +200,9 @@ namespace HH.MultiSceneToolsEditor
             if(MultiSceneToolsStartup.packageVersion != "")
             {
                 config.versionNumber = MultiSceneToolsStartup.packageVersion;
+                EditorUtility.SetDirty(config);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
             }
 
             config.findOpenSceneCollection();
