@@ -1,6 +1,6 @@
 {
   "name": "com.henrikhustoft.multi-scene-management-tools",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "displayName": "Multi Scene Tools",
   "description": "Editor and runtime extensions to help manage a multi-scene workflow in unity",
   "unity": "2020.3",

@@ -257,25 +257,10 @@ namespace HH.MultiSceneToolsEditor
                 return;
             }
 
-            string[] paths = new string[SelectedCollection.Scenes.Count];
-            
-            for (int i = 0; i < paths.Length; i++)
-            {
-                paths[i] = AssetDatabase.GetAssetPath(SelectedCollection.Scenes[i]);
-            }
-
-            for (int i = 0; i < paths.Length; i++)
-            {
-                if(i == 0)
-                    EditorSceneManager.OpenScene(paths[i], OpenSceneMode.Single);
-                else
-                    EditorSceneManager.OpenScene(paths[i], OpenSceneMode.Additive);
-            }
-
+            SelectedCollection.LoadCollection();
             EditorUtility.FocusProjectWindow();
 
-            Selection.activeObject = SelectedCollection;
-            MultiSceneToolsConfig.instance.setCurrCollection(SelectedCollection);
+            // Selection.activeObject = SelectedCollection;
         }
 
         void LoadSceneAdditively()

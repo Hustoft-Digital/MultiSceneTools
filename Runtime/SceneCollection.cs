@@ -121,6 +121,13 @@ namespace HH.MultiSceneTools
 
         public void LoadCollection()
         {
+            Scene[] DirtyScenes;
+            if(isScenesDirty(out DirtyScenes))
+            {
+                if(!EditorSceneManager.SaveModifiedScenesIfUserWantsTo(DirtyScenes))
+                    return;
+            }
+            
             if(Scenes.Count > 0)
             {
                 EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(Scenes[0]), OpenSceneMode.Single);
@@ -131,6 +138,34 @@ namespace HH.MultiSceneTools
                 for (int i = 1; i < Scenes.Count; i++)
                     EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(Scenes[i]), OpenSceneMode.Additive);
             }
+
+            MultiSceneToolsConfig.instance.setCurrCollection(this);
+        }
+
+        bool isScenesDirty(out Scene[] DirtyScenes)
+        {
+            bool hasDirtied = false;
+            List<Scene> Dirty = new List<Scene>();
+            Scene temp;
+            for (int i = 0; i < Scenes.Count; i++)
+            {
+                temp = SceneManager.GetSceneByName(SceneNames[i]);
+                if(temp.isDirty)
+                {
+                    Dirty.Add(temp);
+                    hasDirtied = true;
+                }
+            }
+            DirtyScenes = Dirty.ToArray();
+            return hasDirtied;
+        }
+
+        public bool askToSaveChanges(Scene[] Scenes)
+        {
+            bool input = EditorSceneManager.SaveModifiedScenesIfUserWantsTo(Scenes);
+            Debug.Log(input);
+
+            return input;
         }
         #endif
     }

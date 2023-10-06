@@ -1,3 +1,6 @@
+# Version 0.3.2 - 06/10/2023
+- Added dialogue popup when attempting to load a collection with unsaved scene changes.
+
 # Version 0.3.1 - 13/09/2023
 - Fixed trying to find currently open scenes when there is no config in the project, resulting in errors on first time setup.
 - Fixed Version number not being saved in the config
