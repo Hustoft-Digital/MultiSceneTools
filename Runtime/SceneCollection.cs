@@ -22,12 +22,14 @@ using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using HH.MultiSceneToolsEditor;
 #endif
 
 namespace HH.MultiSceneTools
 {
     public class SceneCollection : ScriptableObject
     {
+
         #if UNITY_EDITOR
         [MenuItem("Assets/Create/Multi Scene Tools/SceneCollection", false, 1)]
         public static void CreateSceneCollectionIfProjectWindowExists()
@@ -88,18 +90,38 @@ namespace HH.MultiSceneTools
         #endif
 
         public string Title;
+        [SerializeField, HideInInspector] public int ActiveSceneIndex; 
         [SerializeField, HideInInspector] public List<string> SceneNames = new List<string>();
 
+        public string GetTargetActiveScene()
+        {
+            if(ActiveSceneIndex < 0)
+                return "";
+
+            return SceneNames[ActiveSceneIndex];
+        }
+
         #if UNITY_EDITOR
-        public List<SceneAsset> Scenes = new List<SceneAsset>();
-        public void saveCollection(SceneAsset[] scenes)
+        public List<ActiveScene> Scenes = new List<ActiveScene>();
+
+        public SceneAsset[] GetSceneAssets()
+        {
+            SceneAsset[] output = new SceneAsset[Scenes.Count];
+            for (int i = 0; i < Scenes.Count; i++)
+            {
+                output[i] = Scenes[i].TargetScene;
+            }
+            return output;
+        }
+
+        public void saveCollection(ActiveScene[] scenes)
         {
             Scenes.Clear();
             SceneNames.Clear();
             for (int i = 0; i < scenes.Length; i++)
             {
                 Scenes.Add(scenes[i]);
-                SceneNames.Add(scenes[i].name);
+                SceneNames.Add(scenes[i].TargetScene.name);
             }
 
             // EditorUtility.FocusProjectWindow();
@@ -114,7 +136,14 @@ namespace HH.MultiSceneTools
                 SceneNames.Clear();
                 for (int i = 0; i < Scenes.Count; i++)
                 {
-                    SceneNames.Add(Scenes[i].name);
+                    if(!Scenes[i].TargetScene)
+                    {
+                        SceneNames.Clear();
+                        Debug.LogWarning("MutliSceneTools, SceneCollection: " + this.name + " can not be loaded with null reference scenes.");
+                        break;
+                    }
+
+                    SceneNames.Add(Scenes[i].TargetScene.name);
                 }
             }
         }
@@ -130,14 +159,17 @@ namespace HH.MultiSceneTools
             
             if(Scenes.Count > 0)
             {
-                EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(Scenes[0]), OpenSceneMode.Single);
+                EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(Scenes[0].TargetScene), OpenSceneMode.Single);
             }
 
             if(Scenes.Count > 1)
             {
                 for (int i = 1; i < Scenes.Count; i++)
-                    EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(Scenes[i]), OpenSceneMode.Additive);
+                    EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(Scenes[i].TargetScene), OpenSceneMode.Additive);
             }
+
+            if(ActiveSceneIndex >= 0)
+                EditorSceneManager.SetActiveScene(EditorSceneManager.GetSceneByName(SceneNames[ActiveSceneIndex]));
 
             MultiSceneToolsConfig.instance.setCurrCollection(this);
         }
@@ -158,14 +190,6 @@ namespace HH.MultiSceneTools
             }
             DirtyScenes = Dirty.ToArray();
             return hasDirtied;
-        }
-
-        public bool askToSaveChanges(Scene[] Scenes)
-        {
-            bool input = EditorSceneManager.SaveModifiedScenesIfUserWantsTo(Scenes);
-            Debug.Log(input);
-
-            return input;
         }
         #endif
     }

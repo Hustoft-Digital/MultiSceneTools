@@ -183,7 +183,7 @@ namespace HH.MultiSceneTools
 
                 for (int i = 0; i < collections.Length; i++)
                 {
-                    SceneAsset[] collection = collections[i].Scenes.ToArray();
+                    SceneAsset[] collection = collections[i].GetSceneAssets();
 
                     bool isEqual = Enumerable.SequenceEqual(collection, OpenScenes);
 

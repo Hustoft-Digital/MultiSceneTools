@@ -1,3 +1,8 @@
+# Version 0.3.3 - 11/10/2023
+- Added option for setting an active scene automatically when loading a collection (setting in the collection itself)
+- Added visual feedback of which scenes are in the build settings from the scene list in collections
+    - Clicking the red X adds the scene to the build settings.
+
 # Version 0.3.2 - 06/10/2023
 - Added dialogue popup when attempting to load a collection with unsaved scene changes.
 

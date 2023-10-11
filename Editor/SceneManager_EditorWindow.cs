@@ -23,6 +23,7 @@ using UnityEditor.SceneManagement;
 using System.Collections.Generic;
 using System.IO;
 using HH.MultiSceneTools;
+using HH.MultiSceneToolsEditor;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -35,7 +36,7 @@ namespace HH.MultiSceneToolsEditor
         Scene[] LoadedScenes;
         string[] _sceneOptions;
         SceneAsset _SelectedScene;
-        SceneAsset[] currLoadedAssets;
+        ActiveScene[] currLoadedAssets;
         string[] loadedSceneOptions;
         SceneCollection[] _Collection;
         string[] Collection = new string[0];
@@ -307,6 +308,25 @@ namespace HH.MultiSceneToolsEditor
             Selection.activeObject = _NewCollection;
         }
         
+        static public void AddSceneToBuildSettings(string ScenePath)
+        {
+            // Find valid Scene paths and make a list of EditorBuildSettingsScene
+            List<EditorBuildSettingsScene> editorBuildSettingsScenes = new List<EditorBuildSettingsScene>();
+            int _sceneCount = SceneManager.sceneCountInBuildSettings;     
+
+            for (int i = 0; i < _sceneCount; i++)
+            {
+                string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+                if (!string.IsNullOrEmpty(scenePath))
+                    editorBuildSettingsScenes.Add(new EditorBuildSettingsScene(scenePath, true));
+            }
+
+            editorBuildSettingsScenes.Add(new EditorBuildSettingsScene(ScenePath, true));
+            
+            EditorBuildSettings.scenes = editorBuildSettingsScenes.ToArray();
+            Debug.Log("Added a scene to build settings: " + ScenePath);
+        }
+
         public void SetEditorBuildSettingsScenes()
         {
             // Find valid Scene paths and make a list of EditorBuildSettingsScene
@@ -370,14 +390,22 @@ namespace HH.MultiSceneToolsEditor
             }
         }
 
-        SceneAsset[] GetSceneAssetsFromPaths(string[] ScenePaths)
+        ActiveScene[] GetSceneAssetsFromPaths(string[] ScenePaths)
         {
             int buildSceneCount = UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings;     
-            SceneAsset[] _assets = new SceneAsset[ScenePaths.Length];
+            ActiveScene[] _assets = new ActiveScene[ScenePaths.Length];
+
+            Scene CurrentActiveScene = EditorSceneManager.GetActiveScene();
 
             for (int i = 0; i < ScenePaths.Length; i++)
             {
-                _assets[i] = (SceneAsset)AssetDatabase.LoadAssetAtPath(ScenePaths[i], typeof(SceneAsset));
+                _assets[i].TargetScene = (SceneAsset)AssetDatabase.LoadAssetAtPath(ScenePaths[i], typeof(SceneAsset));
+
+
+                if(!CurrentActiveScene.name.Equals(_assets[i].TargetScene.name))
+                    continue;
+
+                _assets[i].IsActive = true;
             }
             return _assets;
         }
