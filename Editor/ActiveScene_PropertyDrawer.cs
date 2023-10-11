@@ -73,7 +73,10 @@ public class ActiveSceneDrawerUIE : PropertyDrawer
         // GUI.Toggle(middle, inBuild, new GUIContent("", "Is this scene in the build settings?"));
 
         if(inBuild)
+        {
             GUI.DrawTexture(middle, _Y);
+            GUI.Label(middle, new GUIContent("  ", "This scene is in the build settings."));
+        }
         else
         {
             GUIStyle style = new GUIStyle();
@@ -81,7 +84,9 @@ public class ActiveSceneDrawerUIE : PropertyDrawer
 
             if(GUI.Button(middle, _N, style))
                 SceneManager_EditorWindow.AddSceneToBuildSettings(path);
+            GUI.Label(middle, new GUIContent("  ", "Click to add this scene to build settings."));
         }
+
 
         GUI.enabled = true;
 

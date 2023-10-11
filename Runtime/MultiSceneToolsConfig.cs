@@ -26,7 +26,6 @@ using UnityEngine.SceneManagement;
 
 namespace HH.MultiSceneTools
 {
-    // [CreateAssetMenu(menuName = "Multi Scene Tools/Editor Config", order = 2)]
     public class MultiSceneToolsConfig : ScriptableObject
     {
         public const string configPath = "Assets/Resources/MultiSceneTools/Config/";
