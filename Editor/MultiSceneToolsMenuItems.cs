@@ -32,5 +32,11 @@ namespace HH.MultiSceneTools
         {
             Application.OpenURL("https://github.com/HenrysHouses/MultiSceneTools/blob/main/CHANGELOG.md");
         }
+
+        [MenuItem("Tools/Multi Scene Tools/Add A Collection Menu Shortcut", false, 3)]
+        public static void AddMenuShortcut()
+        {
+            CreateCollectionShortcut.GenerateShortcut();
+        }
     }
 }
