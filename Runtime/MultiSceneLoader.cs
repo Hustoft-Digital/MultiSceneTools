@@ -17,6 +17,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace HH.MultiSceneTools
 {
@@ -92,7 +94,7 @@ namespace HH.MultiSceneTools
             OnSceneCollectionLoadDebug?.Invoke(TargetCollection, mode);
             OnSceneCollectionLoaded?.Invoke(TargetCollection, mode);
 
-            setActiveScene(TargetCollection);
+            setActiveScene(TargetCollection).ContinueWith(task => {Debug.Log("Set Active Scene: " + TargetCollection.GetTargetActiveScene());});
 
             #if UNITY_EDITOR
             MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
@@ -138,7 +140,7 @@ namespace HH.MultiSceneTools
             OnSceneCollectionLoadDebug?.Invoke(Collection, mode);
             OnSceneCollectionLoaded?.Invoke(Collection, mode);
             
-            setActiveScene(Collection);
+            setActiveScene(Collection).ContinueWith(task => {Debug.Log("Set Active Scene: " + Collection.GetTargetActiveScene());});
 
             #if UNITY_EDITOR
             MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
@@ -314,12 +316,20 @@ namespace HH.MultiSceneTools
             return null;
         }
 
-        static void setActiveScene(SceneCollection collection)
+        static async Task setActiveScene(SceneCollection collection)
         {
-            Scene targetActive = SceneManager.GetSceneByName(collection.GetTargetActiveScene());
+            if(collection.ActiveSceneIndex < 0)
+                return;
+
+            Scene targetActive = new Scene();
             
-            if(targetActive != null)
-                SceneManager.SetActiveScene(targetActive);
+            while(!targetActive.isLoaded)
+            {
+                targetActive = SceneManager.GetSceneByName(collection.GetTargetActiveScene());
+                await Task.Yield();
+            }
+
+            SceneManager.SetActiveScene(targetActive);
         }
 
         static string getBootSceneName()
