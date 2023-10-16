@@ -44,15 +44,14 @@ namespace HH.MultiSceneToolsEditor
             if (!scene.IsValid())
                 return;
 
+            if(!Collection.SceneNames.Exists(SC => SC == scene.name))
+                return;
+
             Rect rect_color = new Rect(selectionRect);
             rect_color.x -= 47;
             rect_color.width += 63;
 
             EditorGUI.DrawRect(rect_color, Collection.hierarchyColor);
-
-            if(!Collection.SceneNames.Exists(SC => SC == scene.name))
-                return;
-
             // ? if multiple collection can be loaded in the future. draw a line above this scene to differentiate the start and end of each collection.
 
             Rect rect_Collection = new Rect(selectionRect);
