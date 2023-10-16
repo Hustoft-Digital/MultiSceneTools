@@ -29,6 +29,7 @@ namespace HH.MultiSceneToolsEditor
         SerializedProperty _Title;
         SerializedProperty _ActiveSceneIndex;
         SerializedProperty _Scenes;
+        SerializedProperty _Color;
         
 
         private void OnEnable()
@@ -38,6 +39,7 @@ namespace HH.MultiSceneToolsEditor
             _Title = serializedObject.FindProperty("Title");
             _ActiveSceneIndex = serializedObject.FindProperty("ActiveSceneIndex");
             _Scenes = serializedObject.FindProperty("Scenes");
+            _Color = serializedObject.FindProperty("hierarchyColor");
         }
 
         public override void OnInspectorGUI()
@@ -45,6 +47,7 @@ namespace HH.MultiSceneToolsEditor
             serializedObject.Update();
 
             EditorGUILayout.PropertyField(_Title);
+            EditorGUILayout.PropertyField(_Color);
 
             if(_Scenes.isExpanded)
                 EditorGUILayout.PropertyField(_Scenes, new GUIContent("Active Scene | In Build | Target Scene"));
@@ -97,10 +100,15 @@ namespace HH.MultiSceneToolsEditor
             for (int i = 0; i < _Scenes.arraySize; i++)
             {
                 if(!_Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("IsActive").boolValue)
+                {
                     continue;
+                }
 
                 if(i == _ActiveSceneIndex.intValue)
+                {
+                    isUpdated = true; // this check might cause problems
                     continue;
+                }
 
                 if(_ActiveSceneIndex.intValue >= 0)
                     _Scenes.GetArrayElementAtIndex(_ActiveSceneIndex.intValue).FindPropertyRelative("IsActive").boolValue = false;

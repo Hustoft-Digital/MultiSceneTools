@@ -23,7 +23,6 @@ namespace HH.MultiSceneToolsEditor
 {
     public class MultiSceneToolsSetup_Wizard: EditorWindow 
     {
-        const string TexturePath = "/Images/MultiSceneTools Icon.png";
         Texture MultiSceneToolsIcon;
         static GUIStyle TitleStyle;
         static GUIStyle WarningStyle;
@@ -47,11 +46,7 @@ namespace HH.MultiSceneToolsEditor
 
         private void Awake() 
         {
-            MultiSceneToolsIcon = (Texture)AssetDatabase.LoadAssetAtPath("Packages/" + MultiSceneToolsStartup.packageName +TexturePath, typeof(Texture2D));
-            if(MultiSceneToolsIcon == null)
-            {
-                MultiSceneToolsIcon = (Texture)AssetDatabase.LoadAssetAtPath("Assets/MultiSceneManagementTools" +TexturePath, typeof(Texture2D));
-            }
+            MultiSceneToolsIcon = PackageTextureLoader.FindTexture(PackageTextureLoader.packageIcon);
 
             currentConfig = MultiSceneToolsConfig.instance;
 

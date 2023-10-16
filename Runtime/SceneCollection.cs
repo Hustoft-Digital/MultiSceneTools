@@ -93,7 +93,7 @@ namespace HH.MultiSceneTools
         [SerializeField, HideInInspector] public int ActiveSceneIndex; 
         [SerializeField, HideInInspector] public List<string> SceneNames = new List<string>();
 
-        public string GetTargetActiveScene()
+        public string GetNameOfTargetActiveScene()
         {
             if(ActiveSceneIndex < 0)
                 return "";
@@ -102,7 +102,8 @@ namespace HH.MultiSceneTools
         }
 
         #if UNITY_EDITOR
-        public List<ActiveScene> Scenes = new List<ActiveScene>();
+        [SerializeField] public List<ActiveScene> Scenes = new List<ActiveScene>();
+        [SerializeField, HideInInspector] public Color hierarchyColor;
 
         public SceneAsset[] GetSceneAssets()
         {
@@ -139,7 +140,7 @@ namespace HH.MultiSceneTools
                     if(!Scenes[i].TargetScene)
                     {
                         SceneNames.Clear();
-                        Debug.LogWarning("MutliSceneTools, SceneCollection: " + this.name + " can not be loaded with null reference scenes.");
+                        Debug.LogWarning("MultiSceneTools, SceneCollection: " + this.name + " can not be loaded with null reference scenes.");
                         break;
                     }
 
@@ -168,7 +169,8 @@ namespace HH.MultiSceneTools
                     EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(Scenes[i].TargetScene), OpenSceneMode.Additive);
             }
 
-            if(ActiveSceneIndex >= 0)
+            
+            if(ActiveSceneIndex >= 0 && ActiveSceneIndex < SceneNames.Count)
                 EditorSceneManager.SetActiveScene(EditorSceneManager.GetSceneByName(SceneNames[ActiveSceneIndex]));
 
             MultiSceneToolsConfig.instance.setCurrCollection(this);
@@ -190,6 +192,26 @@ namespace HH.MultiSceneTools
             }
             DirtyScenes = Dirty.ToArray();
             return hasDirtied;
+        }
+
+        public bool IsLoaded()
+        {
+            if(this == null)
+                return false;
+
+            if(EditorSceneManager.sceneCount < this.SceneNames.Count)
+                return false;
+
+            for (int i = 0; i < this.SceneNames.Count; i++)
+            {
+                    Scene loadedScene = EditorSceneManager.GetSceneByName(this.SceneNames[i]);
+
+                    if(loadedScene.IsValid())
+                        continue;
+                    else
+                        return false;
+            }
+            return true;
         }
         #endif
     }

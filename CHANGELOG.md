@@ -1,21 +1,36 @@
-# Version 0.3.3 - 12/10/2023
+# Version 0.3.5 - 16/10/2023
+
+- Added hierarchy info from the loaded collection.
+    - Shows which loaded scenes are in a collection with a tooltip on which it belongs to
+    - User defined collection color, which is displayed over the scene
+    - Confirmation the scene has been added to build settings
+    - shows which scene will be set as the active scene when loaded
+- Fixed bug with active scene index being reset to -1 every other time a change is made in the collection.
+
+# Version 0.3.4 - 12/10/2023
+
 - Fixed bug: Setting active scene now waits until the scene is loaded.
+
 # Version 0.3.3 - 11/10/2023
+
 - Added option for setting an active scene automatically when loading a collection (setting in the collection itself)
 - Added visual feedback of which scenes are in the build settings from the scene list in collections
     - Clicking the red X adds the scene to the build settings.
 - Added a menu item to create shortcuts to load collection for the menu bar.
 
 # Version 0.3.2 - 06/10/2023
+
 - Added dialogue popup when attempting to load a collection with unsaved scene changes.
 
 # Version 0.3.1 - 13/09/2023
+
 - Fixed trying to find currently open scenes when there is no config in the project, resulting in errors on first time setup.
 - Fixed Version number not being saved in the config
 - Changed the Scene Manager window name to "Multi Scene Manager"
 - Moved the menu items into Tools/MultiSceneTools/... 
 
 # Version 0.3.0  -  28/05/2023
+
 - Refactored config instance and initialization
 - Boot Loader example is now deprecated. 
 - Refactored Scene Collection creation.

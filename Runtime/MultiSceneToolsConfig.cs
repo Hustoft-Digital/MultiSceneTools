@@ -60,7 +60,6 @@ namespace HH.MultiSceneTools
 
         static MultiSceneToolsConfig loadedConfig {set; get;}
         public SceneCollection currentLoadedCollection {private set; get;}
-        private static Scene previousActiveScene;
         private SceneCollection EditorStartedInCollection;
         [SerializeField, HideInInspector] SceneCollection[] _Collections;
         public SceneCollection[] GetSceneCollections() => _Collections;
@@ -70,6 +69,7 @@ namespace HH.MultiSceneTools
         public string _BootScenePath = "Assets/Scenes/SampleScene.unity";
         #if UNITY_EDITOR
         public SceneAsset _TargetBootScene {private set; get;}
+        bool wasCollectionClosed;
         #endif
         public Scene BootScene;
         public string _SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
@@ -93,10 +93,30 @@ namespace HH.MultiSceneTools
             public void setCurrCollection(SceneCollection newCollection)
             {
                 currentLoadedCollection = newCollection;
+                MultiSceneToolsConfig.instance.wasCollectionClosed = false;
             }
         #endif
 
         #if UNITY_EDITOR
+
+            [InitializeOnLoadMethod]
+            static void SceneCloseHookUp()
+            {
+                EditorSceneManager.sceneOpened -= collectionWasClosed;
+                EditorSceneManager.sceneOpened += collectionWasClosed;
+            }
+
+            static void collectionWasClosed(Scene scene, OpenSceneMode mode)
+            {
+                MultiSceneToolsConfig.instance.wasCollectionClosed = !MultiSceneToolsConfig.instance.currentLoadedCollection.IsLoaded();
+
+                if(MultiSceneToolsConfig.instance.wasCollectionClosed)
+                {
+                    MultiSceneToolsConfig.instance.SetCurrentCollectionEmpty(); 
+                    MultiSceneToolsConfig.instance.wasCollectionClosed = false;
+                }
+            }
+
             private void OnEnable() {
                 if(currentLoadedCollection == null)
                     SetCurrentCollectionEmpty();
@@ -107,6 +127,7 @@ namespace HH.MultiSceneTools
 
                 _TargetBootScene = (SceneAsset)AssetDatabase.LoadAssetAtPath(_BootScenePath, typeof(SceneAsset));
                 BootScene = SceneManager.GetSceneByPath(_BootScenePath);
+
             }
 
             private void OnValidate() 

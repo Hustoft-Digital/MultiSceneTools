@@ -35,17 +35,8 @@ public class ActiveSceneDrawerUIE : PropertyDrawer
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) 
     {
-        if(_Y == null)
-        {
-            _Y = (Texture)AssetDatabase.LoadAssetAtPath("Packages/" + MultiSceneToolsStartup.packageName + approvedPng, typeof(Texture2D));
-            _N = (Texture)AssetDatabase.LoadAssetAtPath("Packages/" + MultiSceneToolsStartup.packageName + deniedPng, typeof(Texture2D));
-
-            if(_Y == null)
-            {
-                _Y = (Texture)AssetDatabase.LoadAssetAtPath("Assets/MultiSceneManagementTools" +approvedPng, typeof(Texture2D));
-                _N = (Texture)AssetDatabase.LoadAssetAtPath("Assets/MultiSceneManagementTools" +deniedPng, typeof(Texture2D));
-            }
-        }
+        _Y = PackageTextureLoader.FindTexture(PackageTextureLoader.trueIcon);
+        _N = PackageTextureLoader.FindTexture(PackageTextureLoader.falseIcon);
 
         SerializedProperty Scene = property.FindPropertyRelative("TargetScene");
         
