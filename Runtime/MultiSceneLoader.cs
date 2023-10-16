@@ -98,6 +98,8 @@ namespace HH.MultiSceneTools
             OnSceneCollectionLoadDebug?.Invoke(TargetCollection, mode);
             OnSceneCollectionLoaded?.Invoke(TargetCollection, mode);
 
+            setActiveScene(TargetCollection).ContinueWith(task => {Debug.Log("Set Active Scene: " + TargetCollection.GetNameOfTargetActiveScene());});
+
             #if UNITY_EDITOR
             MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
             #endif
@@ -138,6 +140,8 @@ namespace HH.MultiSceneTools
             OnSceneCollectionLoadDebug?.Invoke(Collection, mode);
             OnSceneCollectionLoaded?.Invoke(Collection, mode);
             
+            setActiveScene(Collection).ContinueWith(task => {Debug.Log("Set Active Scene: " + Collection.GetNameOfTargetActiveScene());});
+
             #if UNITY_EDITOR
             MultiSceneToolsConfig.instance.setCurrCollection(currentlyLoaded);
             #endif
@@ -791,6 +795,22 @@ namespace HH.MultiSceneTools
             }
             Debug.LogWarning("Could not find collection");
             return null;
+        }
+
+        static async Task setActiveScene(SceneCollection collection)
+        {
+            if(collection.ActiveSceneIndex < 0)
+                return;
+
+            Scene targetActive = new Scene();
+            
+            while(!targetActive.isLoaded)
+            {
+                targetActive = SceneManager.GetSceneByName(collection.GetNameOfTargetActiveScene());
+                await Task.Yield();
+            }
+
+            SceneManager.SetActiveScene(targetActive);
         }
 
         static string getBootSceneName()

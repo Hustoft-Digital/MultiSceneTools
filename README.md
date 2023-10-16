@@ -63,4 +63,4 @@
 
 ## License
 
-- GNU General Public License. Refer to the [LICENSE](./LICENSE) file
+- Apache License 2.0 License. Refer to the [LICENSE](./LICENSE) file

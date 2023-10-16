@@ -23,6 +23,7 @@ using UnityEditor.SceneManagement;
 using System.Collections.Generic;
 using System.IO;
 using HH.MultiSceneTools;
+using HH.MultiSceneToolsEditor;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -35,7 +36,7 @@ namespace HH.MultiSceneToolsEditor
         Scene[] LoadedScenes;
         string[] _sceneOptions;
         SceneAsset _SelectedScene;
-        SceneAsset[] currLoadedAssets;
+        ActiveScene[] currLoadedAssets;
         string[] loadedSceneOptions;
         SceneCollection[] _Collection;
         string[] Collection = new string[0];
@@ -60,12 +61,12 @@ namespace HH.MultiSceneToolsEditor
             Instance = this;
         }
 
-        [MenuItem("Multi Scene Tools/Scene Manager", false, 1)]
+        [MenuItem("Tools/Multi Scene Tools/Manager", false, 1)]
         static void Init()
         {
             // Get existing open window or if none, make a new one:
             SceneManager_EditorWindow window = (SceneManager_EditorWindow)EditorWindow.GetWindow(typeof(SceneManager_EditorWindow));
-            window.titleContent = new GUIContent("Scene Manager", "Loads, Unloads, and Saves Scene Collections");
+            window.titleContent = new GUIContent("Multi Scene Manager", "Loads, Unloads, and Saves Scene Collections");
             window.Show();
         }
 
@@ -262,25 +263,10 @@ namespace HH.MultiSceneToolsEditor
                 return;
             }
 
-            string[] paths = new string[SelectedCollection.Scenes.Count];
-            
-            for (int i = 0; i < paths.Length; i++)
-            {
-                paths[i] = AssetDatabase.GetAssetPath(SelectedCollection.Scenes[i]);
-            }
-
-            for (int i = 0; i < paths.Length; i++)
-            {
-                if(i == 0)
-                    EditorSceneManager.OpenScene(paths[i], OpenSceneMode.Single);
-                else
-                    EditorSceneManager.OpenScene(paths[i], OpenSceneMode.Additive);
-            }
-
+            SelectedCollection.LoadCollection();
             EditorUtility.FocusProjectWindow();
 
-            Selection.activeObject = SelectedCollection;
-            MultiSceneToolsConfig.instance.setCurrCollection(SelectedCollection);
+            // Selection.activeObject = SelectedCollection;
         }
 
         void LoadSceneAdditively()
@@ -327,6 +313,25 @@ namespace HH.MultiSceneToolsEditor
             Selection.activeObject = _NewCollection;
         }
         
+        static public void AddSceneToBuildSettings(string ScenePath)
+        {
+            // Find valid Scene paths and make a list of EditorBuildSettingsScene
+            List<EditorBuildSettingsScene> editorBuildSettingsScenes = new List<EditorBuildSettingsScene>();
+            int _sceneCount = SceneManager.sceneCountInBuildSettings;     
+
+            for (int i = 0; i < _sceneCount; i++)
+            {
+                string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+                if (!string.IsNullOrEmpty(scenePath))
+                    editorBuildSettingsScenes.Add(new EditorBuildSettingsScene(scenePath, true));
+            }
+
+            editorBuildSettingsScenes.Add(new EditorBuildSettingsScene(ScenePath, true));
+            
+            EditorBuildSettings.scenes = editorBuildSettingsScenes.ToArray();
+            Debug.Log("Added a scene to build settings: " + ScenePath);
+        }
+
         public void SetEditorBuildSettingsScenes()
         {
             // Find valid Scene paths and make a list of EditorBuildSettingsScene
@@ -390,14 +395,22 @@ namespace HH.MultiSceneToolsEditor
             }
         }
 
-        SceneAsset[] GetSceneAssetsFromPaths(string[] ScenePaths)
+        ActiveScene[] GetSceneAssetsFromPaths(string[] ScenePaths)
         {
             int buildSceneCount = UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings;     
-            SceneAsset[] _assets = new SceneAsset[ScenePaths.Length];
+            ActiveScene[] _assets = new ActiveScene[ScenePaths.Length];
+
+            Scene CurrentActiveScene = EditorSceneManager.GetActiveScene();
 
             for (int i = 0; i < ScenePaths.Length; i++)
             {
-                _assets[i] = (SceneAsset)AssetDatabase.LoadAssetAtPath(ScenePaths[i], typeof(SceneAsset));
+                _assets[i].TargetScene = (SceneAsset)AssetDatabase.LoadAssetAtPath(ScenePaths[i], typeof(SceneAsset));
+
+
+                if(!CurrentActiveScene.name.Equals(_assets[i].TargetScene.name))
+                    continue;
+
+                _assets[i].IsActive = true;
             }
             return _assets;
         }

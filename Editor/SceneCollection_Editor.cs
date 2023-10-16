@@ -14,7 +14,6 @@
 // *   See the License for the specific language governing permissions and
 // *   limitations under the License.
 
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
@@ -27,16 +26,39 @@ namespace HH.MultiSceneToolsEditor
     public class SceneCollection_Editor : Editor
     {
         SceneCollection script;
+        SerializedProperty _Title;
+        SerializedProperty _ActiveSceneIndex;
+        SerializedProperty _Scenes;
+        SerializedProperty _Color;
+        
 
         private void OnEnable()
         {
             script = target as SceneCollection;
+
+            _Title = serializedObject.FindProperty("Title");
+            _ActiveSceneIndex = serializedObject.FindProperty("ActiveSceneIndex");
+            _Scenes = serializedObject.FindProperty("Scenes");
+            _Color = serializedObject.FindProperty("hierarchyColor");
         }
 
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
-        
+            serializedObject.Update();
+
+            EditorGUILayout.PropertyField(_Title);
+            EditorGUILayout.PropertyField(_Color);
+
+            if(_Scenes.isExpanded)
+                EditorGUILayout.PropertyField(_Scenes, new GUIContent("Active Scene | In Build | Target Scene"));
+            else
+                EditorGUILayout.PropertyField(_Scenes);
+
+            if(_Scenes.serializedObject.hasModifiedProperties)
+                updateActiveSceneIndex();
+
+            serializedObject.ApplyModifiedProperties();
+
             if(GUILayout.Button("Load Collection"))
             {
                 script.LoadCollection();
@@ -70,6 +92,33 @@ namespace HH.MultiSceneToolsEditor
                 return true;
             }
             return false;
+        }
+
+        void updateActiveSceneIndex()
+        {
+            bool isUpdated = false;
+            for (int i = 0; i < _Scenes.arraySize; i++)
+            {
+                if(!_Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("IsActive").boolValue)
+                {
+                    continue;
+                }
+
+                if(i == _ActiveSceneIndex.intValue)
+                {
+                    isUpdated = true; // this check might cause problems
+                    continue;
+                }
+
+                if(_ActiveSceneIndex.intValue >= 0)
+                    _Scenes.GetArrayElementAtIndex(_ActiveSceneIndex.intValue).FindPropertyRelative("IsActive").boolValue = false;
+
+                _ActiveSceneIndex.intValue = i;
+                isUpdated = true;
+                break;
+            }
+            if(!isUpdated)
+                _ActiveSceneIndex.intValue = -1;
         }
     }
 }
