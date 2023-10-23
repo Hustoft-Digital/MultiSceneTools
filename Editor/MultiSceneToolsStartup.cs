@@ -78,6 +78,9 @@ namespace HH.MultiSceneToolsEditor
                 }
             }
 
+            if(packageVersion == null)
+                packageVersion = MultiSceneToolsConfig.instance.versionNumber;
+
             if(packageVersion.Equals(""))
                 packageVersion = MultiSceneToolsConfig.instance.versionNumber;
 
