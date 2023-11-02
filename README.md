@@ -6,8 +6,16 @@
 
 - Scene Collection ScriptableObjects
     - Tracks which scenes are used together in runtime.
-    - Double Click to load collection
-    - (Comming) Tracks cross scene references
+    - Double Click to load collection.
+    - Set which scene is the active scene in the collection. (gets set automatically)
+    - Track and add collection scenes to build settings.
+    - (Comming) Tracks cross scene references.
+ 
+- Hierarchy Syle
+    - Icon and tooltip on scenes that belong to a scene collection
+    - User defined scene collection color.
+    - Checkmark on the target active scene for the collection
+    - Icons for displaying which collection scenes are in the build settings
 
 - Multi Scene Management Window
     - Display currently loaded scene collection
@@ -24,7 +32,7 @@
     - Load scene collections with this static class
     - OnSceneCollectionLoaded & OnSceneCollectionLoadDebug<SceneCollection, collectionLoadMode> events triggered on sucessful loading
     - Loading modes
-        - Additive
+        - Additive (re-working)
             - Loads all scenes in a collection additive
         - Difference
             - Unloads all scenes the collections do not share, then load the missing scenes.
@@ -32,7 +40,7 @@
             - Unloads all scenes other than the boot scene, then loads all scenes additively.
     - (comming) Scene Node view, Connect scenes together with nodes to visualise adjacent scenes and automate when scenes should be loaded. 
 
-- Multi Scene Toools Config
+- Multi Scene Tools Config
     - See and set current singleton instance
     - See and set current loaded scene collection
     - Toggle for allowing cross scene referencing (Cross scene referencing is not implemented)
@@ -42,7 +50,7 @@
 
 ## Examples
 
-- Boot loader
+- Boot loader (obsolete)
     - Gets current collection when entering play in editor
     - loads the main menu when the _Boot scene is started
 
