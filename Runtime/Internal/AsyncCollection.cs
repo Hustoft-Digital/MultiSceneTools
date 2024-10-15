@@ -1,6 +1,6 @@
 // *   Multi Scene Tools For Unity
 // *
-// *   Copyright (C) 2023 Henrik Hustoft
+// *   Copyright (C) 2024 Hustoft Digital
 // *
 // *   Licensed under the Apache License, Version 2.0 (the "License");
 // *   you may not use this file except in compliance with the License.
@@ -18,21 +18,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 using System.Threading;
+using UnityEngine.Events;
 
 namespace HH.MultiSceneTools.Internal
 {
-    public class AsyncCollection
+    public class AsyncCollection 
     {
         public SceneCollection LoadingCollection {get; private set;}
-        public collectionLoadMode loadMode {get; private set;}
+        public LoadCollectionMode loadMode {get; private set;}
         public List<AsyncOperation> loadingOperations = new List<AsyncOperation>();
+        public List<AsyncOperation> unloadingOperations = new List<AsyncOperation>();
         public List<string> UnloadScenes = new List<string>();
+        public bool deferSceneUnload {get; private set;}
         public bool isBeingEnabled {get; private set;}
+        public CancellationTokenSource cancellationTokenSource;
+        public UnityEvent OnComplete = new UnityEvent();
+        public bool isLoadingComplete = false;
 
-        public AsyncCollection(SceneCollection TargetCollection, collectionLoadMode mode)
+        public AsyncCollection(SceneCollection TargetCollection, LoadCollectionMode mode, CancellationTokenSource tokenSource, bool deferSceneUnload)
         {
             LoadingCollection = TargetCollection;
             loadMode = mode;
+            cancellationTokenSource = tokenSource;
+            this.deferSceneUnload = deferSceneUnload;
+
+            if(deferSceneUnload && (mode.Equals(LoadCollectionMode.Additive) || mode.Equals(LoadCollectionMode.DifferenceAdditive)))
+            {
+                Debug.LogWarning("Additive loading can not be affected by deferSceneUnload");
+                this.deferSceneUnload = false;
+            }
         }
 
         public bool getIsComplete()
@@ -54,6 +68,9 @@ namespace HH.MultiSceneTools.Internal
             }
 
             if(loadingOperations.Count == 0)
+                Debug.LogError("Cant get progress, there was no loading operations");
+
+            if(loadingOperations.Count == 0)
                 return 0.9f;
 
             return progress / loadingOperations.Count;
@@ -61,9 +78,13 @@ namespace HH.MultiSceneTools.Internal
 
         public void enableLoadedScenes()
         {
+            if(isLoadingComplete)
+            {
+                Debug.LogWarning($"{LoadingCollection.Title}'s loading operation has already been completed");
+                return;
+            }
+
             isBeingEnabled = true;
-            // if(singleLoadingEnabled)
-            //     return;
 
             for (int i = 0; i < loadingOperations.Count; i++)
             {
@@ -71,15 +92,38 @@ namespace HH.MultiSceneTools.Internal
             }
         }
 
-        public async Task waitUntilIsCompleteAsync(CancellationToken cancellationToken)
+        public void removeUnloadedScenes()
+        {
+            if(isLoadingComplete)
+            {
+                Debug.LogWarning($"{LoadingCollection.Title}'s loading operation has already been completed");
+                return;
+            }
+
+            if(!deferSceneUnload)
+            {
+                Debug.Log($"{LoadingCollection.Title}'s loading operation will already unload scenes automatically");
+                return;
+            }
+
+            if(!isBeingEnabled)
+            {
+                Debug.LogWarning("Loading operations need to be complete and scenes must be enabled before scenes can be unloaded");
+                return;
+            }
+
+            deferSceneUnload = false;
+        }
+
+
+        public async Task waitUntilIsCompleteAsync()
         {
             while(!getIsComplete())
             {
+                Debug.Log("waiting for enable");
+                if(cancellationTokenSource.IsCancellationRequested)
+                    return;
                 await Task.Delay(1);
-
-                if(cancellationToken != null)
-                    if(cancellationToken.IsCancellationRequested)
-                        return;
             }
         } 
 
@@ -93,15 +137,24 @@ namespace HH.MultiSceneTools.Internal
             return false;
         }
 
-        public async Task readyToUnload(CancellationToken cancellationToken)
+        public async Task isReadyToEnableScenes()
         {
             while(!isReady())
             {
+                if(cancellationTokenSource.IsCancellationRequested)
+                    return;
                 await Task.Delay(1);
+            }
+        }
 
-                if(cancellationToken != null)
-                    if(cancellationToken.IsCancellationRequested)
-                        return;
+        public async Task isReadyToUnloadScenes()
+        {
+            while(deferSceneUnload)
+            {
+                Debug.Log("waiting to unload");
+                if(cancellationTokenSource.IsCancellationRequested)
+                    return;
+                await Task.Delay(1);
             }
         }
     }

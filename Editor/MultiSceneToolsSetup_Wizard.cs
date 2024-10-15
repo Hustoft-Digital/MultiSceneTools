@@ -1,6 +1,6 @@
 // *   Multi Scene Tools For Unity
 // *
-// *   Copyright (C) 2023 Henrik Hustoft
+// *   Copyright (C) 2024 Hustoft Digital
 // *
 // *   Licensed under the Apache License, Version 2.0 (the "License");
 // *   you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ namespace HH.MultiSceneToolsEditor
                 drawText(ref _Rect, "Thank you for using Multi Scene Tools!", TitleStyle);
 
             _Rect.y += 5;
-            drawText(ref _Rect, "Created by Henrik Hustoft", EditorStyles.centeredGreyMiniLabel);
+            drawText(ref _Rect, "Created by Hustoft Digital", EditorStyles.centeredGreyMiniLabel);
 
             _Rect.x += 10;
             _Rect.y += 20;
@@ -200,7 +200,7 @@ namespace HH.MultiSceneToolsEditor
                 AssetDatabase.Refresh();
             }
 
-            config.findOpenSceneCollection();
+            config.findOpenSceneCollections();
             EditorApplication.playModeStateChanged += MultiSceneToolsConfig.instance.resumeCurrentLoadedCollection;
             Debug.Log("Confirmed settings", config);
 

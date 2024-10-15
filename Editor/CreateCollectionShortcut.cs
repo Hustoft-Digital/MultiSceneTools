@@ -1,6 +1,6 @@
 // *   Multi Scene Tools For Unity
 // *
-// *   Copyright (C) 2023 Henrik Hustoft
+// *   Copyright (C) 2024 Hustoft Digital
 // *
 // *   Licensed under the Apache License, Version 2.0 (the "License");
 // *   you may not use this file except in compliance with the License.
@@ -32,7 +32,8 @@ public static class CreateCollectionShortcut
 
     public static void GenerateShortcut()
     {
-        SceneCollection TargetCollection = MultiSceneToolsConfig.instance.currentLoadedCollection;
+        Debug.LogWarning("only adds the first collection");
+        SceneCollection TargetCollection = MultiSceneToolsConfig.instance.LoadedCollections[0];
 
         string path = Application.dataPath + shortcutPath;
         string CollectionAssetPath = AssetDatabase.GetAssetPath(TargetCollection); 

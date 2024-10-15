@@ -1,6 +1,6 @@
 // *   Multi Scene Tools For Unity
 // *
-// *   Copyright (C) 2023 Henrik Hustoft
+// *   Copyright (C) 2024 Hustoft Digital
 // *
 // *   Licensed under the Apache License, Version 2.0 (the "License");
 // *   you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ namespace HH.MultiSceneToolsEditor
 
         SerializedProperty packageVersion, useBoot, wizardStartUp;
         SerializedProperty bootPath, targetBootScene, collectionPath;
+        SerializedProperty loadedCollectionsProperty;
 
         private void OnEnable()
         {
@@ -38,6 +39,7 @@ namespace HH.MultiSceneToolsEditor
             bootPath = serializedObject.FindProperty("_BootScenePath");
             targetBootScene = serializedObject.FindProperty("_TargetBootScene");
             collectionPath = serializedObject.FindProperty("_SceneCollectionPath");
+            loadedCollectionsProperty = serializedObject.FindProperty("currentLoadedCollection");
         }
 
         void setDefaultPaths()
@@ -53,6 +55,8 @@ namespace HH.MultiSceneToolsEditor
 
         public override void OnInspectorGUI()
         {
+            // base.OnInspectorGUI();
+
             serializedObject.Update();
 
             GUILayout.Space(8);
@@ -62,8 +66,7 @@ namespace HH.MultiSceneToolsEditor
             EditorGUILayout.PropertyField(packageVersion, new GUIContent("Version"));
             var config = EditorGUILayout.ObjectField("Current Instance", MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
 
-
-            EditorGUILayout.ObjectField(new GUIContent("Loaded Collection", "Currently loaded collection, this will be overridden if saved"), script.currentLoadedCollection, typeof(SceneCollection), false);
+            EditorGUILayout.PropertyField(loadedCollectionsProperty, new GUIContent("Loaded Collections", "All collections loaded in the hierarchy"));
             GUI.enabled = true;
 
             GUILayout.Space(8);
@@ -113,14 +116,16 @@ namespace HH.MultiSceneToolsEditor
 
             // GUILayout.Space(10);
 
-            if(script.currentLoadedCollection == null)
+            if(script.LoadedCollections != null)
             {
-                script.findOpenSceneCollection();
+                if(script.LoadedCollections.Count == 0)
+                    script.findOpenSceneCollections();
             }
 
-            if(script.currentLoadedCollection == null)
+            if(script.LoadedCollections != null)
             {
-                script.SetCurrentCollectionEmpty();
+                if(script.LoadedCollections.Count == 0)
+                    script.SetCurrentCollectionEmpty();
             }
 
             setDefaultPaths();
