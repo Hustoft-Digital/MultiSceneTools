@@ -1,6 +1,6 @@
 // *   Multi Scene Tools For Unity
 // *
-// *   Copyright (C) 2023 Henrik Hustoft
+// *   Copyright (C) 2024 Hustoft Digital
 // *
 // *   Licensed under the Apache License, Version 2.0 (the "License");
 // *   you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 using UnityEngine;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -59,10 +60,12 @@ namespace HH.MultiSceneTools
         }
 
         static MultiSceneToolsConfig loadedConfig {set; get;}
-        public SceneCollection currentLoadedCollection {private set; get;}
-        private SceneCollection EditorStartedInCollection;
-        [SerializeField, HideInInspector] SceneCollection[] _Collections;
-        public SceneCollection[] GetSceneCollections() => _Collections;
+
+        public List<SceneCollection> LoadedCollections => currentLoadedCollection;
+        [field:SerializeField] List<SceneCollection> currentLoadedCollection = new List<SceneCollection>();
+        private SceneCollection[] EditorStartedInCollection;
+        [SerializeField, HideInInspector] List<SceneCollection> _ProjectCollections;
+        public SceneCollection[] GetSceneCollections() => _ProjectCollections.ToArray();
         [field:SerializeField, HideInInspector] public bool LogOnSceneChange {get; private set;}
         [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
         public bool UseBootScene = false;
@@ -90,10 +93,41 @@ namespace HH.MultiSceneTools
             {   
                 LogOnSceneChange = state;
             }
-            public void setCurrCollection(SceneCollection newCollection)
+            public SceneCollection[] setLoadedCollection(SceneCollection Collection, LoadCollectionMode state)
             {
-                currentLoadedCollection = newCollection;
-                MultiSceneToolsConfig.instance.wasCollectionClosed = false;
+                switch(state)
+                {
+                    case LoadCollectionMode.Additive:
+                        currentLoadedCollection.Add(Collection);
+                        MultiSceneToolsConfig.instance.wasCollectionClosed = false;
+                        break;
+                    case LoadCollectionMode.Subtractive:
+                        currentLoadedCollection.Remove(Collection);
+                        break;
+                    case LoadCollectionMode.Replace:
+                        currentLoadedCollection.Clear();
+                        currentLoadedCollection.Add(Collection);
+                        break;
+                }
+                return currentLoadedCollection.ToArray();
+            }
+
+            public SceneCollection[] setLoadedCollection(List<SceneCollection> Collections, LoadCollectionMode state)
+            {
+                if(state == LoadCollectionMode.Additive ||state == LoadCollectionMode.DifferenceAdditive)
+                    wasCollectionClosed = false;
+
+                currentLoadedCollection.Clear();
+                for (int i = 0; i < Collections.Count; i++)
+                {
+                    currentLoadedCollection.Add(Collections[i]);
+                }
+                return currentLoadedCollection.ToArray();
+            }
+
+            public void clearLoadedCollections()
+            {
+                currentLoadedCollection.Clear();
             }
         #endif
 
@@ -108,7 +142,7 @@ namespace HH.MultiSceneTools
 
             static void collectionWasClosed(Scene scene, OpenSceneMode mode)
             {
-                MultiSceneToolsConfig.instance.wasCollectionClosed = !MultiSceneToolsConfig.instance.currentLoadedCollection.IsLoaded();
+                // MultiSceneToolsConfig.instance.wasCollectionClosed = !MultiSceneToolsConfig.instance.currentLoadedCollection.IsLoaded();
 
                 if(MultiSceneToolsConfig.instance.wasCollectionClosed)
                 {
@@ -117,17 +151,19 @@ namespace HH.MultiSceneTools
                 }
             }
 
-            private void OnEnable() {
+            private void OnEnable() 
+            {
                 if(currentLoadedCollection == null)
                     SetCurrentCollectionEmpty();
                     
-                EditorStartedInCollection = currentLoadedCollection;
+                EditorStartedInCollection = currentLoadedCollection.ToArray();
                 UpdateCollections();
-                MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);      
+
+                // ? is this line required? 
+                MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection, LoadCollectionMode.Replace);
 
                 _TargetBootScene = (SceneAsset)AssetDatabase.LoadAssetAtPath(_BootScenePath, typeof(SceneAsset));
                 BootScene = SceneManager.GetSceneByPath(_BootScenePath);
-
             }
 
             private void OnValidate() 
@@ -136,7 +172,7 @@ namespace HH.MultiSceneTools
                     return;
 
                 UpdateCollections();
-                findOpenSceneCollection();
+                findOpenSceneCollections();
 
                 #if UNITY_EDITOR
                 _TargetBootScene = (SceneAsset)AssetDatabase.LoadAssetAtPath(_BootScenePath, typeof(SceneAsset));
@@ -146,9 +182,12 @@ namespace HH.MultiSceneTools
             
             public void SetCurrentCollectionEmpty()
             {
-                currentLoadedCollection = ScriptableObject.CreateInstance<SceneCollection>();
-                currentLoadedCollection.name = "None";
-                MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
+                if(currentLoadedCollection == null)
+                    currentLoadedCollection = new List<SceneCollection>();
+                currentLoadedCollection.Clear();
+                currentLoadedCollection.Add(ScriptableObject.CreateInstance<SceneCollection>());
+                currentLoadedCollection[0].name = "None";
+                MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection, LoadCollectionMode.Additive);
             }
 
             public void UpdateCollections()
@@ -160,14 +199,14 @@ namespace HH.MultiSceneTools
                 }
 
                 string[] assets = AssetDatabase.FindAssets("", new string[]{_SceneCollectionPath});
-                _Collections = new SceneCollection[assets.Length];
+                _ProjectCollections.Clear();
 
-                for (int i = 0; i < _Collections.Length; i++)
+                for (int i = 0; i < assets.Length; i++)
                 {
                     string path = AssetDatabase.GUIDToAssetPath(assets[i]);
-                    _Collections[i] = (SceneCollection)AssetDatabase.LoadAssetAtPath(path, typeof(SceneCollection));
+                    _ProjectCollections.Add((SceneCollection)AssetDatabase.LoadAssetAtPath(path, typeof(SceneCollection)));
 
-                    if(_Collections[i] == null)
+                    if(_ProjectCollections[i] == null)
                     {
                         var ExceptionObject = AssetDatabase.LoadAssetAtPath(path, typeof(UnityEngine.Object));
                         Debug.LogException(new Exception(path + " is not a scene collection asset. Please remove it from the collections folder"), ExceptionObject);
@@ -179,12 +218,26 @@ namespace HH.MultiSceneTools
             {
                 if(EditorApplication.isPlaying && state == PlayModeStateChange.ExitingPlayMode)
                 {
-                    currentLoadedCollection = EditorStartedInCollection;
+                    currentLoadedCollection.Clear();
+
+                    for (int i = 0; i < EditorStartedInCollection.Length; i++)
+                    {
+                        currentLoadedCollection.Add(EditorStartedInCollection[i]);
+                    }
                 }
             }
 
-            public void findOpenSceneCollection()
+            public void findOpenSceneCollections()
             {
+                if(currentLoadedCollection != null) 
+                {
+                    if(currentLoadedCollection.Count > 0)
+                    {
+                        MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection, LoadCollectionMode.Additive);
+                        return;
+                    }
+                }
+
                 if(instance == null)
                     return;
 
@@ -201,17 +254,22 @@ namespace HH.MultiSceneTools
                 if(collections == null)
                     return;
 
+                currentLoadedCollection.Clear();
+
                 for (int i = 0; i < collections.Length; i++)
                 {
-                    SceneAsset[] collection = collections[i].GetSceneAssets();
+                    SceneAsset[] sceneAssets = collections[i].GetSceneAssets();
 
-                    bool isEqual = Enumerable.SequenceEqual(collection, OpenScenes);
-
-                    if(isEqual)
+                    for (int j = 0; j < sceneAssets.Length; j++)
                     {
-                        currentLoadedCollection = collections[i];     
-                        MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection);
-                        break;                   
+                        bool isEqual = Enumerable.SequenceEqual(sceneAssets, OpenScenes);
+
+                        if(isEqual)
+                        {
+                            currentLoadedCollection.Add(collections[i]);     
+                            MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection, LoadCollectionMode.Additive);
+                            break;                    
+                        }
                     }
                 }
             }

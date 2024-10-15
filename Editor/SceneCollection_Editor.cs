@@ -1,6 +1,6 @@
 // *   Multi Scene Tools For Unity
 // *
-// *   Copyright (C) 2023 Henrik Hustoft
+// *   Copyright (C) 2024 Hustoft Digital
 // *
 // *   Licensed under the Apache License, Version 2.0 (the "License");
 // *   you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ namespace HH.MultiSceneToolsEditor
             if (collection != null)
             {
                 collection.LoadCollection();
-                MultiSceneToolsConfig.instance.setCurrCollection(collection);
+                MultiSceneToolsConfig.instance.setLoadedCollection(collection, LoadCollectionMode.Replace);
 
                 if(SceneManager_EditorWindow.Instance)
                     SceneManager_EditorWindow.Instance.SelectedCollection = collection;
@@ -110,6 +110,7 @@ namespace HH.MultiSceneToolsEditor
                     continue;
                 }
 
+                Debug.LogError("cant remove from list when active scene is later in the list");
                 if(_ActiveSceneIndex.intValue >= 0)
                     _Scenes.GetArrayElementAtIndex(_ActiveSceneIndex.intValue).FindPropertyRelative("IsActive").boolValue = false;
 

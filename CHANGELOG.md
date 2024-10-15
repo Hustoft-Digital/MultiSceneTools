@@ -1,3 +1,10 @@
+# Version 0.4.0 - 15/10/2024
+- Added async loading
+    - Added AsyncCollection for ease of use to track the loading state of the collection
+        - options for manually enabling scenes once they are done loading / waiting to unload scenes after loading
+- Refactored additive loading
+- Added experimental subtractive loading mode (not implemented for async)
+
 # Version 0.3.5 - 16/10/2023
 
 - Added hierarchy info from the loaded collection.

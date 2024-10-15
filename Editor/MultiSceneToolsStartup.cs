@@ -1,6 +1,6 @@
 // *   Multi Scene Tools For Unity
 // *
-// *   Copyright (C) 2023 Henrik Hustoft
+// *   Copyright (C) 2024 Hustoft Digital
 // *
 // *   Licensed under the Apache License, Version 2.0 (the "License");
 // *   you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ namespace HH.MultiSceneToolsEditor
     {
         public static bool detectedUpdate;
         public static string packageVersion;
-        public const string packageName = "com.henrikhustoft.multi-scene-management-tools";
+        public const string packageName = "com.hustoftdigital.multi-scene-management-tools";
         
         [InitializeOnLoadMethod]
         static void Startup()
@@ -34,8 +34,9 @@ namespace HH.MultiSceneToolsEditor
             if(!MultiSceneToolsConfig.instance)
                 return;
 
-            MultiSceneToolsConfig.instance.findOpenSceneCollection();
+            MultiSceneToolsConfig.instance.findOpenSceneCollections();
             EditorApplication.playModeStateChanged +=  MultiSceneToolsConfig.instance.resumeCurrentLoadedCollection;
+            // EditorApplication.playModeStateChanged += MultiSceneLoader.cancelAsyncTasks;
         }
 
         static void CheckUpdates(PackageRegistrationEventArgs package)

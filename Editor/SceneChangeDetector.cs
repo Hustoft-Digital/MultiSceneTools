@@ -14,29 +14,25 @@
 // *   See the License for the specific language governing permissions and
 // *   limitations under the License.
 
+// using UnityEngine;
+// using UnityEngine.SceneManagement;
+// using UnityEditor;
+// using UnityEditor.SceneManagement;
 
-using UnityEditor;
-using HH.MultiSceneTools.Examples;
+// [InitializeOnLoad]
+// public class SceneChangeDetector
+// {
+//     private static Scene _previousScene;
 
-namespace HH.MultiSceneToolsEditor
-{
-    [CustomEditor(typeof(SceneTransition))]
-    public class SceneTransition_Editor : Editor
-    {
-        SceneTransition script;
+//     SceneChangeDetector()
+//     {
+//         _previousScene = EditorSceneManager.GetActiveScene();
+//         EditorSceneManager.activeSceneChanged += onSceneChanged;
+//         Debug.Log("Added to event");
+//     }
 
-        private void OnEnable()
-        {
-            script = target as SceneTransition;
-        }
-
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-
-
-            EditorGUILayout.TextField("State Name IN: ", script.TransitionIN, EditorStyles.boldLabel);
-            EditorGUILayout.TextField("State Name OUT: ", script.TransitionOUT, EditorStyles.boldLabel);
-        }
-    }
-}
+//     void onSceneChanged(Scene previousScene, Scene newScene)
+//     {
+//         Debug.Log("Trigger");
+//     }
+// }

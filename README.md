@@ -68,7 +68,7 @@
 
 ## Author
 
-- [Henrik Hustoft](https://www.linkedin.com/in/henrik-hustoft-2366ab220/)
+- [Hustoft Digital](https://www.linkedin.com/in/henrik-hustoft-2366ab220/)
 
 ## License
 

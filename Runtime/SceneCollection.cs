@@ -1,6 +1,6 @@
 // *   Multi Scene Tools For Unity
 // *
-// *   Copyright (C) 2023 Henrik Hustoft
+// *   Copyright (C) 2024 Hustoft Digital
 // *
 // *   Licensed under the Apache License, Version 2.0 (the "License");
 // *   you may not use this file except in compliance with the License.
@@ -173,7 +173,21 @@ namespace HH.MultiSceneTools
             if(ActiveSceneIndex >= 0 && ActiveSceneIndex < SceneNames.Count)
                 EditorSceneManager.SetActiveScene(EditorSceneManager.GetSceneByName(SceneNames[ActiveSceneIndex]));
 
-            MultiSceneToolsConfig.instance.setCurrCollection(this);
+            MultiSceneToolsConfig.instance.setLoadedCollection(this, LoadCollectionMode.Replace);
+        }
+
+        public void LoadAdditive()
+        {
+            if(MultiSceneToolsConfig.instance.LoadedCollections.Contains(this))
+                return; 
+
+            for (int i = 0; i < this.SceneNames.Count; i++)
+            {
+                string path = AssetDatabase.GetAssetPath(this.Scenes[i].TargetScene);
+
+                EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
+            }
+            MultiSceneToolsConfig.instance.setLoadedCollection(this, LoadCollectionMode.Additive);
         }
 
         bool isScenesDirty(out Scene[] DirtyScenes)
