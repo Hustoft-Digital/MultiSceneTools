@@ -9,9 +9,9 @@
     - Double Click to load collection.
     - Set which scene is the active scene in the collection. (gets set automatically)
     - Track and add collection scenes to build settings.
-    - (Comming) Tracks cross scene references.
+    - (Coming) Tracks cross scene references.
  
-- Hierarchy Syle
+- Hierarchy Style
     - Icon and tooltip on scenes that belong to a scene collection
     - User defined scene collection color.
     - Checkmark on the target active scene for the collection
@@ -30,16 +30,26 @@
 
 - Multi Scene Loader
     - Load scene collections with this static class
-    - OnSceneCollectionLoaded & OnSceneCollectionLoadDebug<SceneCollection, collectionLoadMode> events triggered on sucessful loading
+    - OnSceneCollectionLoaded & OnSceneCollectionLoadDebug<SceneCollection, collectionLoadMode> events triggered on successful loading
     - Loading modes
-        - Additive (re-working)
-            - Loads all scenes in a collection additive
-        - Difference
-            - Unloads all scenes the collections do not share, then load the missing scenes.
+        - Additive
+            - Loads all scenes in a collection additively
         - Replace
             - Unloads all scenes other than the boot scene, then loads all scenes additively.
-    - (comming) Async loading methods
-    - (comming) Scene Node view, Connect scenes together with nodes to visualise adjacent scenes and automate when scenes should be loaded. 
+        - DifferenceReplace
+            - Unloads all scenes the collections do not share, then load the missing scenes.
+        - DifferenceAdditive
+            - Load all scenes in the collection that is not already loaded
+        - Subtractive [experimental] (not implemented for async)
+            - unload all matching scenes
+    - Async loading methods
+        - preload scenes and activate when ready
+        - defer unloading scenes and trigger unloading when ready
+        - returns an AsyncCollection
+            - track progression of the async operations
+            - trigger activation of scenes
+            - trigger unloading of scenes 
+    - (comming) Scene Node view, Connect scenes together with nodes to visualize adjacent scenes and automate when scenes should be loaded. 
 
 - Multi Scene Tools Config
     - See and set current singleton instance
@@ -50,10 +60,6 @@
     - Target path for loading scene collections
 
 ## Examples
-
-- Boot loader (obsolete)
-    - Gets current collection when entering play in editor
-    - loads the main menu when the _Boot scene is started
 
 - Scene Transitioner
     - Waits for the transition animation to finish before loading the next scene collection.
