@@ -49,7 +49,7 @@
             - track progression of the async operations
             - trigger activation of scenes
             - trigger unloading of scenes 
-    - (comming) Scene Node view, Connect scenes together with nodes to visualize adjacent scenes and automate when scenes should be loaded. 
+    - (coming) Scene Node view, Connect scenes together with nodes to visualize adjacent scenes and automate when scenes should be loaded. 
 
 - Multi Scene Tools Config
     - See and set current singleton instance
