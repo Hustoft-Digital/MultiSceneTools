@@ -48,6 +48,7 @@ namespace HH.MultiSceneTools
         static AsyncOperation loadAsync(string SceneName, LoadSceneMode mode, bool AllowSceneActivation = false, int priority = 0)
         {
             AsyncOperation AsyncLoading = SceneManager.LoadSceneAsync(SceneName, mode);
+
             AsyncLoading.allowSceneActivation = AllowSceneActivation;
             AsyncLoading.priority = priority;
             return AsyncLoading;
@@ -246,11 +247,12 @@ namespace HH.MultiSceneTools
         static void loadReplaceAsync(ref AsyncCollection task, SceneCollection Collection, bool preload = true)
         {
             bool loadBoot = MultiSceneToolsConfig.instance.UseBootScene;
+            bool bootIsLoaded = false;
             string bootScene = getBootSceneName();
 
             // is boot scene loaded?
             if(MultiSceneToolsConfig.instance.UseBootScene)
-                SceneIsLoaded(bootScene, out loadedBootScene);
+                bootIsLoaded = SceneIsLoaded(bootScene, out loadedBootScene);
 
             // Unload Scenes
             if(!preload)
@@ -260,15 +262,15 @@ namespace HH.MultiSceneTools
             {
                 if(task.cancellationTokenSource.IsCancellationRequested)
                     return;
-                if(loadBoot)
+                if(i != 0 || (loadBoot && bootIsLoaded))
                 {
-                    if(Collection.SceneNames[i] == bootScene)
+                    if(Collection.SceneNames[i] == bootScene && loadBoot && bootIsLoaded)
                         continue;
 
                     task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive));
                 }
                 else
-                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive));
+                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Single, false, 1));
             }
 
             asyncLoadingTask.Add(task);

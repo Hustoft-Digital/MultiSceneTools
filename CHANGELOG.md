@@ -1,3 +1,6 @@
+# Version 0.4.1 - 06/12/2024
+- Fixed issue with Async LoadCollectionMode.Replace not correctly replacing all scenes
+
 # Version 0.4.0 - 15/10/2024
 - Added async loading
     - Added AsyncCollection for ease of use to track the loading state of the collection
