@@ -73,15 +73,23 @@ namespace HH.MultiSceneToolsEditor
             Rect version_Rect = new Rect(10, 10, position.width, position.height);
 
             if(currentConfig)
+            {
                 drawText(ref version_Rect, "V." + currentConfig.versionNumber, EditorStyles.miniLabel);
+            }
             else
+            {
                 drawText(ref version_Rect, "V." + MultiSceneToolsStartup.packageVersion, EditorStyles.miniLabel);
+            }
             drawIcon(ref _Rect, 150);
 
             if(MultiSceneToolsStartup.detectedUpdate)
+            {
                 drawText(ref _Rect, "Multi Scene Tools Updated: " + MultiSceneToolsStartup.packageVersion + "!", TitleStyle);
+            }
             else
+            {
                 drawText(ref _Rect, "Thank you for using Multi Scene Tools!", TitleStyle);
+            }
 
             _Rect.y += 5;
             drawText(ref _Rect, "Created by Hustoft Digital", EditorStyles.centeredGreyMiniLabel);
@@ -115,7 +123,9 @@ namespace HH.MultiSceneToolsEditor
             if(MultiSceneToolsStartup.detectedUpdate)
             {
                 if(drawLinkButton(ref _Rect, "Keep up to date with the changes!",0))
+                {
                     MultiSceneToolsMenuItems.OpenChangelog();
+                }
             }
         #endif
 
@@ -171,7 +181,9 @@ namespace HH.MultiSceneToolsEditor
                 if(!Directory.Exists(MultiSceneToolsConfig.configPath)) 
                 {
                     if(Directory.CreateDirectory(MultiSceneToolsConfig.configPath) != null)
+                    {
                         Debug.Log("created directory: " + MultiSceneToolsConfig.configPath);
+                    }
                 }
 
                 config = (MultiSceneToolsConfig) ScriptableObject.CreateInstance(typeof(MultiSceneToolsConfig));
@@ -256,7 +268,7 @@ namespace HH.MultiSceneToolsEditor
     #endif
 
         private void OnDestroy() {
-            MultiSceneToolsStartup.detectedUpdate = false;
+            MultiSceneToolsStartup.HasShownUpdate();
         }
     }
 }

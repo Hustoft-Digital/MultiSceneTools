@@ -21,10 +21,10 @@ namespace HH.MultiSceneToolsEditor
 {
     public static class PackageTextureLoader
     {
-        public const string falseIcon = "/Images/false-Icon.png";
-        public const string trueIcon = "/Images/true-Icon.png";
-        public const string packageIcon = "/Images/MultiSceneTools Icon.png";
-        public const string additiveCollectionIcon = "/Images/addativeCollectionIcon.png";
+        public static readonly string falseIcon = "/Images/false-Icon.png";
+        public static readonly string trueIcon = "/Images/true-Icon.png";
+        public static readonly string packageIcon = "/Images/MultiSceneTools Icon.png";
+        public static readonly string additiveCollectionIcon = "/Images/addativeCollectionIcon.png";
     
         public static Texture FindTexture(string packageTexturePath)
         {
@@ -33,7 +33,9 @@ namespace HH.MultiSceneToolsEditor
 
             // load texture from development environment
             if(foundTexture == null)
+            {
                 foundTexture = (Texture)AssetDatabase.LoadAssetAtPath("Assets/MultiSceneManagementTools" + packageTexturePath, typeof(Texture2D));
+            }
 
             return foundTexture;
         }

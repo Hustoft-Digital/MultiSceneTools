@@ -50,12 +50,18 @@ namespace HH.MultiSceneToolsEditor
             EditorGUILayout.PropertyField(_Color);
 
             if(_Scenes.isExpanded)
+            {
                 EditorGUILayout.PropertyField(_Scenes, new GUIContent("Active Scene | In Build | Target Scene"));
+            }
             else
+            {
                 EditorGUILayout.PropertyField(_Scenes);
+            }
 
             if(_Scenes.serializedObject.hasModifiedProperties)
+            {
                 updateActiveSceneIndex();
+            }
 
             serializedObject.ApplyModifiedProperties();
 
@@ -88,7 +94,9 @@ namespace HH.MultiSceneToolsEditor
                 MultiSceneToolsConfig.instance.setLoadedCollection(collection, LoadCollectionMode.Replace);
 
                 if(SceneManager_EditorWindow.Instance)
+                {
                     SceneManager_EditorWindow.Instance.SelectedCollection = collection;
+                }
                 return true;
             }
             return false;
@@ -112,14 +120,18 @@ namespace HH.MultiSceneToolsEditor
 
                 Debug.LogError("cant remove from list when active scene is later in the list");
                 if(_ActiveSceneIndex.intValue >= 0)
+                {
                     _Scenes.GetArrayElementAtIndex(_ActiveSceneIndex.intValue).FindPropertyRelative("IsActive").boolValue = false;
+                }
 
                 _ActiveSceneIndex.intValue = i;
                 isUpdated = true;
                 break;
             }
             if(!isUpdated)
+            {
                 _ActiveSceneIndex.intValue = -1;
+            }
         }
     }
 }

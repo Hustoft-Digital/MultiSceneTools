@@ -32,7 +32,7 @@ namespace HH.MultiSceneToolsEditor
         public static SceneManager_EditorWindow Instance;
         [SerializeField] SceneCollection[] loadedCollections;
 
-        string[] page = new string[]{"Tools", "Info"};
+        readonly string[] page = new string[]{"Tools", "Info"};
         int pageIndex;
         Scene[] LoadedScenes;
         string[] _sceneOptions;
@@ -62,7 +62,6 @@ namespace HH.MultiSceneToolsEditor
         SceneManager_EditorWindow()
         {
             EditorApplication.playModeStateChanged += LogPlayModeState;
-            Instance = this;
         }
 
         [MenuItem("Tools/Multi Scene Tools/Manager", false, 1)]
@@ -71,6 +70,7 @@ namespace HH.MultiSceneToolsEditor
             // Get existing open window or if none, make a new one:
             SceneManager_EditorWindow window = (SceneManager_EditorWindow)EditorWindow.GetWindow(typeof(SceneManager_EditorWindow));
             window.titleContent = new GUIContent("Multi Scene Manager", "Loads, Unloads, and Saves Scene Collections");
+            Instance = window;
             window.Show();
         }
 
@@ -285,10 +285,14 @@ namespace HH.MultiSceneToolsEditor
             if(loadedSceneOptions != null)
             {
                 if(loadedSceneOptions.Length > 0)
+                {
                     UnloadScene = EditorGUILayout.Popup("Un-Load" ,UnloadScene, loadedSceneOptions);
+                }
             }
             else
+            {
                 EditorGUILayout.Popup(0, new string[]{"Unload Select"});
+            }
         }
 
         // Button functions
@@ -315,9 +319,13 @@ namespace HH.MultiSceneToolsEditor
         void UnLoadSelectedScene()
         {
             if(EditorSceneManager.sceneCount > 1)
+            {
                 EditorSceneManager.CloseScene(LoadedScenes[UnloadScene], true);
+            }
             else
+            {
                 EditorSceneManager.OpenScene(MultiSceneToolsConfig.instance._BootScenePath, OpenSceneMode.Single);
+            }
         }
 
         void SaveCollection(SceneCollection saveTarget)
@@ -328,14 +336,18 @@ namespace HH.MultiSceneToolsEditor
                 saveTarget.saveCollection(currLoadedAssets);
             }
             else
+            {
                 Debug.LogWarning("SceneManager: save target was null");
+            }
         }
 
         void CreateCollection()
         {
             string path = MultiSceneToolsConfig.instance._SceneCollectionPath;
             if(!Directory.Exists(path)) 
-                    Directory.CreateDirectory(path);
+            {
+                Directory.CreateDirectory(path);
+            }
 
             SceneCollection _NewCollection = SceneCollection.CreateSceneCollection();
 
@@ -359,7 +371,9 @@ namespace HH.MultiSceneToolsEditor
             {
                 string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
                 if (!string.IsNullOrEmpty(scenePath))
+                {
                     editorBuildSettingsScenes.Add(new EditorBuildSettingsScene(scenePath, true));
+                }
             }
 
             editorBuildSettingsScenes.Add(new EditorBuildSettingsScene(ScenePath, true));
@@ -378,7 +392,9 @@ namespace HH.MultiSceneToolsEditor
             {
                 string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
                 if (!string.IsNullOrEmpty(scenePath))
+                {
                     editorBuildSettingsScenes.Add(new EditorBuildSettingsScene(scenePath, true));
+                }
             }
 
             for (int i = 0; i < EditorSceneManager.sceneCount; i++)
@@ -442,7 +458,9 @@ namespace HH.MultiSceneToolsEditor
 
 
                 if(!CurrentActiveScene.name.Equals(_assets[i].TargetScene.name))
+                {
                     continue;
+                }
 
                 _assets[i].IsActive = true;
             }
@@ -471,7 +489,9 @@ namespace HH.MultiSceneToolsEditor
             int sceneCount = SceneManager.sceneCountInBuildSettings;     
 
             if(_sceneOptions == null)
+            {
                 _sceneOptions = new string[0];
+            }
 
             if(sceneCount > _sceneOptions.Length)
             {

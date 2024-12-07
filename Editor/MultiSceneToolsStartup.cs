@@ -22,9 +22,9 @@ namespace HH.MultiSceneToolsEditor
 {
     public class MultiSceneToolsStartup
     {
-        public static bool detectedUpdate;
-        public static string packageVersion;
-        public const string packageName = "com.hustoftdigital.multi-scene-management-tools";
+        public static bool detectedUpdate {get; private set;}
+        public static string packageVersion {get; private set;}
+        public static readonly string packageName = "com.hustoftdigital.multi-scene-management-tools";
         
         [InitializeOnLoadMethod]
         static void Startup()
@@ -101,6 +101,11 @@ namespace HH.MultiSceneToolsEditor
             {
                 OpenWizard();
             }
+        }
+
+        public static void HasShownUpdate()
+        {
+            detectedUpdate = false;
         }
 
         static void OpenWizard()

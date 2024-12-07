@@ -38,8 +38,10 @@ namespace HH.MultiSceneTools
 
             string path = "Assets";
             var target = Selection.activeObject;
-            if(target != null) 
+            if(target != null)
+            {
                 path = AssetDatabase.GetAssetPath(target.GetInstanceID());
+            } 
 
             string assetPath = "";
 
@@ -75,7 +77,9 @@ namespace HH.MultiSceneTools
             string path = "Assets";
             var target = Selection.activeObject;
             if(target != null) 
+            {
                 path = AssetDatabase.GetAssetPath(target.GetInstanceID());
+            }
 
             string assetPath = AssetDatabase.GenerateUniqueAssetPath(MultiSceneToolsConfig.instance._SceneCollectionPath + "/New SceneCollection.asset");
             AssetDatabase.CreateAsset(newCollection, assetPath);
@@ -96,7 +100,9 @@ namespace HH.MultiSceneTools
         public string GetNameOfTargetActiveScene()
         {
             if(ActiveSceneIndex < 0)
+            {
                 return "";
+            }
 
             return SceneNames[ActiveSceneIndex];
         }
@@ -124,10 +130,6 @@ namespace HH.MultiSceneTools
                 Scenes.Add(scenes[i]);
                 SceneNames.Add(scenes[i].TargetScene.name);
             }
-
-            // EditorUtility.FocusProjectWindow();
-
-            // Selection.activeObject = this;
         }
 
         private void OnValidate() // updates scene names if any scene would be renamed
@@ -143,7 +145,6 @@ namespace HH.MultiSceneTools
                         Debug.LogWarning("MultiSceneTools, SceneCollection: " + this.name + " can not be loaded with null reference scenes.");
                         break;
                     }
-
                     SceneNames.Add(Scenes[i].TargetScene.name);
                 }
             }
@@ -155,7 +156,9 @@ namespace HH.MultiSceneTools
             if(isScenesDirty(out DirtyScenes))
             {
                 if(!EditorSceneManager.SaveModifiedScenesIfUserWantsTo(DirtyScenes))
+                {
                     return;
+                }
             }
             
             if(Scenes.Count > 0)
@@ -166,12 +169,16 @@ namespace HH.MultiSceneTools
             if(Scenes.Count > 1)
             {
                 for (int i = 1; i < Scenes.Count; i++)
+                {
                     EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(Scenes[i].TargetScene), OpenSceneMode.Additive);
+                }
             }
 
             
             if(ActiveSceneIndex >= 0 && ActiveSceneIndex < SceneNames.Count)
+            {
                 EditorSceneManager.SetActiveScene(EditorSceneManager.GetSceneByName(SceneNames[ActiveSceneIndex]));
+            }
 
             MultiSceneToolsConfig.instance.setLoadedCollection(this, LoadCollectionMode.Replace);
         }
@@ -179,7 +186,9 @@ namespace HH.MultiSceneTools
         public void LoadAdditive()
         {
             if(MultiSceneToolsConfig.instance.LoadedCollections.Contains(this))
+            {
                 return; 
+            }
 
             for (int i = 0; i < this.SceneNames.Count; i++)
             {
@@ -206,26 +215,6 @@ namespace HH.MultiSceneTools
             }
             DirtyScenes = Dirty.ToArray();
             return hasDirtied;
-        }
-
-        public bool IsLoaded()
-        {
-            if(this == null)
-                return false;
-
-            if(EditorSceneManager.sceneCount < this.SceneNames.Count)
-                return false;
-
-            for (int i = 0; i < this.SceneNames.Count; i++)
-            {
-                    Scene loadedScene = EditorSceneManager.GetSceneByName(this.SceneNames[i]);
-
-                    if(loadedScene.IsValid())
-                        continue;
-                    else
-                        return false;
-            }
-            return true;
         }
         #endif
     }

@@ -30,8 +30,6 @@ namespace HH.MultiSceneTools
         static async Task unloadAsync(string SceneName, CancellationToken token, AsyncCollection task)
         {
             AsyncOperation operation = SceneManager.UnloadSceneAsync(SceneName);
-            // operation.allowSceneActivation = !task.retainUnloadedScenes;
-            // Debug.Log($"remove unloaded scenes when done: {operation.allowSceneActivation}, -> {!task.retainUnloadedScenes}");
             task.unloadingOperations.Add(operation);
 
             Debug.Log($"unload progress: {operation.progress}");
@@ -163,6 +161,7 @@ namespace HH.MultiSceneTools
             #if UNITY_EDITOR
             MultiSceneToolsConfig.instance.setLoadedCollection(collectionsCurrentlyLoaded, mode);
             #endif
+            source.Dispose();
         }
 
         static void loadDifferenceReplaceAsync(ref AsyncCollection task, SceneCollection Collection, bool preload = true)

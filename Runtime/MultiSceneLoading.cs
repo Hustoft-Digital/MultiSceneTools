@@ -18,6 +18,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Threading;
+using System;
 
 namespace HH.MultiSceneTools
 {
@@ -83,7 +84,6 @@ namespace HH.MultiSceneTools
                     break;
                 case LoadCollectionMode.Subtractive:
                     throw new System.NotImplementedException();
-                    // break;
             }
             OnSceneCollectionLoadDebug?.Invoke(TargetCollection, mode);
             OnSceneCollectionLoaded?.Invoke(TargetCollection, mode);
@@ -147,6 +147,9 @@ namespace HH.MultiSceneTools
                 case LoadCollectionMode.Subtractive:
                     loadSubtractive(Collection);
                     break;
+
+                default:
+                    throw new InvalidOperationException("Unexpected value foo = " + mode);
             }
             
             if(!mode.Equals(LoadCollectionMode.Subtractive))
@@ -402,7 +405,6 @@ namespace HH.MultiSceneTools
             {
                 load(Collection.SceneNames[i], LoadSceneMode.Additive);
             }
-            // MultiSceneToolsConfig.instance.setLoadedCollection(Collection, LoadCollectionMode.Additive);
             collectionsCurrentlyLoaded.Add(Collection);
         }
 

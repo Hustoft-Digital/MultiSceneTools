@@ -54,8 +54,8 @@ namespace HH.MultiSceneTools
 
     public static partial class MultiSceneLoader
     {
-        public static UnityEvent<SceneCollection, LoadCollectionMode> OnSceneCollectionLoaded = new UnityEvent<SceneCollection, LoadCollectionMode>();
-        public static UnityEvent<SceneCollection, LoadCollectionMode> OnSceneCollectionLoadDebug = new UnityEvent<SceneCollection, LoadCollectionMode>();
+        public static UnityEvent<SceneCollection, LoadCollectionMode> OnSceneCollectionLoaded {get; private set;} = new UnityEvent<SceneCollection, LoadCollectionMode>();
+        public static UnityEvent<SceneCollection, LoadCollectionMode> OnSceneCollectionLoadDebug {get; private set;} = new UnityEvent<SceneCollection, LoadCollectionMode>();
         private static bool IsLoggingOnSceneLoad;
         private static Scene loadedBootScene;
         public static SceneCollection KeepLoaded {private set; get;} 
