@@ -23,7 +23,7 @@ using HH.MultiSceneTools;
 
 namespace HH.MultiSceneToolsEditor
 {
-    public class MultiSceneToolsHierarchyStyle_Editor
+    static public class MultiSceneToolsHierarchyStyle_Editor
     {
         static GUIStyle RightHeaderStyle;
         static Texture checkMark_Y, checkMark_N, collectionIcon;

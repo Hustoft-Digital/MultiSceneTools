@@ -158,7 +158,7 @@ namespace HH.MultiSceneToolsEditor
             }
         }
 
-        void setCustomStyles()
+        static void setCustomStyles()
         {
             if(TitleStyle == null)
             {

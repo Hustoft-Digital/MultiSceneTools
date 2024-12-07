@@ -29,18 +29,20 @@ namespace HH.MultiSceneTools
 {
     public class MultiSceneToolsConfig : ScriptableObject
     {
-        public const string configPath = "Assets/Resources/MultiSceneTools/Config/";
-        public const string configName = "MultiSceneToolsConfig"; // may need to add .asset when used
-        public const string configResourcesPath = "MultiSceneTools/Config/";
-        public const string bootPathDefault = "Assets/Scenes/SampleScene.unity";
-        public const string collectionsPathDefault = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
+        public static readonly string configPath = "Assets/Resources/MultiSceneTools/Config/";
+        public static readonly string configName = "MultiSceneToolsConfig"; // may need to add .asset when used
+        public static readonly string configResourcesPath = "MultiSceneTools/Config/";
+        public static readonly string bootPathDefault = "Assets/Scenes/SampleScene.unity";
+        public static readonly string collectionsPathDefault = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
         public bool startWizardOnUpdate = true;
         public static MultiSceneToolsConfig instance 
         {
             get 
             {
                 if(loadedConfig)
+                {
                     return loadedConfig;
+                }
                 else
                 {
                     MultiSceneToolsConfig config = Resources.Load<MultiSceneToolsConfig>(configResourcesPath+configName);
@@ -99,6 +101,9 @@ namespace HH.MultiSceneTools
                         currentLoadedCollection.Clear();
                         currentLoadedCollection.Add(Collection);
                         break;
+                    
+                    default:
+                        throw new InvalidOperationException("Unexpected value of state = " + state);
                 }
                 return currentLoadedCollection.ToArray();
             }

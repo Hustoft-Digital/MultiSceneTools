@@ -34,19 +34,19 @@ namespace HH.MultiSceneTools.Examples
         // Start is called before the first frame update
         void Start()
         {
-            StartCoroutine(sceneTransition(true));
+            StartCoroutine(sceneTransition(true, "Main"));
         }
 
         /// <summary>Play animation to transition to a new scene</summary>
         /// <param name="SceneState">Which state the scene will be in once transition is complete, true: Transition IN, false: Transition OUT</param>
         /// <param name="TransitionToCollection">Title of the scene collection this should transition to</param>
         /// <returns></returns>
-        public void TransitionScene(bool SceneState, string TransitionToCollection = "")
+        public void TransitionScene(bool SceneState, string TransitionToCollection)
         {
             StartCoroutine(sceneTransition(SceneState, TransitionToCollection));
         }
 
-        IEnumerator sceneTransition(bool SceneState, string TransitionToCollection = "")
+        IEnumerator sceneTransition(bool SceneState, string TransitionToCollection)
         {
             string state = "";
             isAnimating = false;
@@ -65,7 +65,7 @@ namespace HH.MultiSceneTools.Examples
                 isAnimating = true;
             }
 
-            while(waitForAnim(state))
+            while(waitForAnim())
             {
                 yield return null;
             }
@@ -83,7 +83,7 @@ namespace HH.MultiSceneTools.Examples
             }
         }
 
-        bool waitForAnim(string animState)
+        bool waitForAnim()
         {
             AnimatorStateInfo info = TransitionAnim.GetCurrentAnimatorStateInfo(0);
             if(animTime > info.length)

@@ -29,7 +29,7 @@ namespace HH.MultiSceneToolsEditor
     [InitializeOnLoadAttribute]
     public class SceneManager_EditorWindow : EditorWindow
     {
-        public static SceneManager_EditorWindow Instance;
+        public static SceneManager_EditorWindow Instance {get; private set;}
         [SerializeField] SceneCollection[] loadedCollections;
 
         readonly string[] page = new string[]{"Tools", "Info"};
