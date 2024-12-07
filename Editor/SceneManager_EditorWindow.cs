@@ -40,9 +40,6 @@ namespace HH.MultiSceneToolsEditor
         ActiveScene[] currLoadedAssets;
         string[] loadedSceneOptions;
 
-
-        SceneCollection[] _Collection;
-        string[] Collection = new string[0];
         public SceneCollection[] GetLoadedCollection()
         {
             if(EditorApplication.isPlaying)
@@ -223,8 +220,6 @@ namespace HH.MultiSceneToolsEditor
             }
             GUI.enabled = true;
 
-            // EditorGUILayout.PropertyField(local_LoadedCollectionProperty);
-
             if(loadedCollections.Length > 0)
                 EditorGUILayout.TextField("Title:", loadedCollections[0].Title, EditorStyles.boldLabel);
             else if(loadedCollections.Length > 1)
@@ -281,8 +276,6 @@ namespace HH.MultiSceneToolsEditor
 
             SelectedCollection.LoadCollection();
             EditorUtility.FocusProjectWindow();
-
-            // Selection.activeObject = SelectedCollection;
         }
 
         void LoadSceneAdditively()
@@ -445,20 +438,6 @@ namespace HH.MultiSceneToolsEditor
             }
             return _paths;
         }
-
-        // string GetScenePath(string scene)
-        // {
-        //     int buildSceneCount = UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings;     
-        //     for (int i = 0; i < buildSceneCount; i++)
-        //     {
-        //         string currScene = System.IO.Path.GetFileNameWithoutExtension( UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex( i ) );
-        //         if(currScene.Equals(scene))
-        //         {
-        //             return UnityEngine.SceneManagement.SceneUtility.GetScenePathByBuildIndex( i );
-        //         }
-        //     }
-        //     return null;
-        // }
 
         void loadBuildScenesAsOptions()
         {

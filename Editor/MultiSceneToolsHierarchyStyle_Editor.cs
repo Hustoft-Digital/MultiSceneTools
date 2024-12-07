@@ -38,7 +38,6 @@ namespace HH.MultiSceneToolsEditor
 
         private static void OnHierarchyWindowItemOnGUI( int instanceID, Rect selectionRect )
         {
-            // ! in the future, if multiple collections can be loaded, then this will be a list. 
             // ? then potentially draw the index as well
             Collections = MultiSceneToolsConfig.instance.LoadedCollections.ToArray();
 
@@ -144,7 +143,6 @@ namespace HH.MultiSceneToolsEditor
                 RightHeaderStyle = new GUIStyle(GUI.skin.customStyles[22]);
                 RightHeaderStyle.alignment = TextAnchor.UpperRight;
 
-                // string SceneName = Collections[i].GetNameOfTargetActiveScene();
                 string SceneName = EditorSceneManager.GetActiveScene().name;
                 if(scene.name.Equals(SceneName))
                 {

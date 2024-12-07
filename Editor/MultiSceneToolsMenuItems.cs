@@ -16,8 +16,9 @@
 
 using UnityEditor;
 using UnityEngine;
+using HH.MultiSceneTools;
 
-namespace HH.MultiSceneTools
+namespace HH.MultiSceneToolsEditor
 {
     public static class MultiSceneToolsMenuItems
     {

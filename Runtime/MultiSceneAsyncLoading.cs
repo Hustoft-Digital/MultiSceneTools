@@ -57,14 +57,14 @@ namespace HH.MultiSceneTools
         public static AsyncCollection loadCollectionAsync(string CollectionTitle, LoadCollectionMode mode, bool preload, bool setActiveScene = true, bool deferSceneUnload = false)
         {
             AsyncCollection asyncCollection = new AsyncCollection(FindCollection(CollectionTitle), mode, new CancellationTokenSource(), deferSceneUnload);
-            loadCollectionAsync(asyncCollection, CollectionTitle, mode, preload, setActiveScene).ContinueWith(log => Debug.Log($"{asyncCollection} with collection {CollectionTitle} finished"));
+            loadCollectionAsync(asyncCollection, CollectionTitle, mode, preload, setActiveScene).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
             return asyncCollection;
         }
 
         public static AsyncCollection loadCollectionAsync(SceneCollection Collection, LoadCollectionMode mode, bool preload, bool setActiveScene = true, bool deferSceneUnload = false)
         {
             AsyncCollection asyncCollection = new AsyncCollection(Collection, mode, new CancellationTokenSource(), deferSceneUnload);
-            loadCollectionAsync(asyncCollection, Collection, mode, preload, setActiveScene).ContinueWith(log => Debug.Log($"{asyncCollection} with collection {Collection.Title} finished"));
+            loadCollectionAsync(asyncCollection, Collection, mode, preload, setActiveScene).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
             return asyncCollection;
         }
 
@@ -121,7 +121,7 @@ namespace HH.MultiSceneTools
                     loadAdditiveAsync(ref task, Collection);
                     break;
                 default:
-                    throw new MultiSceneToolsException("loading mode is not implemented");
+                    throw new NotImplementedException("loading mode is not implemented");
             }
 
             if(task.cancellationTokenSource.IsCancellationRequested)
@@ -151,7 +151,7 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                throw new MultiSceneToolsException("No currently loaded scene collection.");
+                throw new Exception("No currently loaded scene collection.");
             }
 
             string bootScene = getBootSceneName();
@@ -202,7 +202,7 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                throw new MultiSceneToolsException("No currently loaded scene collection.");
+                throw new Exception("No currently loaded scene collection.");
             }
 
             string bootScene = getBootSceneName();

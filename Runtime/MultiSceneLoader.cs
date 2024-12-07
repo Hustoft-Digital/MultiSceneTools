@@ -58,6 +58,7 @@ namespace HH.MultiSceneTools
         public static UnityEvent<SceneCollection, LoadCollectionMode> OnSceneCollectionLoadDebug = new UnityEvent<SceneCollection, LoadCollectionMode>();
         private static bool IsLoggingOnSceneLoad;
         private static Scene loadedBootScene;
+        public static SceneCollection KeepLoaded {private set; get;} 
         public static List<SceneCollection> collectionsCurrentlyLoaded {private set; get;} = new List<SceneCollection>();
         static List<AsyncCollection> asyncLoadingTask = new List<AsyncCollection>();
         static public List<AsyncCollection> currentAsyncTask => asyncLoadingTask;
@@ -259,7 +260,7 @@ namespace HH.MultiSceneTools
             if(target.SceneNames.Count != 0)
                 return;
             
-            throw new MultiSceneToolsException("Attempted to load a scene collection that contains no scenes", target);
+            throw new Exception("Attempted to load a scene collection that contains no scenes");
         }
 
         private static void logSceneChange(SceneCollection collection, LoadCollectionMode mode)

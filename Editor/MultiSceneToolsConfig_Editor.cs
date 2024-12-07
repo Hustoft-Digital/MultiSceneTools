@@ -55,8 +55,6 @@ namespace HH.MultiSceneToolsEditor
 
         public override void OnInspectorGUI()
         {
-            // base.OnInspectorGUI();
-
             serializedObject.Update();
 
             GUILayout.Space(8);
@@ -113,8 +111,6 @@ namespace HH.MultiSceneToolsEditor
 
             EditorGUILayout.PropertyField(collectionPath,
                 new GUIContent("Scene Collections Path", "Path where new scene collections will be created and loaded from"));
-
-            // GUILayout.Space(10);
 
             if(script.LoadedCollections != null)
             {

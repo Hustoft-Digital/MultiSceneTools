@@ -36,7 +36,6 @@ namespace HH.MultiSceneToolsEditor
 
             MultiSceneToolsConfig.instance.findOpenSceneCollections();
             EditorApplication.playModeStateChanged +=  MultiSceneToolsConfig.instance.resumeCurrentLoadedCollection;
-            // EditorApplication.playModeStateChanged += MultiSceneLoader.cancelAsyncTasks;
         }
 
         static void CheckUpdates(PackageRegistrationEventArgs package)
