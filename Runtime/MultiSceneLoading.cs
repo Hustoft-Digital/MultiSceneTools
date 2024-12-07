@@ -45,7 +45,9 @@ namespace HH.MultiSceneTools
             }
 
             if(MultiSceneToolsConfig.instance.LogOnSceneChange)
+            {
                 AddLogOnLoad();
+            }
 
             SceneCollection TargetCollection = null;
 
@@ -90,9 +92,13 @@ namespace HH.MultiSceneTools
 
             #if UNITY_EDITOR
             if(mode.Equals(LoadCollectionMode.DifferenceReplace))
+            {
                 MultiSceneToolsConfig.instance.setLoadedCollection(collectionsCurrentlyLoaded, LoadCollectionMode.Additive);
+            }
             else
+            {
                 MultiSceneToolsConfig.instance.setLoadedCollection(collectionsCurrentlyLoaded, mode);
+            }
             #endif
         }
 
@@ -109,7 +115,9 @@ namespace HH.MultiSceneTools
             }
 
             if(MultiSceneToolsConfig.instance.LogOnSceneChange)
+            {
                 AddLogOnLoad();
+            }
 
             if(Collection == null)
             {
@@ -142,7 +150,9 @@ namespace HH.MultiSceneTools
             }
             
             if(!mode.Equals(LoadCollectionMode.Subtractive))
+            {
                 setActiveScene(Collection, new CancellationToken()).ContinueWith(task => {Debug.Log("Set Active Scene: " + Collection.GetNameOfTargetActiveScene());});
+            }
 
             OnSceneCollectionLoadDebug?.Invoke(Collection, mode);
             OnSceneCollectionLoaded?.Invoke(Collection, mode);
@@ -150,7 +160,7 @@ namespace HH.MultiSceneTools
             // if(mode.Equals(LoadCollectionMode.DifferenceReplace))
             //     MultiSceneToolsConfig.instance.setLoadedCollection(collectionsCurrentlyLoaded, LoadCollectionMode.Additive);
             // else
-                MultiSceneToolsConfig.instance.setLoadedCollection(collectionsCurrentlyLoaded, mode);
+            MultiSceneToolsConfig.instance.setLoadedCollection(collectionsCurrentlyLoaded, mode);
             #endif
         }
 
@@ -166,7 +176,9 @@ namespace HH.MultiSceneTools
             bool shouldReplaceScene = false;
             
             if(loadedBootScene.name != null)
+            {
                 shouldKeepBoot = true;
+            }
 
             for (int i = 0; i < collectionsCurrentlyLoaded.Count; i++)
             {
@@ -189,10 +201,14 @@ namespace HH.MultiSceneTools
                         }
                     }
                     if(!difference)
+                    {
                         continue;
+                    }
                     
                     if(collectionsCurrentlyLoaded[i].SceneNames[j] == bootScene && shouldKeepBoot)
+                    {
                         continue;
+                    }
 
                     if(unloadedScenes != collectionsCurrentlyLoaded[i].SceneNames.Count-1 || loadedBootScene.name != null)
                     {
@@ -202,7 +218,9 @@ namespace HH.MultiSceneTools
                     else
                     {
                         if(!shouldKeepBoot)
+                        {
                             shouldReplaceScene = true;
+                        }
                         break;
                     }
                 }
@@ -213,7 +231,9 @@ namespace HH.MultiSceneTools
                     foreach (string LoadedScene in collectionsCurrentlyLoaded[i].SceneNames)
                     {
                         if(targetScene.Equals(bootScene) && loadedBootScene.name != null)
+                        {
                             difference = false;
+                        }
                         
                         if(targetScene.Equals(LoadedScene))
                         {
@@ -223,9 +243,13 @@ namespace HH.MultiSceneTools
                     if(difference)
                     {
                         if(shouldReplaceScene)
+                        {
                             load(targetScene, LoadSceneMode.Single);
+                        }
                         else
+                        {
                             load(targetScene, LoadSceneMode.Additive);
+                        }
                     }
                 }
             }
@@ -256,7 +280,9 @@ namespace HH.MultiSceneTools
                     foreach (string LoadedScene in collectionsCurrentlyLoaded[i].SceneNames)
                     {
                         if(targetScene.Equals(bootScene) && loadedBootScene.name != null)
+                        {
                             difference = false;
+                        }
                         
                         if(targetScene.Equals(LoadedScene))
                         {
@@ -284,7 +310,9 @@ namespace HH.MultiSceneTools
             bool shouldReplaceScene = false;
 
             if(loadedBootScene.name != null)
+            {
                 shouldKeepBoot = true;
+            }
 
             for (int i = 0; i < collectionsCurrentlyLoaded.Count; i++)
             {
@@ -295,14 +323,18 @@ namespace HH.MultiSceneTools
                 }
 
                 if(loadBoot && loadedBootScene.name == null)
+                {
                     shouldReplaceScene = true;
+                }
 
                 // Unload Scenes
                 int unloadedScenes = 0;
                 for (int j = 0; j < collectionsCurrentlyLoaded[i].SceneNames.Count; j++)
                 {
                     if(shouldReplaceScene)
+                    {
                         break;
+                    }
 
                     if(collectionsCurrentlyLoaded[i].SceneNames.Count < 2 && !loadBoot)
                     {
@@ -311,7 +343,9 @@ namespace HH.MultiSceneTools
                     }
 
                     if(collectionsCurrentlyLoaded[i].SceneNames[j].Equals(bootScene) && loadedBootScene.name != null)
+                    {
                         continue;
+                    }
 
                     if(unloadedScenes != collectionsCurrentlyLoaded[i].SceneNames.Count-1 || loadedBootScene.name != null)
                     {
@@ -321,7 +355,9 @@ namespace HH.MultiSceneTools
                     else
                     {
                         if(!shouldKeepBoot)
+                        {
                             shouldReplaceScene = true;
+                        }
                         break;
                     }
                 }
@@ -333,7 +369,9 @@ namespace HH.MultiSceneTools
                 if(loadBoot)
                 {
                     if(Collection.SceneNames[i] == bootScene)
+                    {
                         continue;
+                    }
 
                     if(shouldReplaceScene)
                     {
@@ -341,12 +379,18 @@ namespace HH.MultiSceneTools
                         shouldReplaceScene = false;
                     }
                     else
+                    {
                         load(Collection.SceneNames[i], LoadSceneMode.Additive);
+                    }
                 }
                 else if(i == 0)
+                {
                     load(Collection.SceneNames[i], LoadSceneMode.Single);
+                }
                 else
+                {
                     load(Collection.SceneNames[i], LoadSceneMode.Additive);
+                }
             }
             collectionsCurrentlyLoaded.Clear();
             collectionsCurrentlyLoaded.Add(Collection);
@@ -368,7 +412,9 @@ namespace HH.MultiSceneTools
             bool shouldKeepBoot = false;
 
             if(loadedBootScene.name != null)
+            {
                 shouldKeepBoot = true;
+            }
 
             int unloadedScenes = 0;
             for (int i = 0; i < collectionsCurrentlyLoaded.Count; i++)
@@ -391,23 +437,34 @@ namespace HH.MultiSceneTools
                         }
                     }
                     if(!matching)
+                    {
                         continue;
+                    }
                     
                     if(collectionsCurrentlyLoaded[i].SceneNames[j] == bootScene && shouldKeepBoot)
+                    {
                         continue;
+                    }
 
                     unloadedScenes++;
                     if(unloadedScenes != collectionsCurrentlyLoaded[i].SceneNames.Count-1)
+                    {
                         unload(collectionsCurrentlyLoaded[i].SceneNames[j]);
+                    }
                     else if(collectionsCurrentlyLoaded.Count == 1)
+                    {
                         load("EmptyScene", LoadSceneMode.Single);
+                    }
                     else
+                    {
                         unload(collectionsCurrentlyLoaded[i].SceneNames[j]);
+                    }
                 }
             }
             if(collectionsCurrentlyLoaded.Contains(Collection) && unloadedScenes == Collection.SceneNames.Count)
+            {
                 collectionsCurrentlyLoaded.Remove(Collection);
+            }
         }
-
     }
 }

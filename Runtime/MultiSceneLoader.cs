@@ -127,7 +127,9 @@ namespace HH.MultiSceneTools
             for (int i = 0; i < targetCollection.UnloadScenes.Count; i++)
             {
                 if(targetCollection.cancellationTokenSource.IsCancellationRequested)
+                {
                     return;
+                }
                 
                 unloads[i] = unloadAsync(targetCollection.UnloadScenes[i], targetCollection.cancellationTokenSource.Token, targetCollection);
             }
@@ -143,7 +145,9 @@ namespace HH.MultiSceneTools
             bool shouldKeepBoot = false;
             
             if(loadedBootScene.name != null)
+            {
                 shouldKeepBoot = true;
+            }
 
             // is boot scene loaded?            
             if(SceneIsLoaded(bootScene, out loadedBootScene) && MultiSceneToolsConfig.instance.UseBootScene)
@@ -169,10 +173,14 @@ namespace HH.MultiSceneTools
                                 }
                             }
                             if(!difference)
+                            {
                                 continue;
+                            }
                             
                             if(collectionsCurrentlyLoaded[i].SceneNames[j] == bootScene && shouldKeepBoot)
+                            {
                                 continue;
+                            }
 
                             if(unloadedScenes != collectionsCurrentlyLoaded[i].SceneNames.Count || loadedBootScene.name != null)
                             {
@@ -192,7 +200,9 @@ namespace HH.MultiSceneTools
                         }
                     }
                     if(shouldKeepBoot)
+                    {
                         asyncCollection.UnloadScenes.Remove(bootScene);
+                    }
                     break;
 
                 case LoadCollectionMode.Additive:
@@ -207,7 +217,9 @@ namespace HH.MultiSceneTools
         static async Task setActiveScene(SceneCollection collection, CancellationToken token)
         {
             if(collection.ActiveSceneIndex < 0)
+            {
                 return;
+            }
 
             Scene targetActive = new Scene();
             
@@ -215,10 +227,11 @@ namespace HH.MultiSceneTools
             {
                 targetActive = SceneManager.GetSceneByName(collection.GetNameOfTargetActiveScene());
                 if(token.IsCancellationRequested)
+                {
                     return;
+                }
                 await Task.Yield();
             }
-
             SceneManager.SetActiveScene(targetActive);
         }
 
@@ -248,7 +261,9 @@ namespace HH.MultiSceneTools
             foreach (SceneCollection target in MultiSceneToolsConfig.instance.GetSceneCollections())
             {
                 if(target.Title == CollectionTitle)
+                {
                     return target;
+                }
             }
             Debug.LogWarning("Could not find collection");
             return null;
@@ -258,7 +273,9 @@ namespace HH.MultiSceneTools
         private static void CheckException_NoScenesInCollection(SceneCollection target)
         {
             if(target.SceneNames.Count != 0)
+            {
                 return;
+            }
             
             throw new Exception("Attempted to load a scene collection that contains no scenes");
         }
@@ -271,7 +288,9 @@ namespace HH.MultiSceneTools
         private static void AddLogOnLoad()
         {
             if(IsLoggingOnSceneLoad)
+            {
                 return;
+            }
 
             OnSceneCollectionLoadDebug.AddListener(logSceneChange);
             IsLoggingOnSceneLoad = true;

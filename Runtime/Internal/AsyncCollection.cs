@@ -54,7 +54,9 @@ namespace HH.MultiSceneTools.Internal
             for (int i = 0; i < loadingOperations.Count; i++)
             {
                 if(!loadingOperations[i].isDone)
+                {
                     return false;
+                }
             }
             return true;
         }
@@ -68,10 +70,14 @@ namespace HH.MultiSceneTools.Internal
             }
 
             if(loadingOperations.Count == 0)
+            {
                 Debug.LogError("Cant get progress, there was no loading operations");
+            }
 
             if(loadingOperations.Count == 0)
+            {
                 return 0.9f;
+            }
 
             return progress / loadingOperations.Count;
         }
@@ -122,7 +128,9 @@ namespace HH.MultiSceneTools.Internal
             {
                 Debug.Log("waiting for enable");
                 if(cancellationTokenSource.IsCancellationRequested)
+                {
                     return;
+                }
                 await Task.Delay(1);
             }
         } 
@@ -133,7 +141,6 @@ namespace HH.MultiSceneTools.Internal
             {
                 return true;
             }
-
             return false;
         }
 
@@ -142,7 +149,9 @@ namespace HH.MultiSceneTools.Internal
             while(!isReady())
             {
                 if(cancellationTokenSource.IsCancellationRequested)
+                {
                     return;
+                }
                 await Task.Delay(1);
             }
         }
@@ -153,7 +162,9 @@ namespace HH.MultiSceneTools.Internal
             {
                 Debug.Log("waiting to unload");
                 if(cancellationTokenSource.IsCancellationRequested)
+                {
                     return;
+                }
                 await Task.Delay(1);
             }
         }

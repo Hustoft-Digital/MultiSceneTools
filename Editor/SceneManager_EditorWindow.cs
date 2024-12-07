@@ -48,9 +48,13 @@ namespace HH.MultiSceneToolsEditor
             }
 
             if(MultiSceneToolsConfig.instance)
+            {
                 return MultiSceneToolsConfig.instance.LoadedCollections.ToArray();  
+            }
             else
+            {
                 return null;
+            }
         } 
         [SerializeField, HideInInspector] public SceneCollection SelectedCollection;
         int UnloadScene;
@@ -149,13 +153,17 @@ namespace HH.MultiSceneToolsEditor
             SelectedCollection = (SceneCollection)EditorGUILayout.ObjectField(new GUIContent("Collection"), SelectedCollection, typeof(SceneCollection), false);
             
             if(!SelectedCollection)
+            {
                 GUI.enabled = false;
+            }
             if(GUILayout.Button("Load Collection"))
             {
                 EditorLoadCollection();
             }
             if(!SelectedCollection)
+            {
                 GUI.enabled = true;
+            }
 
             
             // Load Scene
@@ -165,25 +173,33 @@ namespace HH.MultiSceneToolsEditor
 
 
             if(!_SelectedScene)
+            {
                 GUI.enabled = false;
+            }
             if(GUILayout.Button("Load Scene Additively"))
             {
                 LoadSceneAdditively();
             }
             if(!_SelectedScene)
+            {
                 GUI.enabled = true;
+            }
 
             // Un-Load selected scene
             DrawPopupSelectUnload();
 
             if(UnloadScene == 0)
+            {
                 GUI.enabled = false;
+            }
             if(GUILayout.Button("Unload Scene"))
             {
                 UnLoadSelectedScene();
             }
             if(UnloadScene == 0)
+            {
                 GUI.enabled = true;
+            }
 
             // Asset Management
             GUILayout.Space(8);
@@ -214,21 +230,33 @@ namespace HH.MultiSceneToolsEditor
             for (int i = 0; i < loadedCollections.Length; i++)
             {
                 if(i == 0)
+                {
                     EditorGUILayout.ObjectField("Current Loaded Collection:", loadedCollections[i], typeof(SceneCollection), false);
+                }
                 else
+                {
                     EditorGUILayout.ObjectField("", loadedCollections[i], typeof(SceneCollection), false);
+                }
             }
             GUI.enabled = true;
 
             if(loadedCollections.Length > 0)
+            {
                 EditorGUILayout.TextField("Title:", loadedCollections[0].Title, EditorStyles.boldLabel);
+            }
             else if(loadedCollections.Length > 1)
+            {
                 EditorGUILayout.TextField("Title:", loadedCollections[0].Title + "and " + (loadedCollections.Length -1) + " more", EditorStyles.boldLabel);
+            }
             else
+            {
                 EditorGUILayout.TextField("Title:", "None", EditorStyles.boldLabel);
+            }
 
             if(pageIndex == 0)
+            {
                 return;
+            }
 
             GUILayout.Space(8);
             GUILayout.Label("Settings", EditorStyles.boldLabel);
@@ -243,7 +271,6 @@ namespace HH.MultiSceneToolsEditor
             EditorGUILayout.TextField("Boot Scene Path", MultiSceneToolsConfig.instance._BootScenePath);
             EditorGUILayout.TextField("Scene Collection Path", MultiSceneToolsConfig.instance._SceneCollectionPath);
             GUI.enabled = true;
-
         }
 
 

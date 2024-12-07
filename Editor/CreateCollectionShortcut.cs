@@ -42,7 +42,9 @@ namespace HH.MultiSceneToolsEditor
             string shortcutName = "Load " + TargetCollection.name + " Collection";
 
             if(!Directory.Exists(Application.dataPath + "/Editor"))
+            {
                 Directory.CreateDirectory(Application.dataPath + "/Editor");
+            }
 
             FileStream fileStream;
             if(File.Exists(path))
@@ -78,7 +80,6 @@ namespace HH.MultiSceneToolsEditor
             fileStream.Write(shortcutBytes, 0, shortcutBytes.Length);
             fileStream.Close();
             AssetDatabase.Refresh();
-
         }
     }
 }

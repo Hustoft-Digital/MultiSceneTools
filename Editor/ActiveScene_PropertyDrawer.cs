@@ -57,7 +57,9 @@ namespace HH.MultiSceneToolsEditor
             int index = SceneUtility.GetBuildIndexByScenePath(path);
 
             if(index >= 0)
+            {
                 inBuild = true;
+            }
 
             if(inBuild)
             {
@@ -70,7 +72,9 @@ namespace HH.MultiSceneToolsEditor
                 style.contentOffset = Vector2.zero;
 
                 if(GUI.Button(middle, _N, style))
+                {
                     SceneManager_EditorWindow.AddSceneToBuildSettings(path);
+                }
                 GUI.Label(middle, new GUIContent("  ", "Click to add this scene to build settings."));
             }
 

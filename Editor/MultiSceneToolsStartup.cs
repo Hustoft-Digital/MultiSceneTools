@@ -32,7 +32,9 @@ namespace HH.MultiSceneToolsEditor
             Events.registeredPackages += CheckUpdates;
 
             if(!MultiSceneToolsConfig.instance)
+            {
                 return;
+            }
 
             MultiSceneToolsConfig.instance.findOpenSceneCollections();
             EditorApplication.playModeStateChanged +=  MultiSceneToolsConfig.instance.resumeCurrentLoadedCollection;
@@ -51,10 +53,14 @@ namespace HH.MultiSceneToolsEditor
                     if(MultiSceneToolsConfig.instance)
                     {
                         if(MultiSceneToolsConfig.instance.startWizardOnUpdate)
+                        {
                             shouldOpenWizard = true;
+                        }
                     }
                     else
+                    {
                         shouldOpenWizard = true;
+                    }
                     break;
                 }
             }
@@ -67,25 +73,34 @@ namespace HH.MultiSceneToolsEditor
 
                     if(MultiSceneToolsConfig.instance)
                     {
-
                         if(MultiSceneToolsConfig.instance.startWizardOnUpdate)
+                        {
                             shouldOpenWizard = true;
+                        }
                     }
                     else
+                    {
                         shouldOpenWizard = true;
+                    }
                     detectedUpdate = true;
                     break;
                 }
             }
 
             if(packageVersion == null)
+            {
                 packageVersion = MultiSceneToolsConfig.instance.versionNumber;
+            }
 
             if(packageVersion.Equals(""))
+            {
                 packageVersion = MultiSceneToolsConfig.instance.versionNumber;
+            }
 
             if(shouldOpenWizard)
+            {
                 OpenWizard();
+            }
         }
 
         static void OpenWizard()

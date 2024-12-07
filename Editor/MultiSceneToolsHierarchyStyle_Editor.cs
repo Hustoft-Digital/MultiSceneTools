@@ -84,10 +84,14 @@ namespace HH.MultiSceneToolsEditor
             {
                 Scene scene = GetSceneFromHandleID(instanceID);
                 if (!scene.IsValid())
+                {
                     return;
+                }
 
                 if(!Collections[i].SceneNames.Exists(SC => SC == scene.name))
+                {
                     continue;
+                }
 
                 Rect rect_color = new Rect(selectionRect);
                 rect_color.x -= 47;
@@ -101,7 +105,9 @@ namespace HH.MultiSceneToolsEditor
                 rect_Collection.height = 15;
 
                 if(Collections[i] != null)
+                {
                     GUI.Label(rect_Collection, new GUIContent("", "Loaded by the \"" + Collections[i].name + "\" Collection"));
+                }
                 GUI.DrawTexture(rect_Collection, collectionIcon);
 
                 Rect rect_checkMark = new Rect(selectionRect);
@@ -113,14 +119,18 @@ namespace HH.MultiSceneToolsEditor
                 for (int j = 0; j < Collections[i].SceneNames.Count; j++)
                 {
                     if(!scene.name.Equals(Collections[i].SceneNames[j]))
+                    {
                         continue;
+                    }
 
                     bool inBuild = false;
                     string path = AssetDatabase.GetAssetPath(Collections[i].Scenes[j].TargetScene);
                     int index = SceneUtility.GetBuildIndexByScenePath(path);
 
                     if(index >= 0)
+                    {
                         inBuild = true;
+                    }
 
                     if(inBuild)
                     {
@@ -146,8 +156,6 @@ namespace HH.MultiSceneToolsEditor
                 string SceneName = EditorSceneManager.GetActiveScene().name;
                 if(scene.name.Equals(SceneName))
                 {
-                    
-
                     GUI.Label(rect_activeScene, new GUIContent("✔", "This scene is the target active scene for the \"" + Collections[i].name + "\" scene collection"), RightHeaderStyle);
                 }
             }
@@ -161,7 +169,9 @@ namespace HH.MultiSceneToolsEditor
                 var scene = EditorSceneManager.GetSceneAt(i);
 
                 if (scene.GetHashCode() == handleID)
+                {
                     return scene;
+                }
             }
             return new Scene();
         }

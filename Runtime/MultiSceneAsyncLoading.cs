@@ -39,7 +39,9 @@ namespace HH.MultiSceneTools
             {
                 Debug.Log($"unload progress: {operation.progress}");
                 if(token.IsCancellationRequested)
+                {
                     return;
+                }
                 await Task.Delay(1);
             }
             Debug.Log($"finished unloading");
@@ -71,9 +73,13 @@ namespace HH.MultiSceneTools
         public static async Task loadCollectionAsync(AsyncCollection task, string CollectionTitle, LoadCollectionMode mode, bool preload = false, bool updateActiveScene = true)
         {
             if(task.LoadingCollection == null)
+            {
                 await loadCollectionAsync(task, FindCollection(CollectionTitle), mode, preload, updateActiveScene);
+            }
             else
+            {
                 await loadCollectionAsync(task, task.LoadingCollection, mode, preload, updateActiveScene);
+            }
         }
 
         public static async Task loadCollectionAsync(AsyncCollection task, SceneCollection Collection, LoadCollectionMode mode, bool preload = false, bool updateActiveScene = true)
@@ -96,10 +102,14 @@ namespace HH.MultiSceneTools
             }
 
             if(MultiSceneToolsConfig.instance.LogOnSceneChange)
+            {
                 AddLogOnLoad();
+            }
 
             if(Collection == null)
+            {
                 throw new System.NullReferenceException();
+            }
 
             CheckException_NoScenesInCollection(Collection);
 
@@ -125,18 +135,26 @@ namespace HH.MultiSceneTools
             }
 
             if(task.cancellationTokenSource.IsCancellationRequested)
+            {
                 return;
+            }
             
             await task.isReadyToEnableScenes();
             if(task.cancellationTokenSource.IsCancellationRequested)
+            {
                 return;
+            }
             
             await enableLoadedCollectionAsync(task);
             if(task.cancellationTokenSource.IsCancellationRequested)
+            {
                 return;
+            }
             
             if(updateActiveScene)
+            {
                 await setActiveScene(Collection, task.cancellationTokenSource.Token).ContinueWith(task => {Debug.Log("Set Active Scene: " + Collection.GetNameOfTargetActiveScene());});
+            }
 
             task.isLoadingComplete = true;
             task.OnComplete?.Invoke();
@@ -158,27 +176,39 @@ namespace HH.MultiSceneTools
             
             // is boot scene loaded?
             if(MultiSceneToolsConfig.instance.UseBootScene)
+            {
                 SceneIsLoaded(bootScene, out loadedBootScene);
+            }
 
             if(!preload)
+            {
                 setCurrentUnloadingScenes(ref task);
+            }
             
             // load Differences
             foreach (var collection in collectionsCurrentlyLoaded)
             {
                 if(task.cancellationTokenSource.IsCancellationRequested)
+                {
                     return;
+                }
                 foreach (string targetScene in Collection.SceneNames)
                 {
                     if(task.cancellationTokenSource.IsCancellationRequested)
+                    {
                         return;
+                    }
                     bool difference = true;
                     foreach (string LoadedScene in collection.SceneNames)
                     {
                         if(task.cancellationTokenSource.IsCancellationRequested)
+                        {
                             return;
+                        }
                         if(targetScene.Equals(bootScene) && loadedBootScene.name != null)
+                        {
                             difference = false;
+                        }
                         
                         if(targetScene.Equals(LoadedScene))
                         {
@@ -189,12 +219,13 @@ namespace HH.MultiSceneTools
                     {
                         AsyncOperation operation = loadAsync(targetScene, LoadSceneMode.Additive);
                         if(preload)
+                        {
                             operation.allowSceneActivation = false;
+                        }
                         task.loadingOperations.Add(operation);
                     }
                 }
             }
-
             asyncLoadingTask.Add(task);
         }
 
@@ -221,7 +252,9 @@ namespace HH.MultiSceneTools
                     foreach (string LoadedScene in collectionsCurrentlyLoaded[i].SceneNames)
                     {
                         if(targetScene.Equals(bootScene) && loadedBootScene.name != null)
+                        {
                             difference = false;
+                        }
                         
                         if(targetScene.Equals(LoadedScene))
                         {
@@ -236,9 +269,11 @@ namespace HH.MultiSceneTools
                 foreach (string scene in differenceScenes)
                 {
                     AsyncOperation operation = loadAsync(scene, LoadSceneMode.Additive);
-                        if(preload)
-                            operation.allowSceneActivation = false;
-                        task.loadingOperations.Add(operation);
+                    if(preload)
+                    {
+                        operation.allowSceneActivation = false;
+                    }
+                    task.loadingOperations.Add(operation);
                 }
             }
             asyncLoadingTask.Add(task);
@@ -252,27 +287,36 @@ namespace HH.MultiSceneTools
 
             // is boot scene loaded?
             if(MultiSceneToolsConfig.instance.UseBootScene)
+            {
                 bootIsLoaded = SceneIsLoaded(bootScene, out loadedBootScene);
+            }
 
             // Unload Scenes
             if(!preload)
+            {
                 setCurrentUnloadingScenes(ref task);
+            }
 
             for (int i = 0; i < Collection.SceneNames.Count; i++)
             {
                 if(task.cancellationTokenSource.IsCancellationRequested)
+                {
                     return;
+                }
                 if(i != 0 || (loadBoot && bootIsLoaded))
                 {
                     if(Collection.SceneNames[i] == bootScene && loadBoot && bootIsLoaded)
+                    {
                         continue;
+                    }
 
                     task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive));
                 }
                 else
+                {
                     task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Single, false, 1));
+                }
             }
-
             asyncLoadingTask.Add(task);
         }
 
@@ -281,11 +325,12 @@ namespace HH.MultiSceneTools
             for (int i = 0; i < Collection.SceneNames.Count; i++)
             {
                 if(task.cancellationTokenSource.IsCancellationRequested)
+                {
                     return;
+                }
                 task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive));
                 Debug.Log($"Async Loading: {task.loadingOperations[i]}: {Collection.SceneNames[i]}");
             }
-
             asyncLoadingTask.Add(task);
         }
 

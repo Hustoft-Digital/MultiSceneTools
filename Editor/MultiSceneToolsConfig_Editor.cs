@@ -50,7 +50,9 @@ namespace HH.MultiSceneToolsEditor
             }
 
             if(collectionPath.stringValue == "")
+            {
                 collectionPath.stringValue = MultiSceneToolsConfig.collectionsPathDefault;
+            }
         }
 
         public override void OnInspectorGUI()
@@ -115,13 +117,17 @@ namespace HH.MultiSceneToolsEditor
             if(script.LoadedCollections != null)
             {
                 if(script.LoadedCollections.Count == 0)
+                {
                     script.findOpenSceneCollections();
+                }
             }
 
             if(script.LoadedCollections != null)
             {
                 if(script.LoadedCollections.Count == 0)
+                {
                     script.SetCurrentCollectionEmpty();
+                }
             }
 
             setDefaultPaths();
