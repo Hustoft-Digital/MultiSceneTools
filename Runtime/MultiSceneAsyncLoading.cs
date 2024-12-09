@@ -216,11 +216,7 @@ namespace HH.MultiSceneTools
                     }
                     if(difference)
                     {
-                        AsyncOperation operation = loadAsync(targetScene, LoadSceneMode.Additive);
-                        if(preload)
-                        {
-                            operation.allowSceneActivation = false;
-                        }
+                        AsyncOperation operation = loadAsync(targetScene, LoadSceneMode.Additive, !preload);
                         task.loadingOperations.Add(operation);
                     }
                 }
@@ -267,11 +263,7 @@ namespace HH.MultiSceneTools
                 }
                 foreach (string scene in differenceScenes)
                 {
-                    AsyncOperation operation = loadAsync(scene, LoadSceneMode.Additive);
-                    if(preload)
-                    {
-                        operation.allowSceneActivation = false;
-                    }
+                    AsyncOperation operation = loadAsync(scene, LoadSceneMode.Additive, !preload);
                     task.loadingOperations.Add(operation);
                 }
             }

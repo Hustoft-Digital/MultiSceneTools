@@ -85,7 +85,6 @@ namespace HH.MultiSceneToolsEditor
                 Undo.RegisterCompleteObjectUndo(target, "MultiSeneTools: Allow Cross Scene References = " + _CurrentAllowCrossSceneState);
                 script.setAllowCrossSceneReferences(_CurrentAllowCrossSceneState);
             }
-            script.updateCrossSceneReferenceState();
 
             // Log Scene Changes
             bool _CurrentLogScenesState = EditorGUILayout.Toggle(
