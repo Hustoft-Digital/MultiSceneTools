@@ -302,17 +302,17 @@ namespace HH.MultiSceneTools
                         continue;
                     }
 
-                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive));
+                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive, !preload));
                 }
                 else
                 {
-                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Single, false, 1));
+                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Single, !preload, 1));
                 }
             }
             asyncLoadingTask.Add(task);
         }
 
-        static void loadAdditiveAsync(ref AsyncCollection task, SceneCollection Collection)
+        static void loadAdditiveAsync(ref AsyncCollection task, SceneCollection Collection, bool preload = true)
         {
             for (int i = 0; i < Collection.SceneNames.Count; i++)
             {
@@ -320,7 +320,7 @@ namespace HH.MultiSceneTools
                 {
                     return;
                 }
-                task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive));
+                task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive, !preload));
                 Debug.Log($"Async Loading: {task.loadingOperations[i]}: {Collection.SceneNames[i]}");
             }
             asyncLoadingTask.Add(task);
