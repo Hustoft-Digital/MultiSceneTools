@@ -74,6 +74,15 @@ namespace HH.MultiSceneTools
             Debug.Log("Collection state checker initialized");
             SceneManager.sceneLoaded -= CheckCollectionState;
             SceneManager.sceneLoaded += CheckCollectionState;
+
+            #if UNITY_EDITOR
+                collectionsCurrentlyLoaded.Clear();
+                foreach (var loaded in MultiSceneToolsConfig.instance.LoadedCollections)
+                {
+                    collectionsCurrentlyLoaded.Add(loaded);
+                    Debug.Log($"added {loaded.Title} to currently Loaded collections");
+                }
+            #endif
         }
         static void CheckCollectionState(Scene scene, LoadSceneMode mode)
         {
