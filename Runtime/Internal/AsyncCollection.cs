@@ -126,7 +126,6 @@ namespace HH.MultiSceneTools.Internal
         {
             while(!getIsComplete())
             {
-                Debug.Log("waiting for enable");
                 if(cancellationTokenSource.IsCancellationRequested)
                 {
                     return;

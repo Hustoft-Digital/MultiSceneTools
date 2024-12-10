@@ -165,7 +165,6 @@ namespace HH.MultiSceneTools
             [InitializeOnLoadMethod]
             static void SceneCloseHookUp()
             {
-                Debug.Log("Editor");
                 EditorSceneManager.sceneOpened -= CheckCollectionStateEditor;
                 EditorSceneManager.sceneOpened += CheckCollectionStateEditor;
             }

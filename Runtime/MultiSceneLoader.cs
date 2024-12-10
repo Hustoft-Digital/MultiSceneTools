@@ -77,8 +77,6 @@ namespace HH.MultiSceneTools
         }
         static void CheckCollectionState(Scene scene, LoadSceneMode mode)
         {
-            Debug.Log($"Scene was loaded: {asyncLoadingTask.Count}");
-
             if(asyncLoadingTask.Count == 0)
             {
                 collectionsCurrentlyLoaded.Clear();
