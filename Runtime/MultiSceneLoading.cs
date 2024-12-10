@@ -83,6 +83,7 @@ namespace HH.MultiSceneTools
                     loadAdditive(TargetCollection);
                     break;
                 case LoadCollectionMode.Subtractive:
+                    Debug.LogError("Subtractive async loading is not implemented");
                     throw new System.NotImplementedException();
             }
             OnSceneCollectionLoadDebug?.Invoke(TargetCollection, mode);
@@ -121,6 +122,7 @@ namespace HH.MultiSceneTools
 
             if(Collection == null)
             {
+                Debug.LogError("Tried loading an Null reference Collection");
                 throw new System.NullReferenceException();
             }
 
@@ -149,7 +151,8 @@ namespace HH.MultiSceneTools
                     break;
 
                 default:
-                    throw new InvalidOperationException("Unexpected value foo = " + mode);
+                    Debug.LogError("Unexpected value LoadCollectionMode = " + mode);
+                    throw new InvalidOperationException("Unexpected value LoadCollectionMode = " + mode);
             }
             
             if(!mode.Equals(LoadCollectionMode.Subtractive))

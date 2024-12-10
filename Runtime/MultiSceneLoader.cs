@@ -318,7 +318,7 @@ namespace HH.MultiSceneTools
             {
                 return;
             }
-            
+            Debug.LogError("Attempted to load a scene collection that contains no scenes");
             throw new NullReferenceException("Attempted to load a scene collection that contains no scenes");
         }
 

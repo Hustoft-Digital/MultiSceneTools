@@ -111,7 +111,8 @@ namespace HH.MultiSceneTools
                         break;
                     
                     default:
-                        throw new InvalidOperationException("Unexpected value of state = " + state);
+                        Debug.LogError("Unexpected value LoadCollectionMode = " + state);
+                        throw new InvalidOperationException("Unexpected value of LoadCollectionMode = " + state);
                 }
                 return currentLoadedCollection.ToArray();
             }

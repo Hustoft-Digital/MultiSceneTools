@@ -119,6 +119,7 @@ namespace HH.MultiSceneTools
 
             if(Collection == null)
             {
+                Debug.LogError("Tried loading an Null reference Collection");
                 throw new System.NullReferenceException();
             }
 
@@ -183,6 +184,7 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
+                Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
                 throw new Exception("No currently loaded scene collection.");
             }
 
@@ -269,9 +271,14 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                throw new Exception("No currently loaded scene collection.");
+                Debug.LogError("No currently loaded scene collection.");
+                throw new NullReferenceException("No currently loaded scene collection.");
             }
-
+            else if(collectionsCurrentlyLoaded[0] == null)
+            {
+                Debug.LogError("No currently loaded scene collection.");
+                throw new NullReferenceException("No currently loaded scene collection.");
+            }
             string bootScene = getBootSceneName();
 
             List<string> differenceScenes = new List<string>();
@@ -354,6 +361,16 @@ namespace HH.MultiSceneTools
 
         static void loadAdditiveAsync(ref AsyncCollection task, SceneCollection Collection, bool preload = true)
         {
+            if(collectionsCurrentlyLoaded == null)
+            {
+                Debug.LogError("No currently loaded scene collection.");
+                throw new NullReferenceException("No currently loaded scene collection.");
+            }
+            else if(collectionsCurrentlyLoaded[0] == null)
+            {
+                Debug.LogError("No currently loaded scene collection.");
+                throw new NullReferenceException("No currently loaded scene collection.");
+            }
             for (int i = 0; i < Collection.SceneNames.Count; i++)
             {
                 if(task.cancellationTokenSource.IsCancellationRequested)
@@ -368,6 +385,7 @@ namespace HH.MultiSceneTools
 
         static void loadSubtractiveAsync(ref AsyncCollection task, SceneCollection Collection)
         {
+            Debug.LogError("Subtractive async loading is not implemented");
             throw new NotImplementedException();
         }
     }
