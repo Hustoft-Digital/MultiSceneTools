@@ -74,7 +74,8 @@ namespace HH.MultiSceneTools
         public string _BootScenePath = "Assets/Scenes/SampleScene.unity";
         #if UNITY_EDITOR
         public SceneAsset _TargetBootScene {private set; get;}
-        bool wasCollectionClosed;
+        public bool wasCollectionClosed;
+        public bool wasCollectionOpened;
         #endif
         public Scene BootScene;
         public string _SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
@@ -88,16 +89,23 @@ namespace HH.MultiSceneTools
             }
             public SceneCollection[] setLoadedCollection(SceneCollection Collection, LoadCollectionMode state)
             {
+                wasCollectionOpened = true;
+
                 switch(state)
                 {
+                    case LoadCollectionMode.DifferenceAdditive:
                     case LoadCollectionMode.Additive:
                         currentLoadedCollection.Add(Collection);
-                        MultiSceneToolsConfig.instance.wasCollectionClosed = false;
+                        wasCollectionClosed = false;
                         break;
                     case LoadCollectionMode.Subtractive:
+                        wasCollectionOpened = false;
+                        wasCollectionClosed = true;
                         currentLoadedCollection.Remove(Collection);
                         break;
+                    case LoadCollectionMode.DifferenceReplace:
                     case LoadCollectionMode.Replace:
+                        wasCollectionClosed = true;
                         currentLoadedCollection.Clear();
                         currentLoadedCollection.Add(Collection);
                         break;
@@ -114,11 +122,18 @@ namespace HH.MultiSceneTools
                 {
                     wasCollectionClosed = false;
                 }
+                else
+                {
+                    wasCollectionClosed = true;
+                }
 
                 currentLoadedCollection.Clear();
                 for (int i = 0; i < Collections.Count; i++)
                 {
-                    currentLoadedCollection.Add(Collections[i]);
+                    if(Collections[i].SceneNames.Count != 0)
+                    {
+                        currentLoadedCollection.Add(Collections[i]);
+                    }
                 }
                 return currentLoadedCollection.ToArray();
             }
@@ -128,25 +143,47 @@ namespace HH.MultiSceneTools
                 currentLoadedCollection.Clear();
             }
         #endif
-
         #if UNITY_EDITOR
+            // [InitializeOnLoadMethod]
+            // static void SceneCloseHookUpRuntime()
+            // {
+            //     Debug.Log("Runtime");
+            //     SceneManager.sceneLoaded -= CheckCollectionState;
+            //     SceneManager.sceneLoaded += CheckCollectionState;
+            // }
+            static void CheckCollectionState(Scene scene, LoadSceneMode mode)
+            {
 
+
+                Debug.Log($"Scene was loaded: {instance.wasCollectionClosed} && !{instance.wasCollectionOpened}");
+
+                if(!instance.wasCollectionClosed && !instance.wasCollectionOpened || instance.wasCollectionClosed)
+                {
+                    instance.SetCurrentCollectionEmpty(); 
+                }
+            }
             [InitializeOnLoadMethod]
             static void SceneCloseHookUp()
             {
-                EditorSceneManager.sceneOpened -= collectionWasClosed;
-                EditorSceneManager.sceneOpened += collectionWasClosed;
+                Debug.Log("Editor");
+                EditorSceneManager.sceneOpened -= CheckCollectionStateEditor;
+                EditorSceneManager.sceneOpened += CheckCollectionStateEditor;
             }
 
-            static void collectionWasClosed(Scene scene, OpenSceneMode mode)
+            static void CheckCollectionStateEditor(Scene scene, OpenSceneMode mode)
             {
-                if(MultiSceneToolsConfig.instance.wasCollectionClosed)
-                {
-                    MultiSceneToolsConfig.instance.SetCurrentCollectionEmpty(); 
-                    MultiSceneToolsConfig.instance.wasCollectionClosed = false;
-                }
-            }
+                LoadSceneMode loadMode;
 
+                if(mode.Equals(OpenSceneMode.Single))
+                {
+                    loadMode = LoadSceneMode.Single;
+                }
+                else
+                {
+                    loadMode = LoadSceneMode.Additive;
+                }
+                CheckCollectionState(scene, loadMode);
+            }
             private void OnEnable() 
             {
                 if(currentLoadedCollection == null)

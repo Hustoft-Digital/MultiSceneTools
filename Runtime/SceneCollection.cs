@@ -160,6 +160,7 @@ namespace HH.MultiSceneTools
                     return;
                 }
             }
+            MultiSceneToolsConfig.instance.setLoadedCollection(this, LoadCollectionMode.Replace);
             
             if(Scenes.Count > 0)
             {
@@ -180,7 +181,10 @@ namespace HH.MultiSceneTools
                 EditorSceneManager.SetActiveScene(EditorSceneManager.GetSceneByName(SceneNames[ActiveSceneIndex]));
             }
 
-            MultiSceneToolsConfig.instance.setLoadedCollection(this, LoadCollectionMode.Replace);
+            Debug.Log("done opening");
+
+            MultiSceneToolsConfig.instance.wasCollectionOpened = false;
+            MultiSceneToolsConfig.instance.wasCollectionClosed = false;
         }
 
         public void LoadAdditive()

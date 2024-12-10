@@ -62,6 +62,33 @@ namespace HH.MultiSceneTools
         public static List<SceneCollection> collectionsCurrentlyLoaded {private set; get;} = new List<SceneCollection>();
         static List<AsyncCollection> asyncLoadingTask = new List<AsyncCollection>();
         static public List<AsyncCollection> currentAsyncTask => asyncLoadingTask;
+        static bool initialized;
+        public static void InitCollectionChecker()
+        {
+            if(initialized)
+            {
+                return;
+            }
+
+            initialized = true;
+            Debug.Log("Collection state checker initialized");
+            SceneManager.sceneLoaded -= CheckCollectionState;
+            SceneManager.sceneLoaded += CheckCollectionState;
+        }
+        static void CheckCollectionState(Scene scene, LoadSceneMode mode)
+        {
+            Debug.Log($"Scene was loaded: {asyncLoadingTask.Count}");
+
+            if(asyncLoadingTask.Count == 0)
+            {
+                collectionsCurrentlyLoaded.Clear();
+
+                #if UNITY_EDITOR
+                    MultiSceneToolsConfig.instance.SetCurrentCollectionEmpty(); 
+                #endif
+            }
+        }
+
 
         #if UNITY_EDITOR
             public static void cancelAsyncTasks()
@@ -277,7 +304,7 @@ namespace HH.MultiSceneTools
                 return;
             }
             
-            throw new Exception("Attempted to load a scene collection that contains no scenes");
+            throw new NullReferenceException("Attempted to load a scene collection that contains no scenes");
         }
 
         private static void logSceneChange(SceneCollection collection, LoadCollectionMode mode)

@@ -1,5 +1,6 @@
-# Version 0.4.2 - 10/12/2024
+# Version 0.4.2 & 3 - 10/12/2024
 - Fixed loading methods not setting allowSceneActivation correctly
+- Fixed removing loaded collection on open single scenes
 
 # Version 0.4.1 - 06/12/2024
 - Fixed issue with Async LoadCollectionMode.Replace not correctly replacing all scenes

@@ -161,6 +161,7 @@ namespace HH.MultiSceneTools
             #if UNITY_EDITOR
             MultiSceneToolsConfig.instance.setLoadedCollection(collectionsCurrentlyLoaded, mode);
             #endif
+            asyncLoadingTask.Remove(task);
             source.Dispose();
         }
 
