@@ -1,6 +1,6 @@
 // *   Multi Scene Tools For Unity
 // *
-// *   Copyright (C) 2024 Hustoft Digital
+// *   Copyright (C) 2024 Henrik Hustoft
 // *
 // *   Licensed under the Apache License, Version 2.0 (the "License");
 // *   you may not use this file except in compliance with the License.
@@ -136,7 +136,7 @@ namespace HH.MultiSceneTools.Internal
 
         bool isReady()
         {
-            if(getProgress() == 0.9f)
+            if(getProgress() >= 0.9f)
             {
                 return true;
             }
@@ -153,6 +153,7 @@ namespace HH.MultiSceneTools.Internal
                 }
                 await Task.Delay(1);
             }
+            Debug.Log("is ready");
         }
 
         public async Task isReadyToUnloadScenes()

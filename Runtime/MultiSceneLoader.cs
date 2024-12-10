@@ -1,6 +1,6 @@
 // *   Multi Scene Tools For Unity
 // *
-// *   Copyright (C) 2024 Hustoft Digital
+// *   Copyright (C) 2024 Henrik Hustoft
 // *
 // *   Licensed under the Apache License, Version 2.0 (the "License");
 // *   you may not use this file except in compliance with the License.
@@ -107,26 +107,26 @@ namespace HH.MultiSceneTools
                 return collectionsCurrentlyLoaded.ToArray();
             }
 
-            public static SceneCollection[] setCurrentlyLoaded(SceneCollection collection, LoadCollectionMode state)
-            {
-                switch(state)
-                {
-                    case LoadCollectionMode.DifferenceAdditive:
-                    case LoadCollectionMode.Additive:
-                        collectionsCurrentlyLoaded.Add(collection);
-                        break;
-                    case LoadCollectionMode.Subtractive:
-                        collectionsCurrentlyLoaded.Remove(collection);
-                        break;
-                    case LoadCollectionMode.DifferenceReplace:
-                    case LoadCollectionMode.Replace:
-                        collectionsCurrentlyLoaded.Clear();
-                        collectionsCurrentlyLoaded.Add(collection);
-                        break;
-                }
-                return collectionsCurrentlyLoaded.ToArray();
-            }
         #endif
+        static SceneCollection[] setCurrentlyLoaded(SceneCollection collection, LoadCollectionMode state)
+        {
+            switch(state)
+            {
+                case LoadCollectionMode.DifferenceAdditive:
+                case LoadCollectionMode.Additive:
+                    collectionsCurrentlyLoaded.Add(collection);
+                    break;
+                case LoadCollectionMode.Subtractive:
+                    collectionsCurrentlyLoaded.Remove(collection);
+                    break;
+                case LoadCollectionMode.DifferenceReplace:
+                case LoadCollectionMode.Replace:
+                    collectionsCurrentlyLoaded.Clear();
+                    collectionsCurrentlyLoaded.Add(collection);
+                    break;
+            }
+            return collectionsCurrentlyLoaded.ToArray();
+        }
 
         static public async Task enableLoadedCollectionAsync(AsyncCollection targetCollection)
         {
@@ -160,8 +160,7 @@ namespace HH.MultiSceneTools
             }
             await Task.WhenAll(unloads);
 
-            collectionsCurrentlyLoaded.Add(targetCollection.LoadingCollection);
-            asyncLoadingTask.Remove(targetCollection);
+            setCurrentlyLoaded(targetCollection.LoadingCollection, targetCollection.loadMode);
         }
 
         static void setCurrentUnloadingScenes(ref AsyncCollection asyncCollection)

@@ -1,4 +1,5 @@
-# Version 0.4.2-4 - 10/12/2024
+# Version 0.4.2-5 - 10/12/2024
+- Fixed loadCollectionMode.Replace attempting to unload scenes that was already unloaded by single loading.
 - Fixed loading methods not setting allowSceneActivation correctly
 - Fixed removing loaded collection on open single scenes
 

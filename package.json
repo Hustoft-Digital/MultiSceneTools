@@ -1,6 +1,6 @@
 {
-  "name": "com.hustoftdigital.multi-scene-management-tools",
-  "version": "0.4.4",
+  "name": "com.henrikhustoft.multi-scene-management-tools",
+  "version": "0.4.5",
   "displayName": "Multi Scene Tools",
   "description": "Editor and runtime extensions to help manage a multi-scene workflow in unity",
   "unity": "2020.3",
@@ -12,7 +12,7 @@
     "tools"
   ],
   "author": {
-    "name": "Hustoft Digital",
+    "name": "Hustoft Hustoft",
     "url": "https://www.linkedin.com/in/henrik-hustoft-2366ab220/"
   }
 }

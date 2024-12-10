@@ -1,6 +1,6 @@
 // *   Multi Scene Tools For Unity
 // *
-// *   Copyright (C) 2024 Hustoft Digital
+// *   Copyright (C) 2024 Henrik Hustoft
 // *
 // *   Licensed under the Apache License, Version 2.0 (the "License");
 // *   you may not use this file except in compliance with the License.
@@ -30,6 +30,18 @@ namespace HH.MultiSceneTools
     {
         static async Task unloadAsync(string SceneName, CancellationToken token, AsyncCollection task)
         {
+            Scene unloadTarget = SceneManager.GetSceneByName(SceneName); 
+            
+            if(unloadTarget == null)
+            {
+                return;
+            }
+
+            if(!unloadTarget.isLoaded)
+            {
+                return;
+            }
+
             AsyncOperation operation = SceneManager.UnloadSceneAsync(SceneName);
             task.unloadingOperations.Add(operation);
 
@@ -162,10 +174,6 @@ namespace HH.MultiSceneTools
             OnSceneCollectionLoadDebug?.Invoke(Collection, mode);
             OnSceneCollectionLoaded?.Invoke(Collection, mode);
             
-            foreach (var collection in collectionsCurrentlyLoaded)
-            {
-                Debug.Log(collection.Title);
-            }
             #if UNITY_EDITOR
             MultiSceneToolsConfig.instance.setLoadedCollection(collectionsCurrentlyLoaded, mode);
             #endif
@@ -312,7 +320,7 @@ namespace HH.MultiSceneTools
                 }
                 else
                 {
-                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Single, !preload, 1));
+                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Single, !preload));
                 }
             }
             asyncLoadingTask.Add(task);
