@@ -70,11 +70,10 @@ namespace HH.MultiSceneToolsEditor
                 fileStream = File.Create(path);
                 byte[] baseClassBytes = Encoding.ASCII.GetBytes(classCode);
                 fileStream.Write(baseClassBytes, 0, baseClassBytes.Length);
-                Debug.Log("Created");
             }
 
             string _GeneratedShortcut = string.Format(shortcutCode, TargetCollection.name, CollectionAssetPath);
-            Debug.Log(_GeneratedShortcut);
+            Debug.Log("Created Shortcut: _GeneratedShortcut");
             byte[] shortcutBytes = Encoding.ASCII.GetBytes(_GeneratedShortcut);
             fileStream.Seek(seekBy, SeekOrigin.End);
             fileStream.Write(shortcutBytes, 0, shortcutBytes.Length);

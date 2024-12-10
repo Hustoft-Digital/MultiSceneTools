@@ -143,6 +143,7 @@ namespace HH.MultiSceneTools.Internal
         {
             while(!isReady())
             {
+                Debug.Log($"MultiSceneTools: {LoadingCollection.Title} is waiting to be enabled");
                 if(cancellationTokenSource.IsCancellationRequested)
                 {
                     return;
@@ -155,7 +156,7 @@ namespace HH.MultiSceneTools.Internal
         {
             while(deferSceneUnload)
             {
-                Debug.Log("waiting to unload");
+                Debug.Log($"MultiSceneTools: {LoadingCollection.Title} is waiting to unload discarded scenes");
                 if(cancellationTokenSource.IsCancellationRequested)
                 {
                     return;

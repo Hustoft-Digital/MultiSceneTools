@@ -45,17 +45,14 @@ namespace HH.MultiSceneTools
             AsyncOperation operation = SceneManager.UnloadSceneAsync(SceneName);
             task.unloadingOperations.Add(operation);
 
-            Debug.Log($"unload progress: {operation.progress}");
             while(!operation.isDone)
             {
-                Debug.Log($"unload progress: {operation.progress}");
                 if(token.IsCancellationRequested)
                 {
                     return;
                 }
                 await Task.Delay(1);
             }
-            Debug.Log($"finished unloading");
         }
 
         static AsyncOperation loadAsync(string SceneName, LoadSceneMode mode, bool AllowSceneActivation = false, int priority = 0)
@@ -378,7 +375,6 @@ namespace HH.MultiSceneTools
                     return;
                 }
                 task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive, !preload));
-                Debug.Log($"Async Loading: {task.loadingOperations[i]}: {Collection.SceneNames[i]}");
             }
             asyncLoadingTask.Add(task);
         }

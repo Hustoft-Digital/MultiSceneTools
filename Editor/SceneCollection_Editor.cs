@@ -74,7 +74,6 @@ namespace HH.MultiSceneToolsEditor
         void OnInspectorUpdate()
         {
             int sceneCount = SceneManager.sceneCountInBuildSettings;     
-            Debug.Log(sceneCount);
             string[] scenes = new string[sceneCount];
 
             for( int i = 0; i < sceneCount; i++ )

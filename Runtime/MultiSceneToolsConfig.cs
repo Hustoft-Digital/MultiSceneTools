@@ -145,13 +145,6 @@ namespace HH.MultiSceneTools
             }
         #endif
         #if UNITY_EDITOR
-            // [InitializeOnLoadMethod]
-            // static void SceneCloseHookUpRuntime()
-            // {
-            //     Debug.Log("Runtime");
-            //     SceneManager.sceneLoaded -= CheckCollectionState;
-            //     SceneManager.sceneLoaded += CheckCollectionState;
-            // }
             static void CheckCollectionState(Scene scene, LoadSceneMode mode)
             {
                 if(!instance.wasCollectionClosed && !instance.wasCollectionOpened || instance.wasCollectionClosed)
