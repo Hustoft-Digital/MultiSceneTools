@@ -153,7 +153,6 @@ namespace HH.MultiSceneTools.Internal
                 }
                 await Task.Delay(1);
             }
-            Debug.Log("is ready");
         }
 
         public async Task isReadyToUnloadScenes()

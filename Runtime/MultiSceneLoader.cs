@@ -80,7 +80,6 @@ namespace HH.MultiSceneTools
                 foreach (var loaded in MultiSceneToolsConfig.instance.LoadedCollections)
                 {
                     collectionsCurrentlyLoaded.Add(loaded);
-                    Debug.Log($"added {loaded.Title} to currently Loaded collections");
                 }
             #endif
         }

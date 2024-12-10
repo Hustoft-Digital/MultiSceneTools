@@ -320,7 +320,7 @@ namespace HH.MultiSceneTools
                 }
                 else
                 {
-                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Single, !preload));
+                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Single, !preload, 1));
                 }
             }
             asyncLoadingTask.Add(task);
