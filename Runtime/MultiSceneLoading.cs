@@ -264,7 +264,7 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                throw new System.Exception("No currently loaded scene collection.");
+                throw new NullReferenceException("No currently loaded scene collection.");
             }
 
             string bootScene = getBootSceneName();

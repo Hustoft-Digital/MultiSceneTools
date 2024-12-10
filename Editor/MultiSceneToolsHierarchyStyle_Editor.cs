@@ -80,6 +80,16 @@ namespace HH.MultiSceneToolsEditor
 
         static private void DrawSceneInfo(int instanceID, Rect selectionRect)
         {
+            if(Collections == null)
+            {
+                return;
+            }
+
+            if(Collections.Length == 0)
+            {
+                return;
+            }
+
             for (int i = 0; i < Collections.Length; i++) // ! this loop is probably redundant
             {
                 Scene scene = GetSceneFromHandleID(instanceID);

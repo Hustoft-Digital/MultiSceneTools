@@ -22,6 +22,7 @@ using System.Threading;
 
 using HH.MultiSceneTools.Internal;
 using System;
+using System.Linq;
 
 namespace HH.MultiSceneTools
 {
@@ -154,15 +155,20 @@ namespace HH.MultiSceneTools
                 await setActiveScene(Collection, task.cancellationTokenSource.Token).ContinueWith(task => {Debug.Log("Set Active Scene: " + Collection.GetNameOfTargetActiveScene());});
             }
 
+            asyncLoadingTask.Remove(task);
+            source.Dispose();
             task.isLoadingComplete = true;
             task.OnComplete?.Invoke();
             OnSceneCollectionLoadDebug?.Invoke(Collection, mode);
             OnSceneCollectionLoaded?.Invoke(Collection, mode);
+            
+            foreach (var collection in collectionsCurrentlyLoaded)
+            {
+                Debug.Log(collection.Title);
+            }
             #if UNITY_EDITOR
             MultiSceneToolsConfig.instance.setLoadedCollection(collectionsCurrentlyLoaded, mode);
             #endif
-            asyncLoadingTask.Remove(task);
-            source.Dispose();
         }
 
         static void loadDifferenceReplaceAsync(ref AsyncCollection task, SceneCollection Collection, bool preload = true)
