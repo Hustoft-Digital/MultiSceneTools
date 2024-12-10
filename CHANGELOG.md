@@ -1,4 +1,4 @@
-# Version 0.4.2.x - 10/12/2024
+# Version 0.4.2-4 - 10/12/2024
 - Fixed loading methods not setting allowSceneActivation correctly
 - Fixed removing loaded collection on open single scenes
 
