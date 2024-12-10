@@ -80,7 +80,7 @@ namespace HH.MultiSceneTools
             if(asyncLoadingTask.Count == 0)
             {
                 collectionsCurrentlyLoaded.Clear();
-
+                Debug.Log("Clearing open scene collections");
                 #if UNITY_EDITOR
                     MultiSceneToolsConfig.instance.SetCurrentCollectionEmpty(); 
                 #endif
