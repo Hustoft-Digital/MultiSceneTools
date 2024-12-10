@@ -25,7 +25,7 @@ namespace HH.MultiSceneToolsEditor
     {
         public static bool detectedUpdate {get; private set;}
         public static string packageVersion {get; private set;}
-        public static readonly string packageName = "com.hustoftdigital.multi-scene-management-tools";
+        public static readonly string packageName = "com.henrikhustoft.multi-scene-management-tools";
         
         [InitializeOnLoadMethod]
         static void Startup()
