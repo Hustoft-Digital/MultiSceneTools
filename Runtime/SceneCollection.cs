@@ -181,8 +181,6 @@ namespace HH.MultiSceneTools
                 EditorSceneManager.SetActiveScene(EditorSceneManager.GetSceneByName(SceneNames[ActiveSceneIndex]));
             }
 
-            Debug.Log("done opening");
-
             MultiSceneToolsConfig.instance.wasCollectionOpened = false;
             MultiSceneToolsConfig.instance.wasCollectionClosed = false;
         }

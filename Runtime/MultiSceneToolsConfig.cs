@@ -153,10 +153,6 @@ namespace HH.MultiSceneTools
             // }
             static void CheckCollectionState(Scene scene, LoadSceneMode mode)
             {
-
-
-                Debug.Log($"Scene was loaded: {instance.wasCollectionClosed} && !{instance.wasCollectionOpened}");
-
                 if(!instance.wasCollectionClosed && !instance.wasCollectionOpened || instance.wasCollectionClosed)
                 {
                     instance.SetCurrentCollectionEmpty(); 
