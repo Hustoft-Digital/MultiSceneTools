@@ -199,7 +199,24 @@ namespace HH.MultiSceneTools
                 setCurrentUnloadingScenes(ref task);
             }
             
+
             // load Differences
+            bool noCollectionIsLoaded = false;   
+            if(collectionsCurrentlyLoaded.Count <= 0)
+            {
+                noCollectionIsLoaded = true;
+            }
+            else if(collectionsCurrentlyLoaded[0].SceneNames == null)
+            {
+                noCollectionIsLoaded = true;
+            }
+            
+            if(noCollectionIsLoaded)
+            {
+                loadReplaceAsync(ref task, Collection, preload);
+                return;
+            }
+
             foreach (var collection in collectionsCurrentlyLoaded)
             {
                 if(task.cancellationTokenSource.IsCancellationRequested)
@@ -213,22 +230,31 @@ namespace HH.MultiSceneTools
                         return;
                     }
                     bool difference = true;
-                    foreach (string LoadedScene in collection.SceneNames)
+
+                    if(collection.SceneNames == null)
                     {
-                        if(task.cancellationTokenSource.IsCancellationRequested)
+
+                    }
+                    else
+                    {
+                        foreach (string LoadedScene in collection.SceneNames)
                         {
-                            return;
-                        }
-                        if(targetScene.Equals(bootScene) && loadedBootScene.name != null)
-                        {
-                            difference = false;
-                        }
-                        
-                        if(targetScene.Equals(LoadedScene))
-                        {
-                            difference = false;
+                            if(task.cancellationTokenSource.IsCancellationRequested)
+                            {
+                                return;
+                            }
+                            if(targetScene.Equals(bootScene) && loadedBootScene.name != null)
+                            {
+                                difference = false;
+                            }
+                            
+                            if(targetScene.Equals(LoadedScene))
+                            {
+                                difference = false;
+                            }
                         }
                     }
+
                     if(difference)
                     {
                         AsyncOperation operation = loadAsync(targetScene, LoadSceneMode.Additive, !preload);

@@ -187,6 +187,11 @@ namespace HH.MultiSceneTools
                 shouldKeepBoot = true;
             }
 
+            if(collectionsCurrentlyLoaded[0] == null)
+            {
+                return;
+            }
+
             switch(asyncCollection.loadMode)
             {
                 case LoadCollectionMode.DifferenceReplace:
@@ -279,6 +284,11 @@ namespace HH.MultiSceneTools
 
             for (int i = 0; i < collectionsCurrentlyLoaded.Count; i++)
             {
+                if(collectionsCurrentlyLoaded[i] == null)
+                {
+                    return false;
+                }
+
                 if(collectionsCurrentlyLoaded[i].SceneNames.Contains(Name))
                 {
                     foundScene = SceneManager.GetSceneByName(Name);

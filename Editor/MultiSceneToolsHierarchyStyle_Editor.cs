@@ -98,6 +98,11 @@ namespace HH.MultiSceneToolsEditor
                     return;
                 }
 
+                if(Collections[0] == null)
+                {
+                    return;
+                }
+
                 if(!Collections[i].SceneNames.Exists(SC => SC == scene.name))
                 {
                     continue;

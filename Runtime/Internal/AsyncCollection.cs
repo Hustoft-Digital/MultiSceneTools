@@ -71,11 +71,7 @@ namespace HH.MultiSceneTools.Internal
 
             if(loadingOperations.Count == 0)
             {
-                Debug.LogError("Cant get progress, there was no loading operations");
-            }
-
-            if(loadingOperations.Count == 0)
-            {
+                Debug.LogWarning($"No scenes where loaded in the async operation: {LoadingCollection.Title}, {loadMode}");
                 return 0.9f;
             }
 
