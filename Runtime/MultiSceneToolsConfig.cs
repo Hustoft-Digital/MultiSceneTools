@@ -144,6 +144,17 @@ namespace HH.MultiSceneTools
                 currentLoadedCollection.Clear();
             }
         #endif
+        public void SetCurrentCollectionEmpty()
+        {
+            if(currentLoadedCollection == null)
+            {
+                currentLoadedCollection = new List<SceneCollection>();
+            }
+            currentLoadedCollection.Clear();
+            currentLoadedCollection.Add(ScriptableObject.CreateInstance<SceneCollection>());
+            currentLoadedCollection[0].name = "None";
+            MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection, LoadCollectionMode.Additive);
+        }
         #if UNITY_EDITOR
             static void CheckCollectionState(Scene scene, LoadSceneMode mode)
             {
@@ -206,17 +217,7 @@ namespace HH.MultiSceneTools
                 #endif
             }
             
-            public void SetCurrentCollectionEmpty()
-            {
-                if(currentLoadedCollection == null)
-                {
-                    currentLoadedCollection = new List<SceneCollection>();
-                }
-                currentLoadedCollection.Clear();
-                currentLoadedCollection.Add(ScriptableObject.CreateInstance<SceneCollection>());
-                currentLoadedCollection[0].name = "None";
-                MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection, LoadCollectionMode.Additive);
-            }
+
 
             public void UpdateCollections()
             {
