@@ -19,6 +19,8 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System.Threading;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+using System.Linq;
 
 namespace HH.MultiSceneTools.Internal
 {
@@ -26,7 +28,7 @@ namespace HH.MultiSceneTools.Internal
     {
         public SceneCollection LoadingCollection {get; private set;}
         public LoadCollectionMode loadMode {get; private set;}
-        public List<AsyncOperation> loadingOperations = new List<AsyncOperation>();
+        public Dictionary<AsyncOperation, LoadSceneMode> loadingOperations = new Dictionary<AsyncOperation, LoadSceneMode>();
         public List<AsyncOperation> unloadingOperations = new List<AsyncOperation>();
         public List<string> UnloadScenes = new List<string>();
         public bool deferSceneUnload {get; private set;}
@@ -53,7 +55,7 @@ namespace HH.MultiSceneTools.Internal
         {
             for (int i = 0; i < loadingOperations.Count; i++)
             {
-                if(!loadingOperations[i].isDone)
+                if(!loadingOperations.Keys.ElementAt(i).isDone)
                 {
                     return false;
                 }
@@ -66,7 +68,7 @@ namespace HH.MultiSceneTools.Internal
             float progress = 0;
             for (int i = 0; i < loadingOperations.Count; i++)
             {
-                progress += loadingOperations[i].progress;
+                progress += loadingOperations.Keys.ElementAt(i).progress;
             }
 
             if(loadingOperations.Count == 0)
@@ -90,7 +92,7 @@ namespace HH.MultiSceneTools.Internal
 
             for (int i = 0; i < loadingOperations.Count; i++)
             {
-                loadingOperations[i].allowSceneActivation = true;
+                loadingOperations.Keys.ElementAt(i).allowSceneActivation = true;
             }
         }
 

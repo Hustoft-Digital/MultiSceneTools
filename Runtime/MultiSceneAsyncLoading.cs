@@ -30,6 +30,11 @@ namespace HH.MultiSceneTools
     {
         static async Task unloadAsync(string SceneName, CancellationToken token, AsyncCollection task)
         {
+            if(task.loadingOperations.Values.Any(mode => mode.Equals(LoadSceneMode.Single)))
+            {
+                return;
+            }
+
             Scene unloadTarget = SceneManager.GetSceneByName(SceneName); 
             
             if(unloadTarget == null)
@@ -256,8 +261,9 @@ namespace HH.MultiSceneTools
 
                     if(difference)
                     {
-                        AsyncOperation operation = loadAsync(targetScene, LoadSceneMode.Additive, !preload);
-                        task.loadingOperations.Add(operation);
+                        LoadSceneMode mode = LoadSceneMode.Additive;
+                        AsyncOperation operation = loadAsync(targetScene, mode, !preload);
+                        task.loadingOperations.Add(operation, mode);
                     }
                 }
             }
@@ -308,8 +314,9 @@ namespace HH.MultiSceneTools
                 }
                 foreach (string scene in differenceScenes)
                 {
-                    AsyncOperation operation = loadAsync(scene, LoadSceneMode.Additive, !preload);
-                    task.loadingOperations.Add(operation);
+                    LoadSceneMode mode = LoadSceneMode.Additive;
+                    AsyncOperation operation = loadAsync(scene, mode, !preload);
+                    task.loadingOperations.Add(operation, mode);
                 }
             }
             asyncLoadingTask.Add(task);
@@ -346,11 +353,13 @@ namespace HH.MultiSceneTools
                         continue;
                     }
 
-                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive, !preload));
+                    LoadSceneMode mode = LoadSceneMode.Additive;
+                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], mode, !preload), mode);
                 }
                 else
                 {
-                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Single, !preload, 1));
+                    LoadSceneMode mode = LoadSceneMode.Single;
+                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], mode, !preload, 1), mode);
                 }
             }
             asyncLoadingTask.Add(task);
@@ -374,7 +383,8 @@ namespace HH.MultiSceneTools
                 {
                     return;
                 }
-                task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], LoadSceneMode.Additive, !preload));
+                LoadSceneMode mode = LoadSceneMode.Additive;
+                task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], mode, !preload), mode);
             }
             asyncLoadingTask.Add(task);
         }
