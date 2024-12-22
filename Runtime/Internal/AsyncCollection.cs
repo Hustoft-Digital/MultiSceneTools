@@ -33,7 +33,7 @@ namespace HH.MultiSceneTools.Internal
         
         private readonly List<AsyncOperation> _unloadingOperations = new List<AsyncOperation>();
         public AsyncOperation[] unloadingOperations => _unloadingOperations.ToArray();
-        private List<string> _UnloadScenes = new List<string>();
+        private readonly List<string> _UnloadScenes = new List<string>();
         public string[] UnloadScenes => _UnloadScenes.ToArray();
         public bool deferSceneUnload {get; private set;}
         public bool isBeingEnabled {get; private set;}
