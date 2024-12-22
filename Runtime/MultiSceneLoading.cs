@@ -125,7 +125,7 @@ namespace HH.MultiSceneTools
             if(Collection == null)
             {
                 Debug.LogError("Tried loading an Null reference Collection");
-                throw new System.NullReferenceException();
+                throw new ArgumentNullException("Tried loading an Null reference Collection");
             }
 
             CheckException_NoScenesInCollection(Collection);
@@ -176,8 +176,15 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                throw new System.Exception("No currently loaded scene collection.");
+                Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
+                throw new InvalidOperationException("No currently loaded scene collection.");
             }
+            if(collectionsCurrentlyLoaded[0] == null)
+            {
+                Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
+                throw new InvalidOperationException("No currently loaded scene collection.");
+            }
+            
 
             string bootScene = getBootSceneName();
             bool shouldKeepBoot = false;
@@ -269,7 +276,13 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                throw new NullReferenceException("No currently loaded scene collection.");
+                Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
+                throw new InvalidOperationException("No currently loaded scene collection.");
+            }
+            if(collectionsCurrentlyLoaded[0] == null)
+            {
+                Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
+                throw new InvalidOperationException("No currently loaded scene collection.");
             }
 
             string bootScene = getBootSceneName();

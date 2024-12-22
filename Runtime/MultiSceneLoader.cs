@@ -320,7 +320,7 @@ namespace HH.MultiSceneTools
                 return;
             }
             Debug.LogError("Attempted to load a scene collection that contains no scenes");
-            throw new NullReferenceException("Attempted to load a scene collection that contains no scenes");
+            throw new ArgumentException("Attempted to load a scene collection that contains no scenes");
         }
 
         private static void logSceneChange(SceneCollection collection, LoadCollectionMode mode)

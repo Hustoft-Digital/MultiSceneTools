@@ -188,7 +188,7 @@ namespace HH.MultiSceneTools
             if(Collection == null)
             {
                 Debug.LogError("Tried loading an Null reference Collection");
-                throw new System.NullReferenceException();
+                throw new ArgumentNullException("Tried loading an Null reference Collection");
             }
 
             CheckException_NoScenesInCollection(Collection);
@@ -253,7 +253,14 @@ namespace HH.MultiSceneTools
             if(collectionsCurrentlyLoaded == null)
             {
                 Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
-                throw new Exception("No currently loaded scene collection.");
+                task.cancellationTokenSource.Cancel();
+                throw new TaskCanceledException("No currently loaded scene collection.");
+            }
+            if(collectionsCurrentlyLoaded[0] == null)
+            {
+                Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
+                task.cancellationTokenSource.Cancel();
+                throw new TaskCanceledException("No currently loaded scene collection.");
             }
 
             string bootScene = getBootSceneName();
@@ -301,11 +308,7 @@ namespace HH.MultiSceneTools
                     }
                     bool difference = true;
 
-                    if(collection.SceneNames == null)
-                    {
-
-                    }
-                    else
+                    if(collection.SceneNames != null)
                     {
                         foreach (string LoadedScene in collection.SceneNames)
                         {
@@ -341,12 +344,12 @@ namespace HH.MultiSceneTools
             if(collectionsCurrentlyLoaded == null)
             {
                 Debug.LogError("No currently loaded scene collection.");
-                throw new NullReferenceException("No currently loaded scene collection.");
+                throw new TaskCanceledException("No currently loaded scene collection.");
             }
             else if(collectionsCurrentlyLoaded[0] == null)
             {
                 Debug.LogError("No currently loaded scene collection.");
-                throw new NullReferenceException("No currently loaded scene collection.");
+                throw new TaskCanceledException("No currently loaded scene collection.");
             }
             string bootScene = getBootSceneName();
 
@@ -436,12 +439,12 @@ namespace HH.MultiSceneTools
             if(collectionsCurrentlyLoaded == null)
             {
                 Debug.LogError("No currently loaded scene collection.");
-                throw new NullReferenceException("No currently loaded scene collection.");
+                throw new TaskCanceledException("No currently loaded scene collection.");
             }
             else if(collectionsCurrentlyLoaded[0] == null)
             {
                 Debug.LogError("No currently loaded scene collection.");
-                throw new NullReferenceException("No currently loaded scene collection.");
+                throw new TaskCanceledException("No currently loaded scene collection.");
             }
             for (int i = 0; i < Collection.SceneNames.Count; i++)
             {
