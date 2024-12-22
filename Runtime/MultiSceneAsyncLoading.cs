@@ -69,21 +69,63 @@ namespace HH.MultiSceneTools
             return AsyncLoading;
         }
 
-        public static AsyncCollection loadCollectionAsync(string CollectionTitle, LoadCollectionMode mode, bool preload, bool setActiveScene = true, bool deferSceneUnload = false)
+        public static AsyncCollection loadCollectionAsync(string CollectionTitle, LoadCollectionMode mode, bool preload, bool deferSceneUnload, bool setActiveScene)
         {
             AsyncCollection asyncCollection = new AsyncCollection(FindCollection(CollectionTitle), mode, new CancellationTokenSource(), deferSceneUnload);
             loadCollectionAsync(asyncCollection, CollectionTitle, mode, preload, setActiveScene).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
             return asyncCollection;
         }
 
-        public static AsyncCollection loadCollectionAsync(SceneCollection Collection, LoadCollectionMode mode, bool preload, bool setActiveScene = true, bool deferSceneUnload = false)
+        public static AsyncCollection loadCollectionAsync(string CollectionTitle, LoadCollectionMode mode, bool preload, bool deferSceneUnload)
+        {
+            AsyncCollection asyncCollection = new AsyncCollection(FindCollection(CollectionTitle), mode, new CancellationTokenSource(), deferSceneUnload);
+            loadCollectionAsync(asyncCollection, CollectionTitle, mode, preload, true).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
+            return asyncCollection;
+        }
+
+        public static AsyncCollection loadCollectionAsync(string CollectionTitle, LoadCollectionMode mode, bool preload)
+        {
+            AsyncCollection asyncCollection = new AsyncCollection(FindCollection(CollectionTitle), mode, new CancellationTokenSource(), false);
+            loadCollectionAsync(asyncCollection, CollectionTitle, mode, preload, true).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
+            return asyncCollection;
+        }
+
+        public static AsyncCollection loadCollectionAsync(string CollectionTitle, LoadCollectionMode mode)
+        {
+            AsyncCollection asyncCollection = new AsyncCollection(FindCollection(CollectionTitle), mode, new CancellationTokenSource(), false);
+            loadCollectionAsync(asyncCollection, CollectionTitle, mode, false, true).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
+            return asyncCollection;
+        }
+
+        public static AsyncCollection loadCollectionAsync(SceneCollection Collection, LoadCollectionMode mode, bool preload, bool setActiveScene, bool deferSceneUnload)
         {
             AsyncCollection asyncCollection = new AsyncCollection(Collection, mode, new CancellationTokenSource(), deferSceneUnload);
             loadCollectionAsync(asyncCollection, Collection, mode, preload, setActiveScene).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
             return asyncCollection;
         }
 
-        public static async Task loadCollectionAsync(AsyncCollection task, string CollectionTitle, LoadCollectionMode mode, bool preload = false, bool updateActiveScene = true)
+        public static AsyncCollection loadCollectionAsync(SceneCollection Collection, LoadCollectionMode mode, bool preload)
+        {
+            AsyncCollection asyncCollection = new AsyncCollection(Collection, mode, new CancellationTokenSource(), false);
+            loadCollectionAsync(asyncCollection, Collection, mode, preload, true).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
+            return asyncCollection;
+        }
+
+        public static AsyncCollection loadCollectionAsync(SceneCollection Collection, LoadCollectionMode mode, bool preload, bool deferSceneUnload)
+        {
+            AsyncCollection asyncCollection = new AsyncCollection(Collection, mode, new CancellationTokenSource(), deferSceneUnload);
+            loadCollectionAsync(asyncCollection, Collection, mode, preload, true).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
+            return asyncCollection;
+        }
+
+        public static AsyncCollection loadCollectionAsync(SceneCollection Collection, LoadCollectionMode mode)
+        {
+            AsyncCollection asyncCollection = new AsyncCollection(Collection, mode, new CancellationTokenSource(), false);
+            loadCollectionAsync(asyncCollection, Collection, mode, false, true).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
+            return asyncCollection;
+        }
+
+        public static async Task loadCollectionAsync(AsyncCollection task, string CollectionTitle, LoadCollectionMode mode, bool preload, bool updateActiveScene)
         {
             if(task.LoadingCollection == null)
             {
@@ -95,7 +137,31 @@ namespace HH.MultiSceneTools
             }
         }
 
-        public static async Task loadCollectionAsync(AsyncCollection task, SceneCollection Collection, LoadCollectionMode mode, bool preload = false, bool updateActiveScene = true)
+        public static async Task loadCollectionAsync(AsyncCollection task, string CollectionTitle, LoadCollectionMode mode)
+        {
+            if(task.LoadingCollection == null)
+            {
+                await loadCollectionAsync(task, FindCollection(CollectionTitle), mode, false, true);
+            }
+            else
+            {
+                await loadCollectionAsync(task, task.LoadingCollection, mode, false, true);
+            }
+        }
+
+        public static async Task loadCollectionAsync(AsyncCollection task, string CollectionTitle, LoadCollectionMode mode, bool preload)
+        {
+            if(task.LoadingCollection == null)
+            {
+                await loadCollectionAsync(task, FindCollection(CollectionTitle), mode, preload, true);
+            }
+            else
+            {
+                await loadCollectionAsync(task, task.LoadingCollection, mode, preload, true);
+            }
+        }
+
+        private static async Task loadCollectionAsync(AsyncCollection task, SceneCollection Collection, LoadCollectionMode mode, bool preload = false, bool updateActiveScene = true)
         {
             CancellationTokenSource source = new CancellationTokenSource();
             

@@ -103,7 +103,7 @@ namespace HH.MultiSceneToolsEditor
                     return;
                 }
 
-                if(!Collections[i].SceneNames.Exists(SC => SC == scene.name))
+                if(!Collections[i]._SceneNames.Exists(SC => SC == scene.name))
                 {
                     continue;
                 }
@@ -131,9 +131,9 @@ namespace HH.MultiSceneToolsEditor
                 rect_checkMark.width = 12;
                 rect_checkMark.height = 12;
                 
-                for (int j = 0; j < Collections[i].SceneNames.Count; j++)
+                for (int j = 0; j < Collections[i]._SceneNames.Count; j++)
                 {
-                    if(!scene.name.Equals(Collections[i].SceneNames[j]))
+                    if(!scene.name.Equals(Collections[i]._SceneNames[j]))
                     {
                         continue;
                     }

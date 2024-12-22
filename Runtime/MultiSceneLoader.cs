@@ -131,6 +131,8 @@ namespace HH.MultiSceneTools
                     collectionsCurrentlyLoaded.Clear();
                     collectionsCurrentlyLoaded.Add(collection);
                     break;
+                default:
+                    throw new NotImplementedException();
             }
             return collectionsCurrentlyLoaded.ToArray();
         }

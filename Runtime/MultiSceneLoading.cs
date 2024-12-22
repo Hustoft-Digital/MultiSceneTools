@@ -84,7 +84,9 @@ namespace HH.MultiSceneTools
                     break;
                 case LoadCollectionMode.Subtractive:
                     Debug.LogError("Subtractive async loading is not implemented");
-                    throw new System.NotImplementedException();
+                    throw new NotImplementedException();
+                default:
+                    throw new NotImplementedException();
             }
             OnSceneCollectionLoadDebug?.Invoke(TargetCollection, mode);
             OnSceneCollectionLoaded?.Invoke(TargetCollection, mode);
