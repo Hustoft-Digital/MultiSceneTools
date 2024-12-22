@@ -1,3 +1,5 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ab255c26e8694143944b4ce292fee11b)](https://app.codacy.com/gh/Hustoft-Digital/MultiSceneTools/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
 # Multi Scene Tools
 
 <img src="Images/MultiSceneTools%20Icon.png" alt="MultiSceneToolsIcon" width="200"/>
