@@ -238,7 +238,6 @@ namespace HH.MultiSceneTools
 
             asyncLoadingTask.Remove(task);
             source.Dispose();
-            task.isLoadingComplete = true;
             task.OnComplete?.Invoke();
             OnSceneCollectionLoadDebug?.Invoke(Collection, mode);
             OnSceneCollectionLoaded?.Invoke(Collection, mode);

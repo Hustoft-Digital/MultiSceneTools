@@ -28,17 +28,18 @@ namespace HH.MultiSceneTools.Internal
     {
         public SceneCollection LoadingCollection {get; private set;}
         public LoadCollectionMode loadMode {get; private set;}
-        private Dictionary<AsyncOperation, LoadSceneMode> _loadingOperations = new Dictionary<AsyncOperation, LoadSceneMode>();
+        private readonly Dictionary<AsyncOperation, LoadSceneMode> _loadingOperations = new Dictionary<AsyncOperation, LoadSceneMode>();
         public  Dictionary<AsyncOperation, LoadSceneMode> loadingOperations => _loadingOperations.ToDictionary(entry => entry.Key, entry => entry.Value);
         
-        public List<AsyncOperation> _unloadingOperations = new List<AsyncOperation>();
+        private readonly List<AsyncOperation> _unloadingOperations = new List<AsyncOperation>();
         public AsyncOperation[] unloadingOperations => _unloadingOperations.ToArray();
-        public List<string> UnloadScenes = new List<string>();
+        private List<string> _UnloadScenes = new List<string>();
+        public string[] UnloadScenes => _UnloadScenes.ToArray();
         public bool deferSceneUnload {get; private set;}
         public bool isBeingEnabled {get; private set;}
-        public CancellationTokenSource cancellationTokenSource;
-        public UnityEvent OnComplete = new UnityEvent();
-        public bool isLoadingComplete = false;
+        public readonly CancellationTokenSource cancellationTokenSource;
+        public readonly UnityEvent OnComplete = new UnityEvent();
+        private bool isLoadingComplete = false;
 
         public AsyncCollection(SceneCollection TargetCollection, LoadCollectionMode mode, CancellationTokenSource tokenSource, bool deferSceneUnload)
         {
@@ -52,17 +53,12 @@ namespace HH.MultiSceneTools.Internal
                 Debug.LogWarning("Additive loading can not be affected by deferSceneUnload");
                 this.deferSceneUnload = false;
             }
+            OnComplete.AddListener(() => isLoadingComplete = true);
         }
 
-        public void addLoadingOperation(AsyncOperation operation, LoadSceneMode mode)
-        {
-            _loadingOperations.Add(operation, mode);
-        }
-
-        public void addUnLoadingOperation(AsyncOperation operation)
-        {
-            _unloadingOperations.Add(operation);
-        }
+        public void addUnloadScene(string SceneName) => _UnloadScenes.Add(SceneName);
+        public void addLoadingOperation(AsyncOperation operation, LoadSceneMode mode) => _loadingOperations.Add(operation, mode);
+        public void addUnLoadingOperation(AsyncOperation operation) => _unloadingOperations.Add(operation);
 
         public bool getIsComplete()
         {

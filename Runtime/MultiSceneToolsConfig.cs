@@ -34,7 +34,7 @@ namespace HH.MultiSceneTools
         public static readonly string configResourcesPath = "MultiSceneTools/Config/";
         public static readonly string bootPathDefault = "Assets/Scenes/SampleScene.unity";
         public static readonly string collectionsPathDefault = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
-        public bool startWizardOnUpdate = true;
+        [field:SerializeField] public bool UseBootScene {get; private set;} = false;
         public static MultiSceneToolsConfig instance 
         {
             get 
@@ -70,17 +70,18 @@ namespace HH.MultiSceneTools
         public SceneCollection[] GetSceneCollections() => _ProjectCollections.ToArray();
         [field:SerializeField, HideInInspector] public bool LogOnSceneChange {get; private set;}
         [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
-        public bool UseBootScene = false;
-        public string _BootScenePath = "Assets/Scenes/SampleScene.unity";
-        #if UNITY_EDITOR
-        public SceneAsset _TargetBootScene {private set; get;}
-        public bool wasCollectionClosed;
-        public bool wasCollectionOpened;
-        #endif
+        [field:SerializeField] public string _BootScenePath {get; private set;} = "Assets/Scenes/SampleScene.unity";
+        [field:SerializeField] public string _SceneCollectionPath {get; private set;} = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
         public Scene BootScene;
-        public string _SceneCollectionPath = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
-
         #if UNITY_EDITOR
+            [field:SerializeField] public bool startWizardOnUpdate {get; private set;} = true;
+            public void toggleWizardPopup() => startWizardOnUpdate = !startWizardOnUpdate;
+            public void setUseBootScene(bool state) => UseBootScene = state;
+            public void setBootScenePath(string path) => _BootScenePath = path;
+            public void setSceneCollectionFolder(string path) => _SceneCollectionPath = path;
+            public SceneAsset _TargetBootScene {private set; get;}
+            public bool wasCollectionClosed;
+            public bool wasCollectionOpened;
             public string versionNumber;
             public bool setAllowCrossSceneReferences(bool state) => AllowCrossSceneReferences = state;
             public void setLogOnSceneChange(bool state)
@@ -143,8 +144,6 @@ namespace HH.MultiSceneTools
             {
                 currentLoadedCollection.Clear();
             }
-        #endif
-        #if UNITY_EDITOR
             static void CheckCollectionState(Scene scene, LoadSceneMode mode)
             {
                 if(!instance.wasCollectionClosed && !instance.wasCollectionOpened || instance.wasCollectionClosed)

@@ -157,8 +157,8 @@ namespace HH.MultiSceneTools
             setCurrentUnloadingScenes(ref targetCollection);
 
             await targetCollection.isReadyToUnloadScenes();
-            Task[] unloads = new Task[targetCollection.UnloadScenes.Count];
-            for (int i = 0; i < targetCollection.UnloadScenes.Count; i++)
+            Task[] unloads = new Task[targetCollection.UnloadScenes.Length];
+            for (int i = 0; i < targetCollection.UnloadScenes.Length; i++)
             {
                 if(targetCollection.cancellationTokenSource.IsCancellationRequested)
                 {
@@ -223,7 +223,7 @@ namespace HH.MultiSceneTools
                             if(unloadedScenes != collectionsCurrentlyLoaded[i].SceneNames.Count || loadedBootScene.name != null)
                             {
                                 unloadedScenes++;
-                                asyncCollection.UnloadScenes.Add(collectionsCurrentlyLoaded[i].SceneNames[j]);
+                                asyncCollection.addUnloadScene(collectionsCurrentlyLoaded[i].SceneNames[j]);
                             }
                         }
                     }
@@ -234,12 +234,16 @@ namespace HH.MultiSceneTools
                     {
                         for (int j = 0; j < collectionsCurrentlyLoaded[i].SceneNames.Count; j++)
                         {
-                            asyncCollection.UnloadScenes.Add(collectionsCurrentlyLoaded[i].SceneNames[j]);
+                            if(shouldKeepBoot)
+                            {
+                                if(collectionsCurrentlyLoaded[i].SceneNames[j].Equals(bootScene))
+                                {
+                                    continue;
+                                }
+                            }
+
+                            asyncCollection.addUnloadScene(collectionsCurrentlyLoaded[i].SceneNames[j]);
                         }
-                    }
-                    if(shouldKeepBoot)
-                    {
-                        asyncCollection.UnloadScenes.Remove(bootScene);
                     }
                     break;
 

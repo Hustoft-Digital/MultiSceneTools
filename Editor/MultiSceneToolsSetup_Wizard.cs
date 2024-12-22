@@ -199,10 +199,13 @@ namespace HH.MultiSceneToolsEditor
                 Selection.activeObject = config;
             }
 
-            config._BootScenePath = _bootScenePath;
-            config._SceneCollectionPath = _sceneCollectionsPath;
-            config.startWizardOnUpdate = !preventPopupAgain;
-            config.UseBootScene = useBootScene;
+            config.setBootScenePath(_bootScenePath);
+            config.setSceneCollectionFolder(_sceneCollectionsPath);
+            config.setUseBootScene(useBootScene);
+            if(config.startWizardOnUpdate && preventPopupAgain)
+            {
+                config.toggleWizardPopup();
+            }
 
             if(MultiSceneToolsStartup.packageVersion != "")
             {
