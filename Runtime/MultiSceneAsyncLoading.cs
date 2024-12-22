@@ -141,11 +141,11 @@ namespace HH.MultiSceneTools
         {
             if(task.LoadingCollection == null)
             {
-                await loadCollectionAsync(task, FindCollection(CollectionTitle), mode, false, true);
+                await loadCollectionAsync(task, FindCollection(CollectionTitle), mode);
             }
             else
             {
-                await loadCollectionAsync(task, task.LoadingCollection, mode, false, true);
+                await loadCollectionAsync(task, task.LoadingCollection, mode);
             }
         }
 
@@ -153,11 +153,11 @@ namespace HH.MultiSceneTools
         {
             if(task.LoadingCollection == null)
             {
-                await loadCollectionAsync(task, FindCollection(CollectionTitle), mode, preload, true);
+                await loadCollectionAsync(task, FindCollection(CollectionTitle), mode, preload);
             }
             else
             {
-                await loadCollectionAsync(task, task.LoadingCollection, mode, preload, true);
+                await loadCollectionAsync(task, task.LoadingCollection, mode, preload);
             }
         }
 

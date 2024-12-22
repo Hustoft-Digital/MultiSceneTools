@@ -25,7 +25,6 @@ namespace HH.MultiSceneToolsEditor
 {
     static public class MultiSceneToolsHierarchyStyle_Editor
     {
-        static GUIStyle RightHeaderStyle;
         static Texture checkMark_Y, checkMark_N, collectionIcon;
         static SceneCollection[] Collections;
 
@@ -103,7 +102,7 @@ namespace HH.MultiSceneToolsEditor
                     return;
                 }
 
-                if(!Collections[i]._SceneNames.Exists(SC => SC == scene.name))
+                if(!Collections[i].SceneNames.Exists(SC => SC == scene.name))
                 {
                     continue;
                 }
@@ -131,9 +130,9 @@ namespace HH.MultiSceneToolsEditor
                 rect_checkMark.width = 12;
                 rect_checkMark.height = 12;
                 
-                for (int j = 0; j < Collections[i]._SceneNames.Count; j++)
+                for (int j = 0; j < Collections[i].SceneNames.Count; j++)
                 {
-                    if(!scene.name.Equals(Collections[i]._SceneNames[j]))
+                    if(!scene.name.Equals(Collections[i].SceneNames[j]))
                     {
                         continue;
                     }
@@ -165,7 +164,7 @@ namespace HH.MultiSceneToolsEditor
                 rect_activeScene.y -= 1;
                 rect_activeScene.width = 15;
 
-                RightHeaderStyle = new GUIStyle(GUI.skin.customStyles[22]);
+                GUIStyle RightHeaderStyle = new GUIStyle(GUI.skin.customStyles[22]);
                 RightHeaderStyle.alignment = TextAnchor.UpperRight;
 
                 string SceneName = EditorSceneManager.GetActiveScene().name;

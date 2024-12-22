@@ -28,14 +28,10 @@ namespace HH.MultiSceneToolsEditor
     [CustomPropertyDrawer(typeof(ActiveScene))]
     public class ActiveScenePropertyDrawer : PropertyDrawer
     {
-        const string deniedPng = "/Images/false-Icon.png";
-        const string approvedPng = "/Images/true-Icon.png";
-        Texture _Y, _N;
-
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) 
         {
-            _Y = PackageTextureLoader.FindTexture(PackageTextureLoader.trueIcon);
-            _N = PackageTextureLoader.FindTexture(PackageTextureLoader.falseIcon);
+            Texture _Y = PackageTextureLoader.FindTexture(PackageTextureLoader.trueIcon);
+            Texture _N = PackageTextureLoader.FindTexture(PackageTextureLoader.falseIcon);
 
             SerializedProperty Scene = property.FindPropertyRelative("TargetScene");
             

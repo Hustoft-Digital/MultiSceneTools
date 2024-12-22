@@ -37,7 +37,6 @@ namespace HH.MultiSceneToolsEditor
         Scene[] LoadedScenes;
         string[] _sceneOptions;
         SceneAsset _SelectedScene;
-        ActiveScene[] currLoadedAssets;
         string[] loadedSceneOptions;
 
         public SceneCollection[] GetLoadedCollection()
@@ -332,7 +331,7 @@ namespace HH.MultiSceneToolsEditor
         {
             if(saveTarget)
             {
-                currLoadedAssets = GetSceneAssetsFromPaths(GetLoadedScenePaths());
+                ActiveScene[] currLoadedAssets = GetSceneAssetsFromPaths(GetLoadedScenePaths());
                 saveTarget.saveCollection(currLoadedAssets);
             }
             else
