@@ -37,8 +37,8 @@ namespace HH.MultiSceneTools.Internal
         public string[] UnloadScenes => _UnloadScenes.ToArray();
         public bool deferSceneUnload {get; private set;}
         public bool isBeingEnabled {get; private set;}
-        public readonly CancellationTokenSource cancellationTokenSource;
-        public readonly UnityEvent OnComplete = new UnityEvent();
+        public CancellationTokenSource cancellationTokenSource {get; private set;}
+        public UnityEvent OnComplete {get; private set;} = new UnityEvent();
         private bool isLoadingComplete = false;
 
         public AsyncCollection(SceneCollection TargetCollection, LoadCollectionMode mode, CancellationTokenSource tokenSource, bool deferSceneUnload)
