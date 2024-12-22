@@ -48,7 +48,7 @@ namespace HH.MultiSceneTools
             }
 
             AsyncOperation operation = SceneManager.UnloadSceneAsync(SceneName);
-            task.unloadingOperations.Add(operation);
+            task.addUnLoadingOperation(operation);
 
             while(!operation.isDone)
             {
@@ -79,21 +79,21 @@ namespace HH.MultiSceneTools
         public static AsyncCollection loadCollectionAsync(string CollectionTitle, LoadCollectionMode mode, bool preload, bool deferSceneUnload)
         {
             AsyncCollection asyncCollection = new AsyncCollection(FindCollection(CollectionTitle), mode, new CancellationTokenSource(), deferSceneUnload);
-            loadCollectionAsync(asyncCollection, CollectionTitle, mode, preload, true).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
+            loadCollectionAsync(asyncCollection, CollectionTitle, mode, preload).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
             return asyncCollection;
         }
 
         public static AsyncCollection loadCollectionAsync(string CollectionTitle, LoadCollectionMode mode, bool preload)
         {
             AsyncCollection asyncCollection = new AsyncCollection(FindCollection(CollectionTitle), mode, new CancellationTokenSource(), false);
-            loadCollectionAsync(asyncCollection, CollectionTitle, mode, preload, true).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
+            loadCollectionAsync(asyncCollection, CollectionTitle, mode, preload).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
             return asyncCollection;
         }
 
         public static AsyncCollection loadCollectionAsync(string CollectionTitle, LoadCollectionMode mode)
         {
             AsyncCollection asyncCollection = new AsyncCollection(FindCollection(CollectionTitle), mode, new CancellationTokenSource(), false);
-            loadCollectionAsync(asyncCollection, CollectionTitle, mode, false, true).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
+            loadCollectionAsync(asyncCollection, CollectionTitle, mode).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
             return asyncCollection;
         }
 
@@ -107,21 +107,21 @@ namespace HH.MultiSceneTools
         public static AsyncCollection loadCollectionAsync(SceneCollection Collection, LoadCollectionMode mode, bool preload)
         {
             AsyncCollection asyncCollection = new AsyncCollection(Collection, mode, new CancellationTokenSource(), false);
-            loadCollectionAsync(asyncCollection, Collection, mode, preload, true).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
+            loadCollectionAsync(asyncCollection, Collection, mode, preload).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
             return asyncCollection;
         }
 
         public static AsyncCollection loadCollectionAsync(SceneCollection Collection, LoadCollectionMode mode, bool preload, bool deferSceneUnload)
         {
             AsyncCollection asyncCollection = new AsyncCollection(Collection, mode, new CancellationTokenSource(), deferSceneUnload);
-            loadCollectionAsync(asyncCollection, Collection, mode, preload, true).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
+            loadCollectionAsync(asyncCollection, Collection, mode, preload).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
             return asyncCollection;
         }
 
         public static AsyncCollection loadCollectionAsync(SceneCollection Collection, LoadCollectionMode mode)
         {
             AsyncCollection asyncCollection = new AsyncCollection(Collection, mode, new CancellationTokenSource(), false);
-            loadCollectionAsync(asyncCollection, Collection, mode, false, true).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
+            loadCollectionAsync(asyncCollection, Collection, mode).ContinueWith(complete => asyncCollection.OnComplete?.Invoke());
             return asyncCollection;
         }
 
@@ -332,7 +332,7 @@ namespace HH.MultiSceneTools
                     {
                         LoadSceneMode mode = LoadSceneMode.Additive;
                         AsyncOperation operation = loadAsync(targetScene, mode, !preload);
-                        task.loadingOperations.Add(operation, mode);
+                        task.addLoadingOperation(operation, mode);
                     }
                 }
             }
@@ -385,7 +385,7 @@ namespace HH.MultiSceneTools
                 {
                     LoadSceneMode mode = LoadSceneMode.Additive;
                     AsyncOperation operation = loadAsync(scene, mode, !preload);
-                    task.loadingOperations.Add(operation, mode);
+                    task.addLoadingOperation(operation, mode);
                 }
             }
             asyncLoadingTask.Add(task);
@@ -423,12 +423,12 @@ namespace HH.MultiSceneTools
                     }
 
                     LoadSceneMode mode = LoadSceneMode.Additive;
-                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], mode, !preload), mode);
+                    task.addLoadingOperation(loadAsync(Collection.SceneNames[i], mode, !preload), mode);
                 }
                 else
                 {
                     LoadSceneMode mode = LoadSceneMode.Single;
-                    task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], mode, !preload, 1), mode);
+                    task.addLoadingOperation(loadAsync(Collection.SceneNames[i], mode, !preload, 1), mode);
                 }
             }
             asyncLoadingTask.Add(task);
@@ -453,7 +453,7 @@ namespace HH.MultiSceneTools
                     return;
                 }
                 LoadSceneMode mode = LoadSceneMode.Additive;
-                task.loadingOperations.Add(loadAsync(Collection.SceneNames[i], mode, !preload), mode);
+                task.addLoadingOperation(loadAsync(Collection.SceneNames[i], mode, !preload), mode);
             }
             asyncLoadingTask.Add(task);
         }

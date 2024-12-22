@@ -55,7 +55,7 @@ namespace HH.MultiSceneToolsEditor
                 return null;
             }
         } 
-        [SerializeField, HideInInspector] public SceneCollection SelectedCollection;
+        [SerializeField, HideInInspector] private SceneCollection SelectedCollection;
         int UnloadScene;
 
         SceneManager_EditorWindow()

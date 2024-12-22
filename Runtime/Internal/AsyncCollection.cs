@@ -28,8 +28,11 @@ namespace HH.MultiSceneTools.Internal
     {
         public SceneCollection LoadingCollection {get; private set;}
         public LoadCollectionMode loadMode {get; private set;}
-        public Dictionary<AsyncOperation, LoadSceneMode> loadingOperations = new Dictionary<AsyncOperation, LoadSceneMode>();
-        public List<AsyncOperation> unloadingOperations = new List<AsyncOperation>();
+        private Dictionary<AsyncOperation, LoadSceneMode> _loadingOperations = new Dictionary<AsyncOperation, LoadSceneMode>();
+        public  Dictionary<AsyncOperation, LoadSceneMode> loadingOperations => _loadingOperations.ToDictionary(entry => entry.Key, entry => entry.Value);
+        
+        public List<AsyncOperation> _unloadingOperations = new List<AsyncOperation>();
+        public AsyncOperation[] unloadingOperations => _unloadingOperations.ToArray();
         public List<string> UnloadScenes = new List<string>();
         public bool deferSceneUnload {get; private set;}
         public bool isBeingEnabled {get; private set;}
@@ -51,11 +54,21 @@ namespace HH.MultiSceneTools.Internal
             }
         }
 
+        public void addLoadingOperation(AsyncOperation operation, LoadSceneMode mode)
+        {
+            _loadingOperations.Add(operation, mode);
+        }
+
+        public void addUnLoadingOperation(AsyncOperation operation)
+        {
+            _unloadingOperations.Add(operation);
+        }
+
         public bool getIsComplete()
         {
-            for (int i = 0; i < loadingOperations.Count; i++)
+            for (int i = 0; i < _loadingOperations.Count; i++)
             {
-                if(!loadingOperations.Keys.ElementAt(i).isDone)
+                if(!_loadingOperations.Keys.ElementAt(i).isDone)
                 {
                     return false;
                 }
@@ -66,18 +79,18 @@ namespace HH.MultiSceneTools.Internal
         public float getProgress()
         {
             float progress = 0;
-            for (int i = 0; i < loadingOperations.Count; i++)
+            for (int i = 0; i < _loadingOperations.Count; i++)
             {
-                progress += loadingOperations.Keys.ElementAt(i).progress;
+                progress += _loadingOperations.Keys.ElementAt(i).progress;
             }
 
-            if(loadingOperations.Count == 0)
+            if(_loadingOperations.Count == 0)
             {
                 Debug.LogWarning($"No scenes where loaded in the async operation: {LoadingCollection.Title}, {loadMode}");
                 return 0.9f;
             }
 
-            return progress / loadingOperations.Count;
+            return progress / _loadingOperations.Count;
         }
 
         public void enableLoadedScenes()
@@ -90,9 +103,9 @@ namespace HH.MultiSceneTools.Internal
 
             isBeingEnabled = true;
 
-            for (int i = 0; i < loadingOperations.Count; i++)
+            for (int i = 0; i < _loadingOperations.Count; i++)
             {
-                loadingOperations.Keys.ElementAt(i).allowSceneActivation = true;
+                _loadingOperations.Keys.ElementAt(i).allowSceneActivation = true;
             }
         }
 

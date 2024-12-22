@@ -91,11 +91,6 @@ namespace HH.MultiSceneToolsEditor
             {
                 collection.LoadCollection();
                 MultiSceneToolsConfig.instance.setLoadedCollection(collection, LoadCollectionMode.Replace);
-
-                if(SceneManager_EditorWindow.Instance)
-                {
-                    SceneManager_EditorWindow.Instance.SelectedCollection = collection;
-                }
                 return true;
             }
             return false;

@@ -21,7 +21,7 @@ using UnityEditor.SceneManagement;
 
 namespace HH.MultiSceneToolsEditor
 {
-    public class MultiSceneToolsStartup
+    public static class MultiSceneToolsStartup
     {
         public static bool detectedUpdate {get; private set;}
         public static string packageVersion {get; private set;}

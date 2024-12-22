@@ -118,10 +118,10 @@ namespace HH.MultiSceneToolsEditor
                 if(script.LoadedCollections.Count == 0)
                 {
                     script.findOpenSceneCollections();
-                }
-                if(script.LoadedCollections.Count == 0)
-                {
-                    script.SetCurrentCollectionEmpty();
+                    if(script.LoadedCollections.Count == 0)
+                    {
+                        script.SetCurrentCollectionEmpty();
+                    }
                 }
             }
 
