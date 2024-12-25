@@ -95,7 +95,7 @@ namespace HH.MultiSceneTools
         }
         #endif
 
-        [field:SerializeField] public string Title {get; private set;}
+        [SerializeField, HideInInspector] public string Title {get; private set;}
         [SerializeField, HideInInspector] public int ActiveSceneIndex {get; private set;} 
         [SerializeField, HideInInspector] private List<string> _SceneNames = new List<string>();
         public List<string> SceneNames => _SceneNames.ToList();

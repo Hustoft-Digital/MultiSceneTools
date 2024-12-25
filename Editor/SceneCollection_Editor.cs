@@ -19,6 +19,8 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using HH.MultiSceneTools;
 using UnityEditor.Callbacks;
+using System.Reflection;
+using System;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -26,9 +28,10 @@ namespace HH.MultiSceneToolsEditor
     public class SceneCollection_Editor : Editor
     {
         SceneCollection script;
-        SerializedProperty _Title;
-        SerializedProperty _ActiveSceneIndex;
+        FieldInfo TitleField;
+        FieldInfo ActiveField;
         SerializedProperty _Scenes;
+        FieldInfo ScenesField;
         SerializedProperty _Color;
         
 
@@ -36,17 +39,24 @@ namespace HH.MultiSceneToolsEditor
         {
             script = target as SceneCollection;
 
-            _Title = serializedObject.FindProperty("Title");
-            _ActiveSceneIndex = serializedObject.FindProperty("ActiveSceneIndex");
+            TitleField = _getBackingField(script, "Title");
+            ActiveField = _getBackingField(script, "ActiveSceneIndex");
             _Scenes = serializedObject.FindProperty("Scenes");
             _Color = serializedObject.FindProperty("hierarchyColor");
+
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(_Title);
+            Undo.RecordObject(script, "Scene Collection");
+
+            TitleField.SetValue(script, EditorGUILayout.TextField("Title", TitleField.GetValue(script) as string));
+
+            // .SetValue(script, EditorGUILayout.TextField("Title", TitleField.GetValue(script) as string));
+
+            // EditorGUILayout.PropertyField(_Title);
             EditorGUILayout.PropertyField(_Color);
 
             if(_Scenes.isExpanded)
@@ -106,26 +116,36 @@ namespace HH.MultiSceneToolsEditor
                     continue;
                 }
 
-                if(i == _ActiveSceneIndex.intValue)
+                if(i == (int)ActiveField.GetValue(script))
                 {
                     isUpdated = true; // this check might cause problems
                     continue;
                 }
 
                 Debug.LogError("cant remove from list when active scene is later in the list");
-                if(_ActiveSceneIndex.intValue >= 0)
+                if((int)ActiveField.GetValue(script) >= 0)
                 {
-                    _Scenes.GetArrayElementAtIndex(_ActiveSceneIndex.intValue).FindPropertyRelative("IsActive").boolValue = false;
+                    _Scenes.GetArrayElementAtIndex((int)ActiveField.GetValue(script)).FindPropertyRelative("IsActive").boolValue = false;
                 }
 
-                _ActiveSceneIndex.intValue = i;
+                ActiveField.SetValue(script, i);
                 isUpdated = true;
                 break;
             }
             if(!isUpdated)
             {
-                _ActiveSceneIndex.intValue = -1;
+                ActiveField.SetValue(script, -1);
             }
+        }
+
+        private string _getBackingFieldName(string propertyName)
+        {
+            return string.Format("<{0}>k__BackingField", propertyName);
+        }
+
+        private FieldInfo _getBackingField(object obj, string propertyName)
+        {
+            return obj.GetType().GetField(_getBackingFieldName(propertyName), BindingFlags.Instance | BindingFlags.NonPublic);
         }
     }
 }

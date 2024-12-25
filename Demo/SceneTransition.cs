@@ -19,7 +19,7 @@ using System.Collections;
 using UnityEngine;
 
 
-namespace HH.MultiSceneTools.Examples
+namespace HH.MultiSceneTools.Demo
 {
     public class SceneTransition : MonoBehaviour
     {

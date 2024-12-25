@@ -15,15 +15,28 @@
 // *   limitations under the License.
 
 
-using UnityEngine;
+using UnityEditor;
+using HH.MultiSceneTools.Demo;
 
-namespace HH.MultiSceneTools.Examples
+namespace HH.MultiSceneToolsEditor
 {
-    public class TriggerSceneLoad : MonoBehaviour
+    [CustomEditor(typeof(SceneTransition))]
+    public class SceneTransition_Editor : Editor
     {
-        public void LoadScene(string collectionTitle)
+        SceneTransition script;
+
+        private void OnEnable()
         {
-            MultiSceneLoader.loadCollection(collectionTitle, LoadCollectionMode.DifferenceReplace);
+            script = target as SceneTransition;
+        }
+
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+
+
+            EditorGUILayout.TextField("State Name IN: ", script.TransitionIN, EditorStyles.boldLabel);
+            EditorGUILayout.TextField("State Name OUT: ", script.TransitionOUT, EditorStyles.boldLabel);
         }
     }
 }
