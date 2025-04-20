@@ -119,13 +119,13 @@ namespace HH.MultiSceneTools.Internal
                 return;
             }
 
-            if(!isBeingEnabled)
-            {
-                Debug.LogWarning("Loading operations need to be complete and scenes must be enabled before scenes can be unloaded");
-                return;
-            }
-
             deferSceneUnload = false;
+            // if(!isBeingEnabled)
+            // {
+            //     Debug.LogWarning("Loading operations need to be complete and scenes must be enabled before scenes can be unloaded");
+            //     return;
+            // }
+
         }
 
 

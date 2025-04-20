@@ -15,15 +15,29 @@
 // *   limitations under the License.
 
 
+using HH.MultiSceneTools.Internal;
 using UnityEngine;
 
 namespace HH.MultiSceneTools.Demo
 {
     public class TriggerSceneLoad : MonoBehaviour
     {
-        public void LoadScene(string collectionTitle)
+        [SerializeField] SceneCollection OutsideCollection;
+        [SerializeField] SceneCollection InsideCollection;
+        AsyncCollection currentAsyncCollection;
+        public void LoadInsideCollection()
         {
-            MultiSceneLoader.loadCollection(collectionTitle, LoadCollectionMode.DifferenceReplace);
+            currentAsyncCollection = MultiSceneLoader.loadCollectionAsync(InsideCollection, LoadCollectionMode.DifferenceReplace, false, true);
+        }
+
+        public void LoadOutsideCollection()
+        {
+            currentAsyncCollection = MultiSceneLoader.loadCollectionAsync(OutsideCollection, LoadCollectionMode.DifferenceReplace, false, true);
+        }
+
+        public void UnloadDeferredSceneCollection()
+        {
+            currentAsyncCollection.removeUnloadedScenes();
         }
     }
 }
