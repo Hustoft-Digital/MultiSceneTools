@@ -105,7 +105,7 @@ namespace HH.MultiSceneTools.Internal
             }
         }
 
-        public void removeUnloadedScenes()
+        public void UnloadDeferredScenes()
         {
             if(isLoadingComplete)
             {

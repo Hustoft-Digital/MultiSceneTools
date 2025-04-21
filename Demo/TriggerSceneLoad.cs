@@ -37,7 +37,8 @@ namespace HH.MultiSceneTools.Demo
 
         public void UnloadDeferredSceneCollection()
         {
-            currentAsyncCollection.removeUnloadedScenes();
+            currentAsyncCollection.OnComplete.AddListener(() => Debug.Log("complete"));
+            currentAsyncCollection.UnloadDeferredScenes();
         }
     }
 }
