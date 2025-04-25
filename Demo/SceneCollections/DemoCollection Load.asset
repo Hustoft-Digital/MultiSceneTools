@@ -13,11 +13,14 @@ MonoBehaviour:
   m_Name: DemoCollection Load
   m_EditorClassIdentifier: 
   _SceneNames:
-  - DemoScene
+  - CameraScene
+  - BuildingScene
   - InsideScene
   Scenes:
   - TargetScene: {fileID: 102900000, guid: bec0538345339414a8d5342bc8827126, type: 3}
     IsActive: 1
+  - TargetScene: {fileID: 102900000, guid: a82d84f7068e71149a9759523a62af49, type: 3}
+    IsActive: 0
   - TargetScene: {fileID: 102900000, guid: 3402a0c920cef60489e100bf801540d1, type: 3}
     IsActive: 0
   hierarchyColor: {r: 0.20163757, g: 0.3606665, b: 0.6037736, a: 0.6313726}
