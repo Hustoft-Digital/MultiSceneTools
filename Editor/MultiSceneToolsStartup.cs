@@ -88,14 +88,22 @@ namespace HH.MultiSceneToolsEditor
                 }
             }
 
-            if(packageVersion == null)
+            if(MultiSceneToolsConfig.instance != null)
             {
-                packageVersion = MultiSceneToolsConfig.instance.versionNumber;
-            }
+                if(packageVersion == null)
+                {
+                    packageVersion = MultiSceneToolsConfig.instance.versionNumber;
+                }
 
-            if(packageVersion.Equals(""))
+                if(packageVersion.Equals(""))
+                {
+                    packageVersion = MultiSceneToolsConfig.instance.versionNumber;
+                }
+            }
+            else
             {
-                packageVersion = MultiSceneToolsConfig.instance.versionNumber;
+                packageVersion = package.added[0].version;
+                UnityEngine.Debug.Log(packageVersion);
             }
 
             if(shouldOpenWizard)
