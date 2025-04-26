@@ -38,6 +38,11 @@ namespace HH.MultiSceneToolsEditor
         private static void OnHierarchyWindowItemOnGUI( int instanceID, Rect selectionRect )
         {
             // ? then potentially draw the index as well
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                return;
+            }
+
             Collections = MultiSceneToolsConfig.instance.LoadedCollections.ToArray();
 
             if(checkMark_N == null)
