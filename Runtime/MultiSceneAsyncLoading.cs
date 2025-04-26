@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 
-using HH.MultiSceneTools.Internal;
+using HH.MultiSceneTools;
 using System;
 using System.Linq;
 

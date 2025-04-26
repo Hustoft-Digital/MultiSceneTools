@@ -18,68 +18,79 @@
 using System.Collections;
 using UnityEngine;
 
-
 namespace HH.MultiSceneTools.Demo
 {
     public class SceneTransition : MonoBehaviour
     {
         [HideInInspector] public string TransitionIN = "Transition_IN";
         [HideInInspector] public string TransitionOUT = "Transition_OUT";
-
         [SerializeField] Animator TransitionAnim;
-        bool isAnimating;
-        public bool isTransitioning => isAnimating;
+        [SerializeField] bool isAnimatingIn;
+        [SerializeField] bool isAnimatingOut;
+        public bool isTransitioning => isAnimatingIn;
         float animTime;
 
-        // Start is called before the first frame update
+        [SerializeField] AsyncCollection loadingOperation;
+
+        public static SceneTransition Instance { get; private set; }
         void Start()
         {
-            StartCoroutine(sceneTransition(true, "Main"));
-        }
-
-        /// <summary>Play animation to transition to a new scene</summary>
-        /// <param name="SceneState">Which state the scene will be in once transition is complete, true: Transition IN, false: Transition OUT</param>
-        /// <param name="TransitionToCollection">Title of the scene collection this should transition to</param>
-        /// <returns></returns>
-        public void TransitionScene(bool SceneState, string TransitionToCollection)
-        {
-            StartCoroutine(sceneTransition(SceneState, TransitionToCollection));
-        }
-
-        IEnumerator sceneTransition(bool SceneState, string TransitionToCollection)
-        {
-            string state = "";
-            isAnimating = false;
-            if(SceneState)
+            if(Instance == null)
             {
-                state = TransitionIN;
+                Instance = this;
             }
             else
             {
-                state = TransitionOUT;
+                Destroy(this);
             }
+        }
 
-            if(!isAnimating)
+        /// <summary>Play animation to transition to a new scene</summary>
+        /// <param name="TransitionToCollection">Title of the scene collection this should transition to</param>
+        /// <returns></returns>
+        public void TransitionScene(SceneCollection TransitionToCollection)
+        {
+            StartCoroutine(sceneTransition(TransitionToCollection));
+        }
+
+        IEnumerator sceneTransition(SceneCollection TransitionToCollection)
+        {
+            isAnimatingIn = false;
+            isAnimatingOut = false;
+
+            if(!isAnimatingIn && !isAnimatingOut)
             {
-                TransitionAnim.Play(state);
-                isAnimating = true;
+                TransitionAnim.Play(TransitionIN);
+                isAnimatingIn = true;
             }
 
             while(waitForAnim())
             {
                 yield return null;
             }
-            isAnimating = false;
+            isAnimatingIn = false;
             animTime = 0;
 
-            if(!TransitionToCollection.Equals(""))
+            if(TransitionToCollection != null)
             {
-                MultiSceneLoader.loadCollection(TransitionToCollection, LoadCollectionMode.DifferenceReplace);
+                loadingOperation = MultiSceneLoader.loadCollectionAsync(TransitionToCollection, LoadCollectionMode.DifferenceReplace);
+                
+                while(!loadingOperation.getIsComplete())
+                {
+                    yield return null;
+                }
+                TransitionAnim.Play(TransitionOUT);
+                isAnimatingOut = true;
+                while(waitForAnim())
+                {
+                    yield return null;
+                }
+                isAnimatingOut = false;
+                animTime = 0;
             }
-
-            if(!SceneState && TransitionToCollection.Equals(""))
+            else
             {
-                Debug.LogWarning(this + ": is trying to transition to a scene named \"\"");
+                Debug.LogError(this + ": is trying to transition to an invalid SceneCollection\"\"");
             }
         }
 
@@ -93,5 +104,10 @@ namespace HH.MultiSceneTools.Demo
             animTime += Time.deltaTime;
             return true;
         }
+    }
+    public enum Transition
+    {
+        IN,
+        OUT
     }
 }

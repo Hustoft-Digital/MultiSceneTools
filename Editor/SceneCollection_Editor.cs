@@ -20,7 +20,8 @@ using UnityEditor;
 using HH.MultiSceneTools;
 using UnityEditor.Callbacks;
 using System.Reflection;
-using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -112,42 +113,66 @@ namespace HH.MultiSceneToolsEditor
         void updateActiveSceneIndex()
         {
             bool isUpdated = false;
+            bool hasShiftedIndex = false;
+            bool[] desiredStates = new bool[_Scenes.arraySize];
+            List<int> ActiveScenes = new List<int>();
+            // find desired states of all scenes
             for (int i = 0; i < _Scenes.arraySize; i++)
             {
-                // if(!_Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("IsActive").boolValue)
-                // {
-                //     continue;
-                // }
-
                 int _cachedIndex = (int)ActiveField.GetValue(script);
-
-                // if(i == _cachedIndex)
-                // {
-                //     isUpdated = true; // this check might cause problems
-                //     continue;
-                // }
-
+                bool _changed = _Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("wasChanged").boolValue;
+                bool _active = _Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("IsActive").boolValue;
 
                 if(_Scenes.arraySize <= _cachedIndex)
                 {
+
+                    hasShiftedIndex = true;
                     _cachedIndex = _Scenes.arraySize-1;
-                    _Scenes.GetArrayElementAtIndex(_cachedIndex).FindPropertyRelative("IsActive").boolValue = true;
+                    desiredStates[_cachedIndex] = _Scenes.GetArrayElementAtIndex(_cachedIndex).FindPropertyRelative("IsActive").boolValue;
                     isUpdated = true;
+                    ActiveField.SetValue(script, _cachedIndex);
                     break;
                 }
 
-                if(!_Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("wasChanged").boolValue)
+                if(_changed)
                 {
-                    _Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("IsActive").boolValue = false;
-                }
-                else
-                {
-                    // _Scenes.GetArrayElementAtIndex(_cachedIndex).FindPropertyRelative("IsActive").boolValue = true;
-                    _Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("wasChanged").boolValue = false;
-                    ActiveField.SetValue(script, i);
+                    desiredStates[i] = _Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("IsActive").boolValue;
                     isUpdated = true;
+                    ActiveField.SetValue(script, i);
+                    break;
+                }
+
+                if(_active)
+                {
+                    ActiveScenes.Add(i);
                 }
             }
+
+            // update desired states of all scenes
+            for (int i = 0; i < _Scenes.arraySize; i++)
+            {
+                if(isUpdated)
+                {
+                    if(hasShiftedIndex && i == _Scenes.arraySize-1)
+                    {
+                        break;
+                    }
+
+                    _Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("IsActive").boolValue = desiredStates[i];
+                    _Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("wasChanged").boolValue = false;
+                }
+            }
+
+            // if the array size grew, fix duplicated active scenes
+            if(!isUpdated)
+            {
+                for (int i = 1; i < ActiveScenes.Count; i++)
+                {
+                    _Scenes.GetArrayElementAtIndex(ActiveScenes[i]).FindPropertyRelative("IsActive").boolValue = false;
+                }
+            }
+
+            // if no valid index was set, set index to -1
             if(!isUpdated)
             {
                 ActiveField.SetValue(script, -1);

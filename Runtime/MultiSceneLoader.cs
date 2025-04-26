@@ -21,7 +21,6 @@ using UnityEngine.Events;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using HH.MultiSceneTools.Internal;
 using System.Threading;
 using System;
 

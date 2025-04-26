@@ -1,6 +1,6 @@
 # Version 1.0.0 - 26/04/25
 - Fixed Active scene index not updating correctly
-- Fixed Active Scene index throwing errors when removing a scene from the collection when the active scene is at a higher index.
+- Fixed Active Scene index throwing errors when the collection's scene array changed in certain cases.
 - Added demo
 - Changed Icons and branding
 

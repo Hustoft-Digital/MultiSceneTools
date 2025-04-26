@@ -22,7 +22,7 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
-namespace HH.MultiSceneTools.Internal
+namespace HH.MultiSceneTools
 {
     public class AsyncCollection 
     {

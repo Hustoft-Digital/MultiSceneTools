@@ -15,7 +15,6 @@
 // *   limitations under the License.
 
 
-using HH.MultiSceneTools.Internal;
 using UnityEngine;
 
 namespace HH.MultiSceneTools.Demo
@@ -25,6 +24,11 @@ namespace HH.MultiSceneTools.Demo
         [SerializeField] SceneCollection OutsideCollection;
         [SerializeField] SceneCollection InsideCollection;
         AsyncCollection currentAsyncCollection;
+
+        public void TransitionIntoSceneCollection(SceneCollection collection)
+        {
+            SceneTransition.Instance.TransitionScene(collection);
+        }
 
         public void LoadFirstScene()
         {

@@ -17,6 +17,7 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using HH.MultiSceneToolsEditor;
 
 namespace HH.MultiSceneToolsEditor
 {
