@@ -52,11 +52,14 @@ namespace HH.MultiSceneToolsEditor
 
             Undo.RecordObject(script, "Scene Collection");
 
-            TitleField.SetValue(script, EditorGUILayout.TextField("Title", TitleField.GetValue(script) as string));
+            string previousTitle = TitleField.GetValue(script) as string;
+            string newTitle = EditorGUILayout.TextField("Title", previousTitle);
+            if (previousTitle != newTitle)
+            {
+                TitleField.SetValue(script, newTitle);
+                EditorUtility.SetDirty(script);
+            }
 
-            // .SetValue(script, EditorGUILayout.TextField("Title", TitleField.GetValue(script) as string));
-
-            // EditorGUILayout.PropertyField(_Title);
             EditorGUILayout.PropertyField(_Color);
 
             if(_Scenes.isExpanded)
@@ -111,26 +114,39 @@ namespace HH.MultiSceneToolsEditor
             bool isUpdated = false;
             for (int i = 0; i < _Scenes.arraySize; i++)
             {
-                if(!_Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("IsActive").boolValue)
+                // if(!_Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("IsActive").boolValue)
+                // {
+                //     continue;
+                // }
+
+                int _cachedIndex = (int)ActiveField.GetValue(script);
+
+                // if(i == _cachedIndex)
+                // {
+                //     isUpdated = true; // this check might cause problems
+                //     continue;
+                // }
+
+
+                if(_Scenes.arraySize <= _cachedIndex)
                 {
-                    continue;
+                    _cachedIndex = _Scenes.arraySize-1;
+                    _Scenes.GetArrayElementAtIndex(_cachedIndex).FindPropertyRelative("IsActive").boolValue = true;
+                    isUpdated = true;
+                    break;
                 }
 
-                if(i == (int)ActiveField.GetValue(script))
+                if(!_Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("wasChanged").boolValue)
                 {
-                    isUpdated = true; // this check might cause problems
-                    continue;
+                    _Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("IsActive").boolValue = false;
                 }
-
-                Debug.LogError("cant remove from list when active scene is later in the list");
-                if((int)ActiveField.GetValue(script) >= 0)
+                else
                 {
-                    _Scenes.GetArrayElementAtIndex((int)ActiveField.GetValue(script)).FindPropertyRelative("IsActive").boolValue = false;
+                    // _Scenes.GetArrayElementAtIndex(_cachedIndex).FindPropertyRelative("IsActive").boolValue = true;
+                    _Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("wasChanged").boolValue = false;
+                    ActiveField.SetValue(script, i);
+                    isUpdated = true;
                 }
-
-                ActiveField.SetValue(script, i);
-                isUpdated = true;
-                break;
             }
             if(!isUpdated)
             {

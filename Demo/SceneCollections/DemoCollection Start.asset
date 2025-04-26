@@ -12,15 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8554d268507aaa841afb43e28e84c809, type: 3}
   m_Name: DemoCollection Start
   m_EditorClassIdentifier: 
+  <Title>k__BackingField: Outside Demo
+  <ActiveSceneIndex>k__BackingField: 2
   _SceneNames:
   - CameraScene
   - BuildingScene
   - OutsideScene
   Scenes:
   - TargetScene: {fileID: 102900000, guid: bec0538345339414a8d5342bc8827126, type: 3}
-    IsActive: 1
+    IsActive: 0
+    wasChanged: 0
   - TargetScene: {fileID: 102900000, guid: a82d84f7068e71149a9759523a62af49, type: 3}
     IsActive: 0
+    wasChanged: 0
   - TargetScene: {fileID: 102900000, guid: 4b5116764aa4fd548aab013c4edcea27, type: 3}
-    IsActive: 0
+    IsActive: 1
+    wasChanged: 0
   hierarchyColor: {r: 0.14786398, g: 0.6698113, b: 0.22396521, a: 0.5176471}

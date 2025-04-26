@@ -1,3 +1,9 @@
+# Version 1.0.0 - 26/04/25
+- Fixed Active scene index not updating correctly
+- Fixed Active Scene index throwing errors when removing a scene from the collection when the active scene is at a higher index.
+- Added demo
+- Changed Icons and branding
+
 # Version 0.4.2-6 - 10/12/2024
 - Fixed loadCollectionMode.Replace attempting to unload scenes that was already unloaded by single loading.
 - Fixed attempting to unload collections with no scenes in them.

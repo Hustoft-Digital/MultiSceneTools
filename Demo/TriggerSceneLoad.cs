@@ -25,6 +25,12 @@ namespace HH.MultiSceneTools.Demo
         [SerializeField] SceneCollection OutsideCollection;
         [SerializeField] SceneCollection InsideCollection;
         AsyncCollection currentAsyncCollection;
+
+        public void LoadFirstScene()
+        {
+            MultiSceneLoader.loadCollection(OutsideCollection, LoadCollectionMode.Replace);
+        }
+
         public void LoadInsideCollection()
         {
             currentAsyncCollection = MultiSceneLoader.loadCollectionAsync(InsideCollection, LoadCollectionMode.DifferenceReplace, false, true);

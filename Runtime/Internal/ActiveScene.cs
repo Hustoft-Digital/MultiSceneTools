@@ -25,6 +25,7 @@ namespace HH.MultiSceneToolsEditor
     {
         public SceneAsset TargetScene;
         public bool IsActive;
+        public bool wasChanged;
     }
 }
 #endif

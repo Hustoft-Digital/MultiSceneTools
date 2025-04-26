@@ -251,15 +251,15 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
+                Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
                 task.cancellationTokenSource.Cancel();
-                throw new TaskCanceledException("No currently loaded scene collection.");
+                throw new TaskCanceledException("Current scene collection was null.");
             }
-            if(collectionsCurrentlyLoaded[0] == null)
+            else if(collectionsCurrentlyLoaded[0] == null)
             {
-                Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
+                Debug.LogError("No currently loaded scene collection, please use LoadCollectionMode.Replace to load a collection when none are loaded.");
                 task.cancellationTokenSource.Cancel();
-                throw new TaskCanceledException("No currently loaded scene collection.");
+                throw new TaskCanceledException("Load mode was not replace.");
             }
 
             string bootScene = getBootSceneName();
@@ -342,13 +342,15 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                Debug.LogError("No currently loaded scene collection.");
-                throw new TaskCanceledException("No currently loaded scene collection.");
+                Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
+                task.cancellationTokenSource.Cancel();
+                throw new TaskCanceledException("Current scene collection was null.");
             }
             else if(collectionsCurrentlyLoaded[0] == null)
             {
-                Debug.LogError("No currently loaded scene collection.");
-                throw new TaskCanceledException("No currently loaded scene collection.");
+                Debug.LogError("No currently loaded scene collection, please use LoadCollectionMode.Replace to load a collection when none are loaded.");
+                task.cancellationTokenSource.Cancel();
+                throw new TaskCanceledException("Load mode was not replace.");
             }
             string bootScene = getBootSceneName();
 
@@ -437,13 +439,15 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                Debug.LogError("No currently loaded scene collection.");
-                throw new TaskCanceledException("No currently loaded scene collection.");
+                Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
+                task.cancellationTokenSource.Cancel();
+                throw new TaskCanceledException("Current scene collection was null.");
             }
             else if(collectionsCurrentlyLoaded[0] == null)
             {
-                Debug.LogError("No currently loaded scene collection.");
-                throw new TaskCanceledException("No currently loaded scene collection.");
+                Debug.LogError("No currently loaded scene collection, please use LoadCollectionMode.Replace to load a collection when none are loaded.");
+                task.cancellationTokenSource.Cancel();
+                throw new TaskCanceledException("Load mode was not replace.");
             }
             for (int i = 0; i < Collection.SceneNames.Count; i++)
             {

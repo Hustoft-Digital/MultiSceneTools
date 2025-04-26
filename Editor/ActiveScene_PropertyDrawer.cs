@@ -39,8 +39,17 @@ namespace HH.MultiSceneToolsEditor
             Left.width = 15;
 
             SerializedProperty checkbox = property.FindPropertyRelative("IsActive");
-            checkbox.boolValue = GUI.Toggle(Left, checkbox.boolValue, new GUIContent("", "Should this scene be set as the active scene when the collection is loaded?"));
-        
+            bool wasActive = checkbox.boolValue;
+
+            bool currentActiveState = GUI.Toggle(Left, checkbox.boolValue, new GUIContent("", "Should this scene be set as the active scene when the collection is loaded?"));
+            if(currentActiveState != wasActive)
+            {
+                SerializedProperty _wasChanged = property.FindPropertyRelative("wasChanged");
+                _wasChanged.boolValue = true;
+            }
+            
+            checkbox.boolValue = currentActiveState;
+
             Rect middle = Left;
             middle.x += 25;
             middle.height = middle.width;

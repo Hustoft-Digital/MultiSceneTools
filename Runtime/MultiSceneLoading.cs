@@ -176,15 +176,14 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
-                throw new InvalidOperationException("No currently loaded scene collection.");
+                Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
+                throw new InvalidOperationException("Current scene collection was null.");
             }
-            if(collectionsCurrentlyLoaded[0] == null)
+            else if(collectionsCurrentlyLoaded[0] == null)
             {
-                Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
-                throw new InvalidOperationException("No currently loaded scene collection.");
+                Debug.LogError("No currently loaded scene collection, please use LoadCollectionMode.Replace to load a collection when none are loaded.");
+                throw new InvalidOperationException("Load mode was not replace.");
             }
-            
 
             string bootScene = getBootSceneName();
             bool shouldKeepBoot = false;
@@ -276,13 +275,13 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
-                throw new InvalidOperationException("No currently loaded scene collection.");
+                Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
+                throw new InvalidOperationException("Current scene collection was null.");
             }
-            if(collectionsCurrentlyLoaded[0] == null)
+            else if(collectionsCurrentlyLoaded[0] == null)
             {
-                Debug.LogError("No currently loaded scene collection, loaded collections should contain a null");
-                throw new InvalidOperationException("No currently loaded scene collection.");
+                Debug.LogError("No currently loaded scene collection, please use LoadCollectionMode.Replace to load a collection when none are loaded.");
+                throw new InvalidOperationException("Load mode was not replace.");
             }
 
             string bootScene = getBootSceneName();
@@ -419,6 +418,17 @@ namespace HH.MultiSceneTools
 
         static void loadAdditive(SceneCollection Collection)
         {
+            if(collectionsCurrentlyLoaded == null)
+            {
+                Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
+                throw new InvalidOperationException("Current scene collection was null.");
+            }
+            else if(collectionsCurrentlyLoaded[0] == null)
+            {
+                Debug.LogError("No currently loaded scene collection, please use LoadCollectionMode.Replace to load a collection when none are loaded.");
+                throw new InvalidOperationException("Load mode was not replace.");
+            }
+
             for (int i = 0; i < Collection.SceneNames.Count; i++)
             {
                 load(Collection.SceneNames[i], LoadSceneMode.Additive);
@@ -428,6 +438,18 @@ namespace HH.MultiSceneTools
 
         static void loadSubtractive(SceneCollection Collection)
         {
+            if(collectionsCurrentlyLoaded == null)
+            {
+                Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
+                throw new InvalidOperationException("Current scene collection was null.");
+            }
+            else if(collectionsCurrentlyLoaded[0] == null)
+            {
+                Debug.LogError("No currently loaded scene collection, please use LoadCollectionMode.Replace to load a collection when none are loaded.");
+                throw new InvalidOperationException("Load mode was not replace.");
+            }
+            
+            Debug.LogWarning("Subtractive loading is an experimental feature not fully implemented.");
             string bootScene = getBootSceneName();
             bool shouldKeepBoot = false;
 
