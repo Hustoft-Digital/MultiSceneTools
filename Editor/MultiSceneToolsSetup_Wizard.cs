@@ -44,6 +44,14 @@ namespace HH.MultiSceneToolsEditor
             _Wizard.minSize = new Vector2(684, 450);
         }
 
+        public static void MenuEntryCall(string version) 
+        {
+            MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
+            _Wizard.titleContent = new GUIContent("Multi Scene Tools Setup", "Creates or updates the config");
+            _Wizard.position = new Rect(Screen.currentResolution.width/3, Screen.currentResolution.height/4, _Wizard.position.width, _Wizard.position.height);
+            _Wizard.minSize = new Vector2(684, 450);
+        }
+
         private void Awake() 
         {
             MultiSceneToolsIcon = PackageTextureLoader.FindTexture(PackageTextureLoader.packageIcon);
@@ -56,11 +64,6 @@ namespace HH.MultiSceneToolsEditor
                 _sceneCollectionsPath = MultiSceneToolsConfig.instance._SceneCollectionPath;
                 preventPopupAgain = !MultiSceneToolsConfig.instance.startWizardOnUpdate;
                 useBootScene = MultiSceneToolsConfig.instance.UseBootScene;
-
-                if(MultiSceneToolsStartup.packageVersion != "" && MultiSceneToolsStartup.packageVersion != null && MultiSceneToolsStartup.packageVersion != MultiSceneToolsConfig.instance.versionNumber)
-                {
-                    currentConfig.versionNumber = MultiSceneToolsStartup.packageVersion;
-                }
             }
         }
 
@@ -72,19 +75,12 @@ namespace HH.MultiSceneToolsEditor
 
             Rect version_Rect = new Rect(10, 10, position.width, position.height);
 
-            if(currentConfig)
-            {
-                drawText(ref version_Rect, "V." + currentConfig.versionNumber, EditorStyles.miniLabel);
-            }
-            else
-            {
-                drawText(ref version_Rect, "V." + MultiSceneToolsStartup.packageVersion, EditorStyles.miniLabel);
-            }
+            drawText(ref version_Rect, "V." + MultiSceneToolsEditorExtensions.packageVersion, EditorStyles.miniLabel);
             drawIcon(ref _Rect, 150);
 
             if(MultiSceneToolsStartup.detectedUpdate)
             {
-                drawText(ref _Rect, "Multi Scene Tools Updated: " + MultiSceneToolsStartup.packageVersion + "!", TitleStyle);
+                drawText(ref _Rect, "Multi Scene Tools Updated: " + MultiSceneToolsEditorExtensions.packageVersion + "!", TitleStyle);
             }
             else
             {
@@ -207,9 +203,8 @@ namespace HH.MultiSceneToolsEditor
                 config.toggleWizardPopup();
             }
 
-            if(MultiSceneToolsStartup.packageVersion != "")
+            if(MultiSceneToolsEditorExtensions.packageVersion != "")
             {
-                config.versionNumber = MultiSceneToolsStartup.packageVersion;
                 EditorUtility.SetDirty(config);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();

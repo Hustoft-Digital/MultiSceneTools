@@ -24,8 +24,8 @@ namespace HH.MultiSceneToolsEditor
     public static class MultiSceneToolsStartup
     {
         public static bool detectedUpdate {get; private set;}
-        public static string packageVersion {get; private set;}
-        public static readonly string packageName = "com.henrikhustoft.multi-scene-management-tools";
+        
+        
         
         [InitializeOnLoadMethod]
         static void Startup()
@@ -47,9 +47,9 @@ namespace HH.MultiSceneToolsEditor
 
             for (int i = 0; i < package.added.Count; i++)
             {
-                if(package.added[i].name == packageName)
+                if(package.added[i].name == MultiSceneToolsEditorExtensions.packageName)
                 {
-                    packageVersion = package.added[i].version;
+                    // MultiSceneToolsEditorExtensions.packageVersion = package.added[i].version;
 
                     if(MultiSceneToolsConfig.instance)
                     {
@@ -68,9 +68,9 @@ namespace HH.MultiSceneToolsEditor
 
             for (int i = 0; i < package.changedTo.Count; i++)
             {
-                if(package.changedTo[i].name == packageName)
+                if(package.changedTo[i].name == MultiSceneToolsEditorExtensions.packageName)
                 {
-                    packageVersion = package.changedTo[i].version;
+                    // MultiSceneToolsEditorExtensions.packageVersion = package.changedTo[i].version;
 
                     if(MultiSceneToolsConfig.instance)
                     {
@@ -86,24 +86,6 @@ namespace HH.MultiSceneToolsEditor
                     detectedUpdate = true;
                     break;
                 }
-            }
-
-            if(MultiSceneToolsConfig.instance != null)
-            {
-                if(packageVersion == null)
-                {
-                    packageVersion = MultiSceneToolsConfig.instance.versionNumber;
-                }
-
-                if(packageVersion.Equals(""))
-                {
-                    packageVersion = MultiSceneToolsConfig.instance.versionNumber;
-                }
-            }
-            else
-            {
-                packageVersion = package.added[0].version;
-                UnityEngine.Debug.Log(packageVersion);
             }
 
             if(shouldOpenWizard)

@@ -61,11 +61,11 @@
     - Target path for boot scene or manager scene
     - Target path for loading scene collections
 
-## Examples
+## Demo
 
-- Scene Transitioner
-    - Waits for the transition animation to finish before loading the next scene collection.
-    - Tracks the in and out transition state
+Contains several scenes to simulate the outside and inside environment of a building, and a player moving in and out of the building. The demo demonstrates how one could structure two scene collections to contain all the relevant scenes for the interior and exterior, and how to load between them using async. 
+
+To start the demo, open the "DemoAwake" unity scene. This scene demonstrates how to start using scene collections from not having any loaded, and loading into the main demo.
 
 ## Setup
 

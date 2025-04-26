@@ -29,7 +29,7 @@ namespace HH.MultiSceneToolsEditor
         public static Texture FindTexture(string packageTexturePath)
         {
             // load texture from installed package
-            Texture foundTexture = (Texture)AssetDatabase.LoadAssetAtPath("Packages/" + MultiSceneToolsStartup.packageName + packageTexturePath, typeof(Texture2D));
+            Texture foundTexture = (Texture)AssetDatabase.LoadAssetAtPath("Packages/" + MultiSceneToolsEditorExtensions.packageName + packageTexturePath, typeof(Texture2D));
 
             // load texture from development environment
             if(foundTexture == null)
