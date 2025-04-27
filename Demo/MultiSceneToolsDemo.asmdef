@@ -1,0 +1,16 @@
+{
+    "name": "MultiSceneToolsDemo",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3d61be0c52ad2ee409d26dae681f6697"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
