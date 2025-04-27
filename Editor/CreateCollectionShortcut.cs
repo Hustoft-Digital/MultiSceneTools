@@ -14,12 +14,13 @@ namespace HH.MultiSceneToolsEditor
 {
     public static class CreateCollectionShortcut
     {
-        const string shortcutPath = "/Editor/MenuItemCollectionShortcuts.cs";
+        public const string shortcutPath = "Editor/MenuItemCollectionShortcuts.cs";
 
         const string shortcutCode = 
             "\n\n    [MenuItem(\"Shortcuts/Load {0} Collection\")]\n    static void LoadCollectionShortcut_{0}()\n    {{\n        SceneCollection ShortcutCollection = AssetDatabase.LoadAssetAtPath<SceneCollection>(\"{1}\");\n        ShortcutCollection.LoadCollection();\n    }}\n}}\n#endif";
 
-        const string classCode = "#if UNITY_EDITOR\nusing UnityEditor;\nusing HH.MultiSceneTools;\n\npublic static class MenuItemCollectionShortcuts\n{\n\n}\n#endif";
+        const string classCode = 
+            "#if UNITY_EDITOR\nusing UnityEditor;\nusing HH.MultiSceneTools;\nusing HH.MultiSceneToolsEditor;\n\npublic static class MenuItemCollectionShortcuts\n{\n    [MenuItem(\"Shortcuts/Find Shortcut Script\")]\n    static void LocateShortcutScript()\n    {\n        Selection.activeObject = AssetDatabase.LoadAssetAtPath<MonoScript>(\"Assets/\" + CreateCollectionShortcut.shortcutPath);\n    }\n\n}\n#endif";
         const int seekBy = -9;
 
         public static void GenerateShortcut()
@@ -27,7 +28,7 @@ namespace HH.MultiSceneToolsEditor
             Debug.LogWarning("only adds the first collection");
             SceneCollection TargetCollection = MultiSceneToolsConfig.instance.LoadedCollections[0];
 
-            string path = Application.dataPath + shortcutPath;
+            string path = Application.dataPath + "/" + shortcutPath;
             string CollectionAssetPath = AssetDatabase.GetAssetPath(TargetCollection); 
             string shortcutName = "Load " + TargetCollection.name + " Collection";
 

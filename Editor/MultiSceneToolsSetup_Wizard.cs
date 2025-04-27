@@ -31,15 +31,7 @@ namespace HH.MultiSceneToolsEditor
             MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
             _Wizard.titleContent = new GUIContent("Multi Scene Tools Setup", "Creates or updates the config");
             _Wizard.position = new Rect(Screen.currentResolution.width/3, Screen.currentResolution.height/4, _Wizard.position.width, _Wizard.position.height);
-            _Wizard.minSize = new Vector2(684, 450);
-        }
-
-        public static void MenuEntryCall(string version) 
-        {
-            MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
-            _Wizard.titleContent = new GUIContent("Multi Scene Tools Setup", "Creates or updates the config");
-            _Wizard.position = new Rect(Screen.currentResolution.width/3, Screen.currentResolution.height/4, _Wizard.position.width, _Wizard.position.height);
-            _Wizard.minSize = new Vector2(684, 450);
+            _Wizard.minSize = new Vector2(684, 480);
         }
 
         private void Awake() 
@@ -115,6 +107,15 @@ namespace HH.MultiSceneToolsEditor
             }
         #endif
 
+            _Rect.y += 10;
+
+        #if UNITY_2021_1_OR_NEWER
+            if(drawLinkButton(ref _Rect, "If you enjoy this package consider supporting me and help fund its continued development!",0))
+            {
+                MultiSceneToolsMenuItems.DonateToHenry();
+            }
+        #endif
+
             _Rect.y += 40;
 
             drawCheckbox(
@@ -125,7 +126,7 @@ namespace HH.MultiSceneToolsEditor
             if(preventPopupAgain)
             {
                 _Rect.width -= 20;
-                drawText(ref _Rect, "The setup will not popup automatically when this plugin is updated", EditorStyles.helpBox);
+                drawText(ref _Rect, "The setup will not popup automatically when this plugin is updated, informing about important changes", EditorStyles.helpBox);
             }
 
             if(currentConfig == null)

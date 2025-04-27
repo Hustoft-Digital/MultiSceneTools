@@ -32,7 +32,13 @@ namespace HH.MultiSceneToolsEditor
                 }
                 else
                 {
-                    _packageVersionCache = GetPackageManifest().version;
+                    PackageInfo package = GetPackageManifest();
+                    if(package == null)
+                    {
+                        return "";
+                    }
+
+                    _packageVersionCache = package.version;
                     return _packageVersionCache;
                 }
             } 

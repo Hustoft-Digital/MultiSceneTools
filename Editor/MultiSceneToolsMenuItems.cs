@@ -12,16 +12,16 @@ namespace HH.MultiSceneToolsEditor
 {
     public static class MultiSceneToolsMenuItems
     {
-        [MenuItem("Tools/Multi Scene Tools Lite/Reload project Collections")]
+        [MenuItem("Tools/Multi Scene Tools Lite/Reload project Collections", false, 3)]
         static void UpdateCollections()
         {
             MultiSceneToolsConfig.instance.UpdateCollections();
         }
 
-        [MenuItem("Tools/Multi Scene Tools Lite/Changelog")]
-        public static void OpenChangelog()
+        [MenuItem("Tools/Multi Scene Tools Lite/Add All Scenes In Collections to Build", false, 3)]
+        public static void AddCollectionsToBuildSettings()
         {
-            Application.OpenURL("https://github.com/HenrysHouses/MultiSceneTools/blob/main/CHANGELOG.md");
+            MultiSceneToolsConfig.instance.AddCollectionsToBuildSettings();
         }
 
         [MenuItem("Tools/Multi Scene Tools Lite/Add A Collection Menu Shortcut", false, 3)]
@@ -30,10 +30,16 @@ namespace HH.MultiSceneToolsEditor
             CreateCollectionShortcut.GenerateShortcut();
         }
 
-        [MenuItem("Tools/Multi Scene Tools Lite/Add All Scenes In Collections to Build")]
-        public static void AddCollectionsToBuildSettings()
+        [MenuItem("Tools/Multi Scene Tools Lite/Changelog", false, 6)]
+        public static void OpenChangelog()
         {
-            MultiSceneToolsConfig.instance.AddCollectionsToBuildSettings();
+            Application.OpenURL("https://github.com/HenrysHouses/MultiSceneTools/blob/main/CHANGELOG.md");
+        }
+
+        [MenuItem("Tools/Multi Scene Tools Lite/Donate!", false, 6)]
+        public static void DonateToHenry()
+        {
+            Application.OpenURL("https://ko-fi.com/henryshouse");
         }
     }
 }
