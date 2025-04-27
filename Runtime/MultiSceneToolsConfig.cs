@@ -56,7 +56,7 @@ namespace HH.MultiSceneTools
         public List<SceneCollection> LoadedCollections => currentLoadedCollection;
         [field:SerializeField] List<SceneCollection> currentLoadedCollection = new List<SceneCollection>();
         private SceneCollection[] EditorStartedInCollection;
-        [SerializeField, HideInInspector] List<SceneCollection> _ProjectCollections;
+        [SerializeField, HideInInspector] List<SceneCollection> _ProjectCollections = new List<SceneCollection>();
         public SceneCollection[] GetSceneCollections() => _ProjectCollections.ToArray();
         [field:SerializeField, HideInInspector] public bool LogOnSceneChange {get; private set;}
         // [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
