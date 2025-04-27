@@ -6,6 +6,8 @@
 
 using UnityEditor.PackageManager;
 using System.Linq;
+using UnityEditor;
+using System.Reflection;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -13,9 +15,9 @@ namespace HH.MultiSceneToolsEditor
     {
         public static readonly string packageName = "com.henrikhustoft.multi-scene-management-tools-lite";
         public static readonly string packagePath = "Packages/" + packageName;
-        public static PackageInfo GetPackageManifest()
+        public static UnityEditor.PackageManager.PackageInfo GetPackageManifest()
         {
-            PackageInfo package = PackageInfo.GetAllRegisteredPackages().FirstOrDefault(p => p.name == packageName);
+            UnityEditor.PackageManager.PackageInfo package = UnityEditor.PackageManager.PackageInfo.GetAllRegisteredPackages().FirstOrDefault(p => p.name == packageName);
             return package;
         }
 
@@ -30,7 +32,7 @@ namespace HH.MultiSceneToolsEditor
                 }
                 else
                 {
-                    PackageInfo package = GetPackageManifest();
+                    UnityEditor.PackageManager.PackageInfo package = GetPackageManifest();
                     if(package == null)
                     {
                         return "";
@@ -44,6 +46,16 @@ namespace HH.MultiSceneToolsEditor
             {
                 _packageVersionCache = value;
             }
+        }
+
+        private static string _getBackingFieldName(string propertyName)
+        {
+            return string.Format("<{0}>k__BackingField", propertyName);
+        }
+
+        public static FieldInfo _getBackingField(object obj, string propertyName)
+        {
+            return obj.GetType().GetField(_getBackingFieldName(propertyName), BindingFlags.Instance | BindingFlags.NonPublic);
         }
     }
 }

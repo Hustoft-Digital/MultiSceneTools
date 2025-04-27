@@ -60,11 +60,11 @@ namespace HH.MultiSceneTools
         public SceneCollection[] GetSceneCollections() => _ProjectCollections.ToArray();
         [field:SerializeField, HideInInspector] public bool LogOnSceneChange {get; private set;}
         // [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
-        [field:SerializeField] public string _BootScenePath {get; private set;} = "Assets/Scenes/SampleScene.unity";
-        [field:SerializeField] public string _SceneCollectionPath {get; private set;} = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
-        public Scene BootScene {get; private set;}
+        [field:SerializeField, HideInInspector] public string _BootScenePath {get; private set;} = "Assets/Scenes/SampleScene.unity";
+        [field:SerializeField, HideInInspector] public string _SceneCollectionPath {get; private set;} = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
+        [field:SerializeField] public Scene BootScene {get; private set;}
         #if UNITY_EDITOR
-            [field:SerializeField] public bool startWizardOnUpdate {get; private set;} = true;
+            [field:SerializeField, HideInInspector] public bool startWizardOnUpdate {get; private set;} = true;
             public void toggleWizardPopup() => startWizardOnUpdate = !startWizardOnUpdate;
             public void setUseBootScene(bool state) => UseBootScene = state;
             public void setBootScenePath(string path) => _BootScenePath = path;

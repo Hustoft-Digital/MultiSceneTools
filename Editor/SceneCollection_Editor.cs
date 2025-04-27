@@ -5,7 +5,6 @@
 // *   Check the Unity Asset Store for licensing information
 
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEditor;
 using HH.MultiSceneTools;
 using UnityEditor.Callbacks;
@@ -29,8 +28,8 @@ namespace HH.MultiSceneToolsEditor
         {
             script = target as SceneCollection;
 
-            TitleField = _getBackingField(script, "Title");
-            ActiveField = _getBackingField(script, "ActiveSceneIndex");
+            TitleField = MultiSceneToolsEditorExtensions._getBackingField(script, "Title");
+            ActiveField = MultiSceneToolsEditorExtensions._getBackingField(script, "ActiveSceneIndex");
             _Scenes = serializedObject.FindProperty("Scenes");
             _Color = serializedObject.FindProperty("hierarchyColor");
 
@@ -46,6 +45,7 @@ namespace HH.MultiSceneToolsEditor
             string newTitle = EditorGUILayout.TextField("Title", previousTitle);
             if (previousTitle != newTitle)
             {
+                Undo.RegisterCompleteObjectUndo(target, "MultiSeneTools: Scene Collection Title = " + newTitle);
                 TitleField.SetValue(script, newTitle);
                 EditorUtility.SetDirty(script);
             }
@@ -166,16 +166,6 @@ namespace HH.MultiSceneToolsEditor
             {
                 ActiveField.SetValue(script, -1);
             }
-        }
-
-        private string _getBackingFieldName(string propertyName)
-        {
-            return string.Format("<{0}>k__BackingField", propertyName);
-        }
-
-        private FieldInfo _getBackingField(object obj, string propertyName)
-        {
-            return obj.GetType().GetField(_getBackingFieldName(propertyName), BindingFlags.Instance | BindingFlags.NonPublic);
         }
     }
 }
