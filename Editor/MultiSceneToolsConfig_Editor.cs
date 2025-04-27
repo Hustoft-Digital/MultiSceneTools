@@ -52,9 +52,9 @@ namespace HH.MultiSceneToolsEditor
             GUILayout.Space(8);
             GUILayout.Label("Info", EditorStyles.boldLabel);
 
+            GUI.enabled = false;
             EditorGUILayout.TextField(packageInfo.version);
 
-            GUI.enabled = false;
             var config = EditorGUILayout.ObjectField("Current Instance", MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
 
             EditorGUILayout.PropertyField(loadedCollectionsProperty, new GUIContent("Loaded Collections", "All collections loaded in the hierarchy"));
