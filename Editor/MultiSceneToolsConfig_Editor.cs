@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEditor;
 using HH.MultiSceneTools;
 using System.Reflection;
+using UnityEngine.SceneManagement;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -16,30 +17,33 @@ namespace HH.MultiSceneToolsEditor
     {
         MultiSceneToolsConfig script;
 
-        FieldInfo wizardStartUp, useBoot;
-        FieldInfo bootPath, collectionPath;
+        FieldInfo wizardStartUpField, useBootField;
+        FieldInfo bootSceneField, targetBootAssetField;
+        FieldInfo bootPathField, collectionPathField;
         SerializedProperty loadedCollectionsProperty;
         UnityEditor.PackageManager.PackageInfo packageInfo;
         private void OnEnable()
         {
             script = target as MultiSceneToolsConfig;
-            wizardStartUp = MultiSceneToolsEditorExtensions._getBackingField(script, "startWizardOnUpdate");
-            useBoot = MultiSceneToolsEditorExtensions._getBackingField(script, "UseBootScene");
-            bootPath = MultiSceneToolsEditorExtensions._getBackingField(script, "_BootScenePath");
-            collectionPath = MultiSceneToolsEditorExtensions._getBackingField(script, "_SceneCollectionPath");
+            wizardStartUpField = MultiSceneToolsEditorExtensions._getBackingField(script, "startWizardOnUpdate");
+            useBootField = MultiSceneToolsEditorExtensions._getBackingField(script, "UseBootScene");
+            bootPathField = MultiSceneToolsEditorExtensions._getBackingField(script, "_BootScenePath");
+            bootSceneField = MultiSceneToolsEditorExtensions._getBackingField(script, "BootScene");
+            targetBootAssetField = MultiSceneToolsEditorExtensions._getBackingField(script, "_TargetBootScene");
+            collectionPathField = MultiSceneToolsEditorExtensions._getBackingField(script, "_SceneCollectionPath");
             loadedCollectionsProperty = serializedObject.FindProperty("currentLoadedCollection");
         }
 
         void setDefaultPaths()
         {
-            if(bootPath.GetValue(script) as string == "")
+            if(bootPathField.GetValue(script) as string == "")
             {
-                bootPath.SetValue(script, MultiSceneToolsConfig.bootPathDefault);
+                bootPathField.SetValue(script, MultiSceneToolsConfig.bootPathDefault);
             }
 
-            if(collectionPath.GetValue(script) as string == "")
+            if(collectionPathField.GetValue(script) as string == "")
             {
-                collectionPath.SetValue(script, MultiSceneToolsConfig.collectionsPathDefault);
+                collectionPathField.SetValue(script, MultiSceneToolsConfig.collectionsPathDefault);
             }
         }
 
@@ -62,14 +66,14 @@ namespace HH.MultiSceneToolsEditor
             GUILayout.Space(8);
             GUILayout.Label("Settings", EditorStyles.boldLabel);
 
-            bool? _CurrentStartUpStateValue = wizardStartUp.GetValue(script) as bool?;
+            bool? _CurrentStartUpStateValue = wizardStartUpField.GetValue(script) as bool?;
             bool _CurrentStartUpState = _CurrentStartUpStateValue ?? true ? _CurrentStartUpStateValue.Value : false;
             bool _newStartupState = EditorGUILayout.Toggle(new GUIContent("Start Wizard On Update"), _CurrentStartUpState);
 
             if(_newStartupState != _CurrentStartUpState)
             {
                 Undo.RegisterCompleteObjectUndo(target, "MultiSeneTools: Start Wizard On Update = " + _newStartupState);
-                wizardStartUp.SetValue(script, _newStartupState);
+                wizardStartUpField.SetValue(script, _newStartupState);
                 EditorUtility.SetDirty(script);
             }
             serializedObject.ApplyModifiedProperties(); // ? not sure why i need another one here but it works
@@ -98,13 +102,13 @@ namespace HH.MultiSceneToolsEditor
 
             serializedObject.UpdateIfRequiredOrScript();
 
-            bool? _isUsingBootValue = useBoot.GetValue(script) as bool?;
+            bool? _isUsingBootValue = useBootField.GetValue(script) as bool?;
             bool _isUsingBoot = _isUsingBootValue ?? false ? _isUsingBootValue.Value : false;
             bool _newUsingBoot = EditorGUILayout.Toggle(new GUIContent("Keep boot-scene loaded", "Requires the boot scene to appear in the boot scene collection"), _isUsingBoot);
             if(_newUsingBoot != _isUsingBoot)
             {
                 Undo.RegisterCompleteObjectUndo(target, "MultiSeneTools: Keep Boot Scene Loaded = " + _newUsingBoot);
-                useBoot.SetValue(script, _newUsingBoot);
+                useBootField.SetValue(script, _newUsingBoot);
                 EditorUtility.SetDirty(script);
             }
 
@@ -113,27 +117,29 @@ namespace HH.MultiSceneToolsEditor
             GUI.enabled = true;
             GUI.enabled = _isUsingBoot;
 
-            string _CurrentBootPath = bootPath.GetValue(script) as string;
+            string _CurrentBootPath = bootPathField.GetValue(script) as string;
             string _newBootPath = EditorGUILayout.TextField(
                 new GUIContent("Boot scene Path", "Keep this scene when loading differences. This scene will be loaded if all scenes are unloaded"), 
                 _CurrentBootPath);
             if(_newBootPath != _CurrentBootPath)
             {
                 Undo.RegisterCompleteObjectUndo(target, "MultiSeneTools: Boot Scene Path = " + _newBootPath);
-                bootPath.SetValue(script, _newBootPath);
+                bootPathField.SetValue(script, _newBootPath);
+                targetBootAssetField.SetValue(script, (SceneAsset)AssetDatabase.LoadAssetAtPath(_newBootPath, typeof(SceneAsset)));
+                bootSceneField.SetValue(script, SceneManager.GetSceneByPath(_newBootPath));
                 EditorUtility.SetDirty(script);
             }
             
             GUI.enabled = true;
 
-            string _currentCollectionPath = collectionPath.GetValue(script) as string;
+            string _currentCollectionPath = collectionPathField.GetValue(script) as string;
             string _newCollectionPath = EditorGUILayout.TextField(
                 new GUIContent("Scene Collections Path", "Path where new scene collections will be created and loaded from"),
                 _currentCollectionPath);
             if(_newCollectionPath != _currentCollectionPath)
             {
                 Undo.RegisterCompleteObjectUndo(target, "MultiSeneTools: Scene Collection Path = " + _newCollectionPath);
-                collectionPath.SetValue(script, _newCollectionPath);
+                collectionPathField.SetValue(script, _newCollectionPath);
                 EditorUtility.SetDirty(script);
             }
 

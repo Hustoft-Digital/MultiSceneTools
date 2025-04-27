@@ -69,7 +69,7 @@ namespace HH.MultiSceneTools
             public void setUseBootScene(bool state) => UseBootScene = state;
             public void setBootScenePath(string path) => _BootScenePath = path;
             public void setSceneCollectionFolder(string path) => _SceneCollectionPath = path;
-            public SceneAsset _TargetBootScene {private set; get;}
+            [field:SerializeField, HideInInspector] public SceneAsset _TargetBootScene {private set; get;}
             public bool wasCollectionClosed;
             public bool wasCollectionOpened;
             // public bool setAllowCrossSceneReferences(bool state) => AllowCrossSceneReferences = state;
