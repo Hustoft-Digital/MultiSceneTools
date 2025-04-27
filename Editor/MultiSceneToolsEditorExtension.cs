@@ -1,3 +1,9 @@
+// *   Multi Scene Tools Lite
+// *
+// *   Copyright (C) 2025 Henrik Hustoft
+// *
+// *   Check the Unity Asset Store for licensing information
+
 using UnityEditor.PackageManager;
 using System.Linq;
 
