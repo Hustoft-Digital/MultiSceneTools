@@ -3,6 +3,7 @@
 - Fixed Active Scene index throwing errors when the collection's scene array changed in certain cases.
 - Added demo
 - Changed Icons and branding
+- Added add all collections to build settings menu item
 
 # Version 0.4.2-6 - 10/12/2024
 - Fixed loadCollectionMode.Replace attempting to unload scenes that was already unloaded by single loading.
