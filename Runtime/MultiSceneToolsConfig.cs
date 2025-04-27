@@ -59,7 +59,7 @@ namespace HH.MultiSceneTools
         [SerializeField, HideInInspector] List<SceneCollection> _ProjectCollections;
         public SceneCollection[] GetSceneCollections() => _ProjectCollections.ToArray();
         [field:SerializeField, HideInInspector] public bool LogOnSceneChange {get; private set;}
-        [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
+        // [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
         [field:SerializeField] public string _BootScenePath {get; private set;} = "Assets/Scenes/SampleScene.unity";
         [field:SerializeField] public string _SceneCollectionPath {get; private set;} = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
         public Scene BootScene {get; private set;}
@@ -72,7 +72,7 @@ namespace HH.MultiSceneTools
             public SceneAsset _TargetBootScene {private set; get;}
             public bool wasCollectionClosed;
             public bool wasCollectionOpened;
-            public bool setAllowCrossSceneReferences(bool state) => AllowCrossSceneReferences = state;
+            // public bool setAllowCrossSceneReferences(bool state) => AllowCrossSceneReferences = state;
             public void setLogOnSceneChange(bool state)
             {   
                 LogOnSceneChange = state;
@@ -228,6 +228,45 @@ namespace HH.MultiSceneTools
                         Debug.LogException(new Exception(path + " is not a scene collection asset. Please remove it from the collections folder"), ExceptionObject);
                     }
                 }
+            }
+
+            public void AddCollectionsToBuildSettings()
+            {
+                UpdateCollections();
+
+                List<EditorBuildSettingsScene> editorBuildSettingsScenes = new List<EditorBuildSettingsScene>();
+                int _sceneCount = SceneManager.sceneCountInBuildSettings;     
+
+                for (int i = 0; i < _sceneCount; i++)
+                {
+                    string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+                    if (!string.IsNullOrEmpty(scenePath))
+                    {
+                        editorBuildSettingsScenes.Add(new EditorBuildSettingsScene(scenePath, true));
+                    }
+                }
+
+                for (int i = 0; i < _ProjectCollections.Count; i++)
+                {
+                    SceneAsset[] sceneAssets = _ProjectCollections[i].GetSceneAssets();
+
+                    for (int j = 0; j < sceneAssets.Length; j++)
+                    {
+                        string ScenePath = AssetDatabase.GetAssetPath(sceneAssets[j]);
+                        if (!string.IsNullOrEmpty(ScenePath))
+                        {
+                            var buildScene = new EditorBuildSettingsScene(ScenePath, true);
+
+                            if(!editorBuildSettingsScenes.Contains(buildScene))
+                            {
+                                editorBuildSettingsScenes.Add(buildScene);
+                            }
+                        }
+                    }
+                }
+                // editorBuildSettingsScenes.Add(new EditorBuildSettingsScene(ScenePath, true));
+                
+                EditorBuildSettings.scenes = editorBuildSettingsScenes.ToArray();
             }
 
             public void resumeCurrentLoadedCollection(PlayModeStateChange state)

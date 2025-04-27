@@ -10,7 +10,6 @@ using UnityEditor;
 using HH.MultiSceneTools;
 using UnityEditor.Callbacks;
 using System.Reflection;
-using System.Linq;
 using System.Collections.Generic;
 
 namespace HH.MultiSceneToolsEditor
@@ -75,16 +74,16 @@ namespace HH.MultiSceneToolsEditor
             }
         }
 
-        void OnInspectorUpdate()
-        {
-            int sceneCount = SceneManager.sceneCountInBuildSettings;     
-            string[] scenes = new string[sceneCount];
+        // void OnInspectorUpdate()
+        // {
+        //     int sceneCount = SceneManager.sceneCountInBuildSettings;     
+        //     string[] scenes = new string[sceneCount];
 
-            for( int i = 0; i < sceneCount; i++ )
-            {
-                scenes[i] = System.IO.Path.GetFileNameWithoutExtension( SceneUtility.GetScenePathByBuildIndex( i ) );
-            }
-        }
+        //     for( int i = 0; i < sceneCount; i++ )
+        //     {
+        //         scenes[i] = System.IO.Path.GetFileNameWithoutExtension( SceneUtility.GetScenePathByBuildIndex( i ) );
+        //     }
+        // }
 
         [OnOpenAsset]
         //Handles opening the editor window when double-clicking project files

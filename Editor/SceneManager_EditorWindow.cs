@@ -16,7 +16,7 @@ using HH.MultiSceneTools;
 
 namespace HH.MultiSceneToolsEditor
 {
-    [InitializeOnLoadAttribute]
+    [InitializeOnLoad]
     public class SceneManager_EditorWindow : EditorWindow
     {
         public static SceneManager_EditorWindow Instance {get; private set;}
@@ -53,7 +53,7 @@ namespace HH.MultiSceneToolsEditor
             EditorApplication.playModeStateChanged += LogPlayModeState;
         }
 
-        [MenuItem("Tools/Multi Scene Tools/Manager", false, 1)]
+        [MenuItem("Tools/Multi Scene Tools Lite/Manager", false, 1)]
         static void Init()
         {
             // Get existing open window or if none, make a new one:

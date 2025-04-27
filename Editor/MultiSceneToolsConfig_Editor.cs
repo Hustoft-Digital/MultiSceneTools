@@ -66,15 +66,15 @@ namespace HH.MultiSceneToolsEditor
             serializedObject.ApplyModifiedProperties(); // ? not sure why i need another one here but it works
 
             // Allow Cross Scene References
-            bool _CurrentAllowCrossSceneState = 
-                EditorGUILayout.Toggle(
-                    new GUIContent("Allow Cross Referencing", "not implemented"), script.AllowCrossSceneReferences);
+            // bool _CurrentAllowCrossSceneState = 
+            //     EditorGUILayout.Toggle(
+            //         new GUIContent("Allow Cross Referencing", "not implemented"), script.AllowCrossSceneReferences);
 
-            if(_CurrentAllowCrossSceneState != script.AllowCrossSceneReferences)
-            {
-                Undo.RegisterCompleteObjectUndo(target, "MultiSeneTools: Allow Cross Scene References = " + _CurrentAllowCrossSceneState);
-                script.setAllowCrossSceneReferences(_CurrentAllowCrossSceneState);
-            }
+            // if(_CurrentAllowCrossSceneState != script.AllowCrossSceneReferences)
+            // {
+            //     Undo.RegisterCompleteObjectUndo(target, "MultiSeneTools: Allow Cross Scene References = " + _CurrentAllowCrossSceneState);
+            //     script.setAllowCrossSceneReferences(_CurrentAllowCrossSceneState);
+            // }
 
             // Log Scene Changes
             bool _CurrentLogScenesState = EditorGUILayout.Toggle(

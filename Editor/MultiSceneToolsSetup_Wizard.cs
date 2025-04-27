@@ -25,7 +25,7 @@ namespace HH.MultiSceneToolsEditor
         bool preventPopupAgain;
         static string GetFilePath([System.Runtime.CompilerServices.CallerFilePath] string callerFilePath = null) => callerFilePath;
 
-        [MenuItem("Tools/Multi Scene Tools/Setup", false, 1)]
+        [MenuItem("Tools/Multi Scene Tools Lite/Setup", false, 1)]
         public static void MenuEntryCall() 
         {
             MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
