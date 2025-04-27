@@ -82,7 +82,6 @@ namespace HH.MultiSceneTools
             public SceneAsset _TargetBootScene {private set; get;}
             public bool wasCollectionClosed;
             public bool wasCollectionOpened;
-            public string versionNumber;
             public bool setAllowCrossSceneReferences(bool state) => AllowCrossSceneReferences = state;
             public void setLogOnSceneChange(bool state)
             {   
