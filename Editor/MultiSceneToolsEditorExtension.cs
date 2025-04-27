@@ -13,8 +13,6 @@ namespace HH.MultiSceneToolsEditor
     {
         public static readonly string packageName = "com.henrikhustoft.multi-scene-management-tools-lite";
         public static readonly string packagePath = "Packages/" + packageName;
-        public static readonly string packageDeveloperPath = "Assets/MultiSceneManagementTools/package.json";
-        public static readonly string packageMainAssemblyPath = "Assets/MultiSceneManagementTools/Runtime/MultiSceneTools.asmdef";
         public static PackageInfo GetPackageManifest()
         {
             PackageInfo package = PackageInfo.GetAllRegisteredPackages().FirstOrDefault(p => p.name == packageName);

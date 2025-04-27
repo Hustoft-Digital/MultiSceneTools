@@ -15,15 +15,14 @@ namespace HH.MultiSceneToolsEditor
     {
         MultiSceneToolsConfig script;
 
-        SerializedProperty packageVersion, useBoot, wizardStartUp;
+        SerializedProperty useBoot, wizardStartUp;
         SerializedProperty bootPath, targetBootScene, collectionPath;
         SerializedProperty loadedCollectionsProperty;
-
+        UnityEditor.PackageManager.PackageInfo packageInfo;
         private void OnEnable()
         {
             script = target as MultiSceneToolsConfig;
 
-            packageVersion = serializedObject.FindProperty("versionNumber");
             wizardStartUp = serializedObject.FindProperty("startWizardOnUpdate");
             useBoot = serializedObject.FindProperty("UseBootScene");
             bootPath = serializedObject.FindProperty("_BootScenePath");
@@ -48,12 +47,14 @@ namespace HH.MultiSceneToolsEditor
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
+            packageInfo = MultiSceneToolsEditorExtensions.GetPackageManifest();
 
             GUILayout.Space(8);
             GUILayout.Label("Info", EditorStyles.boldLabel);
 
+            EditorGUILayout.TextField(packageInfo.version);
+
             GUI.enabled = false;
-            EditorGUILayout.PropertyField(packageVersion, new GUIContent("Version"));
             var config = EditorGUILayout.ObjectField("Current Instance", MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
 
             EditorGUILayout.PropertyField(loadedCollectionsProperty, new GUIContent("Loaded Collections", "All collections loaded in the hierarchy"));
