@@ -63,7 +63,7 @@ namespace HH.MultiSceneToolsEditor
             GUILayout.Label("Settings", EditorStyles.boldLabel);
 
             bool? _CurrentStartUpStateValue = wizardStartUp.GetValue(script) as bool?;
-            bool _CurrentStartUpState = _CurrentStartUpStateValue ?? false ? _CurrentStartUpStateValue.Value : false;
+            bool _CurrentStartUpState = _CurrentStartUpStateValue ?? true ? _CurrentStartUpStateValue.Value : false;
             bool _newStartupState = EditorGUILayout.Toggle(new GUIContent("Start Wizard On Update"), _CurrentStartUpState);
 
             if(_newStartupState != _CurrentStartUpState)
