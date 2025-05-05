@@ -4,47 +4,85 @@
 // *
 // *   Check the Unity Asset Store for licensing information
 
-using UnityEditor.PackageManager;
 using System.Linq;
-using UnityEditor;
 using System.Reflection;
+using UnityEngine;
+using HH.MultiSceneTools;
+using System.IO;
 
 namespace HH.MultiSceneToolsEditor
 {
     public static class MultiSceneToolsEditorExtensions
     {
         public static readonly string packageName = "com.henrikhustoft.multi-scene-management-tools-lite";
-        public static readonly string packagePath = "Packages/" + packageName;
-        public static UnityEditor.PackageManager.PackageInfo GetPackageManifest()
+        public static readonly string packagePath = "Assets/Multi Scene Tools Lite";
+        public struct PackageInfo
         {
-            UnityEditor.PackageManager.PackageInfo package = UnityEditor.PackageManager.PackageInfo.GetAllRegisteredPackages().FirstOrDefault(p => p.name == packageName);
+            public string name;
+            public string version;
+            public string displayName;
+            public string description;
+            public string unity;
+            public string[] keywords;
+            public Author author;
+
+            public struct Author
+            {
+                public string name;
+                public string url;
+            }
+        }
+
+        public static PackageInfo GetPackageManifest()
+        {
+            PackageInfo package = new PackageInfo();
+
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                JsonUtility.FromJsonOverwrite(File.ReadAllText(packagePath + "/package.json"), package);
+                return package;
+            }
+
+            if(!Directory.Exists(MultiSceneToolsConfig.instance.packagePath))
+            {
+                Debug.LogError("Multi Scene Tools package path is invalid. Please run the setup to update the package.");
+
+                MultiSceneToolsConfig.instance.packagePath = packagePath;
+
+                JsonUtility.FromJsonOverwrite(File.ReadAllText(packagePath + "/package.json"), package);
+                return package;
+            }
+
+            package = (PackageInfo)JsonUtility.FromJson(File.ReadAllText(MultiSceneToolsConfig.instance.packagePath + "/package.json"), typeof(PackageInfo));
             return package;
         }
 
-        private static string _packageVersionCache;
-        public static string packageVersion 
+
+        // public static UnityEditor.PackageManager.PackageInfo GetPackageManifest()
+        // {
+        //     UnityEditor.PackageManager.PackageInfo package = UnityEditor.PackageManager.PackageInfo.GetAllRegisteredPackages().FirstOrDefault(p => p.name == packageName);
+        //     return package;
+        // }
+
+        private static PackageInfo _packageInfoCache;
+        public static PackageInfo packageInfo 
         {
             get
             {
-                if(!string.IsNullOrEmpty(_packageVersionCache))
+                if(!_packageInfoCache.Equals(default(PackageInfo)))
                 {
-                    return _packageVersionCache;
+                    return _packageInfoCache;
                 }
                 else
                 {
-                    UnityEditor.PackageManager.PackageInfo package = GetPackageManifest();
-                    if(package == null)
-                    {
-                        return "";
-                    }
-
-                    _packageVersionCache = package.version;
-                    return _packageVersionCache;
+                    PackageInfo package = GetPackageManifest();
+                    _packageInfoCache = package;
+                    return _packageInfoCache;
                 }
             } 
             private set
             {
-                _packageVersionCache = value;
+                _packageInfoCache = value;
             }
         }
 

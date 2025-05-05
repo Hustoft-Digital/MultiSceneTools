@@ -458,7 +458,7 @@ namespace HH.MultiSceneToolsEditor
 
         string[] GetLoadedScenePaths()
         {
-            Scene[] _currScenes = new Scene[EditorSceneManager.loadedSceneCount];
+            Scene[] _currScenes = new Scene[SceneManager.sceneCount];
             for (int i = 0; i < _currScenes.Length; i++)
             {
                 _currScenes[i] = EditorSceneManager.GetSceneAt(i);

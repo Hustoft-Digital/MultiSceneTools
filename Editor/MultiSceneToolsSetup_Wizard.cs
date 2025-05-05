@@ -19,19 +19,28 @@ namespace HH.MultiSceneToolsEditor
 
         // variables
         MultiSceneToolsConfig currentConfig;
+        string _installationPath = MultiSceneToolsEditorExtensions.packagePath;
         string _bootScenePath = MultiSceneToolsConfig.bootPathDefault;
         string _sceneCollectionsPath = MultiSceneToolsConfig.collectionsPathDefault;
         bool useBootScene = false;
         bool preventPopupAgain;
         static string GetFilePath([System.Runtime.CompilerServices.CallerFilePath] string callerFilePath = null) => callerFilePath;
 
+        static MultiSceneToolsSetup_Wizard instance;
+
         [MenuItem("Tools/Multi Scene Tools Lite/Setup", false, 1)]
         public static void MenuEntryCall() 
         {
+            Debug.Log("Opening Multi Scene Tools Setup Wizard");
+            if(instance != null)
+            {
+                instance.Close();
+            }
+
             MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
             _Wizard.titleContent = new GUIContent("Multi Scene Tools Setup", "Creates or updates the config");
             _Wizard.position = new Rect(Screen.currentResolution.width/3, Screen.currentResolution.height/4, _Wizard.position.width, _Wizard.position.height);
-            _Wizard.minSize = new Vector2(684, 480);
+            _Wizard.minSize = new Vector2(684, 520);
         }
 
         private void Awake() 
@@ -42,11 +51,14 @@ namespace HH.MultiSceneToolsEditor
 
             if(currentConfig)
             {
+                _installationPath = MultiSceneToolsConfig.instance.packagePath;
                 _bootScenePath = MultiSceneToolsConfig.instance._BootScenePath;
                 _sceneCollectionsPath = MultiSceneToolsConfig.instance._SceneCollectionPath;
                 preventPopupAgain = !MultiSceneToolsConfig.instance.startWizardOnUpdate;
                 useBootScene = MultiSceneToolsConfig.instance.UseBootScene;
             }
+
+            MultiSceneToolsStartup.CheckUpdates(false);
         }
 
         void OnGUI() 
@@ -57,12 +69,12 @@ namespace HH.MultiSceneToolsEditor
 
             Rect version_Rect = new Rect(10, 10, position.width, position.height);
 
-            drawText(ref version_Rect, "V." + MultiSceneToolsEditorExtensions.packageVersion, EditorStyles.miniLabel);
+            drawText(ref version_Rect, "V." + MultiSceneToolsConfig.instance.packageVersion, EditorStyles.miniLabel);
             drawIcon(ref _Rect, 150);
 
             if(MultiSceneToolsStartup.detectedUpdate)
             {
-                drawText(ref _Rect, "Multi Scene Tools Updated: " + MultiSceneToolsEditorExtensions.packageVersion + "!", TitleStyle);
+                drawText(ref _Rect, "Multi Scene Tools Updated: " + MultiSceneToolsEditorExtensions.packageInfo.version + "!", TitleStyle);
             }
             else
             {
@@ -78,6 +90,11 @@ namespace HH.MultiSceneToolsEditor
             drawText(ref _Rect, "Please confirm the following settings", EditorStyles.whiteLargeLabel);
 
             _Rect.y += 10;
+
+            drawTextfield(
+                ref _Rect, 
+                new GUIContent("Installation Path", "Location of the Multi Scene Tools package"), 
+                ref _installationPath);
 
             drawCheckbox(
                 ref _Rect, 
@@ -183,7 +200,14 @@ namespace HH.MultiSceneToolsEditor
                 AssetDatabase.SaveAssets();
 
                 Debug.Log("Created Multi Scene Tools config at: " + MultiSceneToolsConfig.configPath + MultiSceneToolsConfig.configName, config);
+
                 Selection.activeObject = config;
+            }
+
+            if(config.packagePath != _installationPath)
+            {
+                movePackageToPath();
+                config.packagePath = _installationPath;
             }
 
             config.setBootScenePath(_bootScenePath);
@@ -194,7 +218,7 @@ namespace HH.MultiSceneToolsEditor
                 config.toggleWizardPopup();
             }
 
-            if(MultiSceneToolsEditorExtensions.packageVersion != "")
+            if(MultiSceneToolsEditorExtensions.packageInfo.version != "")
             {
                 EditorUtility.SetDirty(config);
                 AssetDatabase.SaveAssets();
@@ -206,6 +230,60 @@ namespace HH.MultiSceneToolsEditor
             Debug.Log("Confirmed settings", config);
 
             Close();
+        }
+
+        void movePackageToPath()
+        {
+            _installationPath = _installationPath.Replace("\\", "/");
+            
+            string sourcePath;
+            if(MultiSceneToolsConfig.instance)
+            {
+                sourcePath = MultiSceneToolsConfig.instance.packagePath + "/";
+            }
+            else
+            {
+                sourcePath = MultiSceneToolsEditorExtensions.packagePath + "/";
+            }
+            
+            string targetPath = _installationPath + "/";
+
+            if(_installationPath.StartsWith("Packages/"))
+            {
+                string[] pathParts = _installationPath.Split('/');
+                string remainingPath = _installationPath.Substring(pathParts[0].Length + 1);
+
+                targetPath = Path.Combine(pathParts[0], MultiSceneToolsEditorExtensions.packageName, remainingPath);
+            }
+
+            // Ensure the target directory exists
+            if (!Directory.Exists(targetPath))
+            {
+                Directory.CreateDirectory(targetPath);
+            }
+
+            // Get all files in the source directory, including subdirectories
+            foreach (string file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+            {
+                // Determine the relative path of the file
+                string relativePath = file.Substring(sourcePath.Length);
+
+                // Determine the destination path
+                string destinationFile = Path.Combine(targetPath, relativePath);
+
+                // Ensure the destination directory exists
+                string destinationDir = Path.GetDirectoryName(destinationFile);
+                if (!Directory.Exists(destinationDir))
+                {
+                    Directory.CreateDirectory(destinationDir);
+                }
+
+                // Move the file
+                File.Move(file, destinationFile);
+                // File.Copy(file, destinationFile, true);
+            }
+
+            AssetDatabase.Refresh();    
         }
 
         void drawIcon(ref Rect currentPosition, int size)

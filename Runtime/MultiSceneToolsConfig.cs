@@ -24,6 +24,12 @@ namespace HH.MultiSceneTools
         public static readonly string configResourcesPath = "MultiSceneTools/Config/";
         public static readonly string bootPathDefault = "Assets/Scenes/SampleScene.unity";
         public static readonly string collectionsPathDefault = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
+        #if UNITY_EDITOR
+        [SerializeField, HideInInspector, Tooltip("This path should be set so that scripts can find the correct files")] public string packagePath = "Assets/Multi Scene Tools Lite";
+        [SerializeField, HideInInspector] string registeredPackageVersion = "0.0.0";
+        public string packageVersion => registeredPackageVersion;
+        public void setPackageVersion(string version) => registeredPackageVersion = version;
+        #endif
         [field:SerializeField] public bool UseBootScene {get; private set;} = false;
         public static MultiSceneToolsConfig instance 
         {
@@ -52,7 +58,6 @@ namespace HH.MultiSceneTools
         }
 
         static MultiSceneToolsConfig loadedConfig {set; get;}
-
         public List<SceneCollection> LoadedCollections => currentLoadedCollection;
         [field:SerializeField] List<SceneCollection> currentLoadedCollection = new List<SceneCollection>();
         private SceneCollection[] EditorStartedInCollection;

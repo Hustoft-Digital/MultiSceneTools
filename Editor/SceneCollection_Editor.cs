@@ -68,10 +68,11 @@ namespace HH.MultiSceneToolsEditor
 
             serializedObject.ApplyModifiedProperties();
 
-            if(GUILayout.Button("Load Collection"))
-            {
-                script.LoadCollection();
-            }
+            // if(GUILayout.Button("Load Collection"))
+            // {
+            //     script.LoadCollection();
+            // }
+            
         }
 
         // void OnInspectorUpdate()

@@ -6,8 +6,6 @@
 
 using UnityEditor;
 using HH.MultiSceneTools;
-using UnityEditor.PackageManager;
-using UnityEditor.SceneManagement;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -15,12 +13,12 @@ namespace HH.MultiSceneToolsEditor
     {
         public static bool detectedUpdate {get; private set;}
         
-        
-        
         [InitializeOnLoadMethod]
         static void Startup()
         {
-            Events.registeredPackages += CheckUpdates;
+            // Events.registeredPackages += CheckUpdates;
+            
+            CheckUpdates(true);
 
             if(!MultiSceneToolsConfig.instance)
             {
@@ -31,67 +29,93 @@ namespace HH.MultiSceneToolsEditor
             EditorApplication.playModeStateChanged +=  MultiSceneToolsConfig.instance.resumeCurrentLoadedCollection;
         }
 
-        static void CheckUpdates(PackageRegistrationEventArgs package)
+        public static void CheckUpdates(bool tryOpenWizard)
         {
-            bool shouldOpenWizard = false;
-
-            for (int i = 0; i < package.added.Count; i++)
+            if(MultiSceneToolsConfig.instance == null && tryOpenWizard)
             {
-                if(package.added[i].name == MultiSceneToolsEditorExtensions.packageName)
-                {
-                    // MultiSceneToolsEditorExtensions.packageVersion = package.added[i].version;
-
-                    if(MultiSceneToolsConfig.instance)
-                    {
-                        if(MultiSceneToolsConfig.instance.startWizardOnUpdate)
-                        {
-                            shouldOpenWizard = true;
-                        }
-                    }
-                    else
-                    {
-                        shouldOpenWizard = true;
-                    }
-                    break;
-                }
+                OpenWizard();
+                return;
             }
 
-            for (int i = 0; i < package.changedTo.Count; i++)
-            {
-                if(package.changedTo[i].name == MultiSceneToolsEditorExtensions.packageName)
-                {
-                    // MultiSceneToolsEditorExtensions.packageVersion = package.changedTo[i].version;
+            MultiSceneToolsEditorExtensions.PackageInfo newInfo = MultiSceneToolsEditorExtensions.GetPackageManifest();
 
-                    if(MultiSceneToolsConfig.instance)
-                    {
-                        if(MultiSceneToolsConfig.instance.startWizardOnUpdate)
-                        {
-                            shouldOpenWizard = true;
-                        }
-                    }
-                    else
-                    {
-                        shouldOpenWizard = true;
-                    }
-                    detectedUpdate = true;
-                    break;
-                }
+            if(MultiSceneToolsConfig.instance.packageVersion != newInfo.version)
+            {
+                detectedUpdate = true;
             }
 
-            if(shouldOpenWizard)
+            if(MultiSceneToolsConfig.instance.startWizardOnUpdate && detectedUpdate && tryOpenWizard)
             {
                 OpenWizard();
             }
         }
 
+        // static void CheckUpdates(PackageRegistrationEventArgs package)
+        // {
+        //     bool shouldOpenWizard = false;
+
+        //     for (int i = 0; i < package.added.Count; i++)
+        //     {
+        //         if(package.added[i].name == MultiSceneToolsEditorExtensions.packageName)
+        //         {
+        //             // MultiSceneToolsEditorExtensions.packageVersion = package.added[i].version;
+
+        //             if(MultiSceneToolsConfig.instance)
+        //             {
+        //                 if(MultiSceneToolsConfig.instance.startWizardOnUpdate)
+        //                 {
+        //                     shouldOpenWizard = true;
+        //                 }
+        //             }
+        //             else
+        //             {
+        //                 shouldOpenWizard = true;
+        //             }
+        //             break;
+        //         }
+        //     }
+
+        //     for (int i = 0; i < package.changedTo.Count; i++)
+        //     {
+        //         if(package.changedTo[i].name == MultiSceneToolsEditorExtensions.packageName)
+        //         {
+        //             // MultiSceneToolsEditorExtensions.packageVersion = package.changedTo[i].version;
+
+        //             if(MultiSceneToolsConfig.instance)
+        //             {
+        //                 if(MultiSceneToolsConfig.instance.startWizardOnUpdate)
+        //                 {
+        //                     shouldOpenWizard = true;
+        //                 }
+        //             }
+        //             else
+        //             {
+        //                 shouldOpenWizard = true;
+        //             }
+        //             detectedUpdate = true;
+        //             break;
+        //         }
+        //     }
+
+        //     if(shouldOpenWizard)
+        //     {
+        //         OpenWizard();
+        //     }
+        // }
+
         public static void HasShownUpdate()
         {
+            if(MultiSceneToolsConfig.instance)
+            {
+                MultiSceneToolsConfig.instance.setPackageVersion(MultiSceneToolsEditorExtensions.packageInfo.version);
+            }
             detectedUpdate = false;
         }
 
         static void OpenWizard()
         {
             MultiSceneToolsSetup_Wizard.MenuEntryCall();
+            UnityEngine.Debug.Log("Multi Scene Tools: Opened Setup Wizard");
         }
     }
 }

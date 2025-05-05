@@ -4,6 +4,7 @@
 // *
 // *   Check the Unity Asset Store for licensing information
 
+using HH.MultiSceneTools;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,19 +16,24 @@ namespace HH.MultiSceneToolsEditor
         public static readonly string trueIcon = "/Images/true-Icon.png";
         public static readonly string packageIcon = "/Images/MultiSceneTools Icon.png";
         public static readonly string additiveCollectionIcon = "/Images/addativeCollectionIcon.png";
-    
+
         public static Texture FindTexture(string packageTexturePath)
         {
             // load texture from installed package
-            Texture foundTexture = (Texture)AssetDatabase.LoadAssetAtPath("Packages/" + MultiSceneToolsEditorExtensions.packageName + packageTexturePath, typeof(Texture2D));
+            // Texture foundTexture = (Texture)AssetDatabase.LoadAssetAtPath("Packages/" + MultiSceneToolsEditorExtensions.packageName + packageTexturePath, typeof(Texture2D));
 
             // load texture from development environment
-            if(foundTexture == null)
+            // if(foundTexture == null)
+            // {
+                // foundTexture = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Multi Scene Tools Lite" + packageTexturePath, typeof(Texture2D));
+            // }
+
+            if(MultiSceneToolsConfig.instance == null)
             {
-                foundTexture = (Texture)AssetDatabase.LoadAssetAtPath("Assets/MultiSceneManagementTools" + packageTexturePath, typeof(Texture2D));
+                return (Texture)AssetDatabase.LoadAssetAtPath(MultiSceneToolsEditorExtensions.packagePath + packageTexturePath, typeof(Texture2D));
             }
 
-            return foundTexture;
+            return (Texture)AssetDatabase.LoadAssetAtPath(MultiSceneToolsConfig.instance.packagePath + packageTexturePath, typeof(Texture2D));
         }
     }
 }

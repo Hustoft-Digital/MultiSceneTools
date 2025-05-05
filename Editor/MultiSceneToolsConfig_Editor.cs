@@ -9,6 +9,7 @@ using UnityEditor;
 using HH.MultiSceneTools;
 using System.Reflection;
 using UnityEngine.SceneManagement;
+using UnityEditor.UIElements;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -20,8 +21,7 @@ namespace HH.MultiSceneToolsEditor
         FieldInfo wizardStartUpField, useBootField;
         FieldInfo bootSceneField, targetBootAssetField;
         FieldInfo bootPathField, collectionPathField;
-        SerializedProperty loadedCollectionsProperty;
-        UnityEditor.PackageManager.PackageInfo packageInfo;
+        SerializedProperty loadedCollectionsProperty, packageInfoProperty, installationPathProperty;
         private void OnEnable()
         {
             script = target as MultiSceneToolsConfig;
@@ -32,6 +32,8 @@ namespace HH.MultiSceneToolsEditor
             targetBootAssetField = MultiSceneToolsEditorExtensions._getBackingField(script, "_TargetBootScene");
             collectionPathField = MultiSceneToolsEditorExtensions._getBackingField(script, "_SceneCollectionPath");
             loadedCollectionsProperty = serializedObject.FindProperty("currentLoadedCollection");
+            packageInfoProperty = serializedObject.FindProperty("registeredPackageVersion");
+            installationPathProperty = serializedObject.FindProperty("packagePath");
         }
 
         void setDefaultPaths()
@@ -50,13 +52,14 @@ namespace HH.MultiSceneToolsEditor
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-            packageInfo = MultiSceneToolsEditorExtensions.GetPackageManifest();
+
+            MultiSceneToolsEditorExtensions.GetPackageManifest();
 
             GUILayout.Space(8);
             GUILayout.Label("Info", EditorStyles.boldLabel);
 
             GUI.enabled = false;
-            EditorGUILayout.TextField(new GUIContent("Version"), packageInfo.version);
+            EditorGUILayout.TextField(new GUIContent("Version"), packageInfoProperty.stringValue);
 
             EditorGUILayout.ObjectField("Current Instance", MultiSceneToolsConfig.instance, typeof(MultiSceneToolsConfig), false);
 
@@ -77,17 +80,6 @@ namespace HH.MultiSceneToolsEditor
                 EditorUtility.SetDirty(script);
             }
             serializedObject.ApplyModifiedProperties(); // ? not sure why i need another one here but it works
-
-            // Allow Cross Scene References
-            // bool _CurrentAllowCrossSceneState = 
-            //     EditorGUILayout.Toggle(
-            //         new GUIContent("Allow Cross Referencing", "not implemented"), script.AllowCrossSceneReferences);
-
-            // if(_CurrentAllowCrossSceneState != script.AllowCrossSceneReferences)
-            // {
-            //     Undo.RegisterCompleteObjectUndo(target, "MultiSeneTools: Allow Cross Scene References = " + _CurrentAllowCrossSceneState);
-            //     script.setAllowCrossSceneReferences(_CurrentAllowCrossSceneState);
-            // }
 
             // Log Scene Changes
             bool _CurrentLogScenesState = EditorGUILayout.Toggle(
@@ -142,6 +134,10 @@ namespace HH.MultiSceneToolsEditor
                 collectionPathField.SetValue(script, _newCollectionPath);
                 EditorUtility.SetDirty(script);
             }
+
+            GUI.enabled = false;
+            EditorGUILayout.PropertyField(installationPathProperty, new GUIContent("Package Path", "Path to the package, use the setup to relocate the files or update the location."), true);
+            GUI.enabled = true;
 
             if(script.LoadedCollections != null)
             {
