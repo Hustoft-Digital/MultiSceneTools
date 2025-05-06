@@ -34,7 +34,7 @@ namespace HH.MultiSceneTools
         public string packageVersion => registeredPackageVersion;
         public void setPackageVersion(string version) => registeredPackageVersion = version;
         // # tried some Funky fix for not opening extra wizard windows that somehow cant be closed again, but it somehow fixed itself. keeping it here for now
-        // public object setupWindowInstance = null;
+        public object setupWindowInstance = null;
         #endif
         [field:SerializeField] public bool UseBootScene {get; private set;} = false;
         public static MultiSceneToolsConfig instance 

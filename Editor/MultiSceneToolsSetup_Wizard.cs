@@ -31,13 +31,13 @@ namespace HH.MultiSceneToolsEditor
         public static void MenuEntryCall() 
         {
         // # tried some Funky fix for not opening extra wizard windows that somehow cant be closed again, but it somehow fixed itself. keeping it here for now
-            // if(MultiSceneToolsConfig.instance != null)
-            // {
-            //     if(MultiSceneToolsConfig.instance.setupWindowInstance != null)
-            //     {
-            //         return;
-            //     }
-            // }
+            if(MultiSceneToolsConfig.instance != null)
+            {
+                if(MultiSceneToolsConfig.instance.setupWindowInstance != null)
+                {
+                    return;
+                }
+            }
             
             MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
             _Wizard.titleContent = new GUIContent("Multi Scene Tools Setup", "Creates or updates the config");
@@ -352,10 +352,10 @@ namespace HH.MultiSceneToolsEditor
         private void OnDestroy() {
             MultiSceneToolsStartup.HasShownUpdate();
 
-            // if(MultiSceneToolsConfig.instance)
-            // {
-            //     MultiSceneToolsConfig.instance.setupWindowInstance = null;
-            // }
+            if(MultiSceneToolsConfig.instance)
+            {
+                MultiSceneToolsConfig.instance.setupWindowInstance = null;
+            }
         }
     }
 }
