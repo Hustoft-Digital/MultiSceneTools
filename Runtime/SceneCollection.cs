@@ -3,6 +3,8 @@
 // *   Copyright (C) 2025 Henrik Hustoft
 // *
 // *   Check the Unity Asset Store for licensing information
+// *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
+// *   https://unity.com/legal/as-terms
 
 
 using System.Collections.Generic;
@@ -85,9 +87,9 @@ namespace HH.MultiSceneTools
         }
         #endif
 
-        [field:SerializeField, HideInInspector] public string Title {get; private set;}
-        [field:SerializeField, HideInInspector] public int ActiveSceneIndex {get; private set;} 
-        [SerializeField, HideInInspector] private List<string> _SceneNames = new List<string>();
+        [field:SerializeField] public string Title {get; private set;}
+        [field:SerializeField] public int ActiveSceneIndex {get; private set;} 
+        [SerializeField] private List<string> _SceneNames = new List<string>();
         public List<string> SceneNames => _SceneNames.ToList();
         public string GetNameOfTargetActiveScene()
         {
@@ -101,7 +103,7 @@ namespace HH.MultiSceneTools
 
         #if UNITY_EDITOR
         [SerializeField] public List<ActiveScene> Scenes = new List<ActiveScene>();
-        [SerializeField, HideInInspector] public Color hierarchyColor;
+        [SerializeField] public Color hierarchyColor;
 
         public SceneAsset[] GetSceneAssets()
         {
@@ -115,10 +117,42 @@ namespace HH.MultiSceneTools
 
         public void saveCollection(ActiveScene[] scenes)
         {
+            List<ActiveScene> previousScenes = new List<ActiveScene>(Scenes);
+            ActiveScene[] previousActive = previousScenes.Where(x => x.IsActive).ToArray();
+            ActiveScene[] newActive = scenes.Where(x => x.IsActive).ToArray();
+
+            bool keepPreviousActive = newActive.Equals(previousActive);
+
+            if(keepPreviousActive)
+            {
+                ActiveSceneIndex = previousScenes
+                    .Select((item, idx) => new { item, idx }) // Project items with their indices
+                    .FirstOrDefault(x => x.item.TargetScene == previousActive[0].TargetScene)?.idx ?? -1;
+            }
+            else
+            {
+                ActiveSceneIndex = scenes
+                    .Select((item, idx) => new { item, idx }) // Project items with their indices
+                    .FirstOrDefault(x => x.item.TargetScene == newActive[0].TargetScene)?.idx ?? -1;
+            }
+
             Scenes.Clear();
             _SceneNames.Clear();
             for (int i = 0; i < scenes.Length; i++)
             {
+                // if(i < previousScenes.Count)
+                // {
+                //     if(keepPreviousActive && previousScenes[i].TargetScene == scenes[i].TargetScene && previousScenes[i].IsActive)
+                //     {
+                //         scenes[i].IsActive = true;
+                //         ActiveSceneIndex = i;
+                //     }
+                //     // else
+                //     // {
+                //     //     scenes[i].IsActive = false;
+                //     // }
+                // }
+
                 Scenes.Add(scenes[i]);
                 _SceneNames.Add(scenes[i].TargetScene.name);
             }
@@ -152,7 +186,6 @@ namespace HH.MultiSceneTools
                     return;
                 }
             }
-            MultiSceneToolsConfig.instance.setLoadedCollection(this, LoadCollectionMode.Replace);
             
             if(Scenes.Count > 0)
             {
@@ -173,6 +206,7 @@ namespace HH.MultiSceneTools
                 EditorSceneManager.SetActiveScene(EditorSceneManager.GetSceneByName(_SceneNames[ActiveSceneIndex]));
             }
 
+            MultiSceneToolsConfig.instance.setLoadedCollection(this, LoadCollectionMode.Replace);
             MultiSceneToolsConfig.instance.wasCollectionOpened = false;
             MultiSceneToolsConfig.instance.wasCollectionClosed = false;
         }

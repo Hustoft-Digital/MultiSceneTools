@@ -3,6 +3,8 @@
 // *   Copyright (C) 2025 Henrik Hustoft
 // *
 // *   Check the Unity Asset Store for licensing information 
+// *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
+// *   https://unity.com/legal/as-terms
 
 using UnityEngine;
 using UnityEditor;
@@ -24,23 +26,24 @@ namespace HH.MultiSceneToolsEditor
         string _sceneCollectionsPath = MultiSceneToolsConfig.collectionsPathDefault;
         bool useBootScene = false;
         bool preventPopupAgain;
-        static string GetFilePath([System.Runtime.CompilerServices.CallerFilePath] string callerFilePath = null) => callerFilePath;
-
-        static MultiSceneToolsSetup_Wizard instance;
 
         [MenuItem("Tools/Multi Scene Tools Lite/Setup", false, 1)]
         public static void MenuEntryCall() 
         {
-            Debug.Log("Opening Multi Scene Tools Setup Wizard");
-            if(instance != null)
-            {
-                instance.Close();
-            }
-
+        // # tried some Funky fix for not opening extra wizard windows that somehow cant be closed again, but it somehow fixed itself. keeping it here for now
+            // if(MultiSceneToolsConfig.instance != null)
+            // {
+            //     if(MultiSceneToolsConfig.instance.setupWindowInstance != null)
+            //     {
+            //         return;
+            //     }
+            // }
+            
             MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
             _Wizard.titleContent = new GUIContent("Multi Scene Tools Setup", "Creates or updates the config");
             _Wizard.position = new Rect(Screen.currentResolution.width/3, Screen.currentResolution.height/4, _Wizard.position.width, _Wizard.position.height);
             _Wizard.minSize = new Vector2(684, 520);
+            _Wizard.Show();
         }
 
         private void Awake() 
@@ -69,7 +72,15 @@ namespace HH.MultiSceneToolsEditor
 
             Rect version_Rect = new Rect(10, 10, position.width, position.height);
 
-            drawText(ref version_Rect, "V." + MultiSceneToolsConfig.instance.packageVersion, EditorStyles.miniLabel);
+            if(MultiSceneToolsConfig.instance)
+            {
+                drawText(ref version_Rect, "V." + MultiSceneToolsConfig.instance.packageVersion, EditorStyles.miniLabel);
+            }
+            else
+            {
+                drawText(ref version_Rect, "", EditorStyles.miniLabel);
+            }
+
             drawIcon(ref _Rect, 150);
 
             if(MultiSceneToolsStartup.detectedUpdate)
@@ -206,7 +217,11 @@ namespace HH.MultiSceneToolsEditor
 
             if(config.packagePath != _installationPath)
             {
-                movePackageToPath();
+                if(Directory.Exists(config.packagePath))
+                {
+                    movePackageToPath();
+                }
+
                 config.packagePath = _installationPath;
             }
 
@@ -248,12 +263,12 @@ namespace HH.MultiSceneToolsEditor
             
             string targetPath = _installationPath + "/";
 
-            if(_installationPath.StartsWith("Packages/"))
+            if(_installationPath.Length >= "Packages".Length)
             {
-                string[] pathParts = _installationPath.Split('/');
-                string remainingPath = _installationPath.Substring(pathParts[0].Length + 1);
-
-                targetPath = Path.Combine(pathParts[0], MultiSceneToolsEditorExtensions.packageName, remainingPath);
+                if(_installationPath.StartsWith("Packages") || _installationPath.StartsWith("packages"))
+                {
+                    targetPath = Path.Combine("Packages", MultiSceneToolsEditorExtensions.packageName);
+                }
             }
 
             // Ensure the target directory exists
@@ -336,6 +351,11 @@ namespace HH.MultiSceneToolsEditor
 
         private void OnDestroy() {
             MultiSceneToolsStartup.HasShownUpdate();
+
+            // if(MultiSceneToolsConfig.instance)
+            // {
+            //     MultiSceneToolsConfig.instance.setupWindowInstance = null;
+            // }
         }
     }
 }

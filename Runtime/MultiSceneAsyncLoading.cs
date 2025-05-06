@@ -3,14 +3,14 @@
 // *   Copyright (C) 2025 Henrik Hustoft
 // *
 // *   Check the Unity Asset Store for licensing information
+// *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
+// *   https://unity.com/legal/as-terms
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-
-using HH.MultiSceneTools;
 using System;
 using System.Linq;
 
@@ -264,7 +264,6 @@ namespace HH.MultiSceneTools
             {
                 setCurrentUnloadingScenes(ref task);
             }
-            
 
             // load Differences
             bool noCollectionIsLoaded = false;   

@@ -3,6 +3,8 @@
 // *   Copyright (C) 2025 Henrik Hustoft
 // *
 // *   Check the Unity Asset Store for licensing information
+// *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
+// *   https://unity.com/legal/as-terms
 
 using UnityEngine;
 using UnityEditor;
@@ -18,9 +20,8 @@ namespace HH.MultiSceneToolsEditor
     {
         SceneCollection script;
         FieldInfo TitleField;
-        FieldInfo ActiveField;
+        FieldInfo ActiveIndexField;
         SerializedProperty _Scenes;
-        FieldInfo ScenesField;
         SerializedProperty _Color;
         
 
@@ -29,7 +30,7 @@ namespace HH.MultiSceneToolsEditor
             script = target as SceneCollection;
 
             TitleField = MultiSceneToolsEditorExtensions._getBackingField(script, "Title");
-            ActiveField = MultiSceneToolsEditorExtensions._getBackingField(script, "ActiveSceneIndex");
+            ActiveIndexField = MultiSceneToolsEditorExtensions._getBackingField(script, "ActiveSceneIndex");
             _Scenes = serializedObject.FindProperty("Scenes");
             _Color = serializedObject.FindProperty("hierarchyColor");
 
@@ -63,28 +64,16 @@ namespace HH.MultiSceneToolsEditor
 
             if(_Scenes.serializedObject.hasModifiedProperties)
             {
+                Undo.RegisterCompleteObjectUndo(target, "MultiSeneTools: Scene Collection Active Scene Index = " + ActiveIndexField.GetValue(script));
                 updateActiveSceneIndex();
             }
-
             serializedObject.ApplyModifiedProperties();
 
-            // if(GUILayout.Button("Load Collection"))
-            // {
-            //     script.LoadCollection();
-            // }
-            
+            if(GUILayout.Button("Load Collection"))
+            {
+                script.LoadCollection();
+            }
         }
-
-        // void OnInspectorUpdate()
-        // {
-        //     int sceneCount = SceneManager.sceneCountInBuildSettings;     
-        //     string[] scenes = new string[sceneCount];
-
-        //     for( int i = 0; i < sceneCount; i++ )
-        //     {
-        //         scenes[i] = System.IO.Path.GetFileNameWithoutExtension( SceneUtility.GetScenePathByBuildIndex( i ) );
-        //     }
-        // }
 
         [OnOpenAsset]
         //Handles opening the editor window when double-clicking project files
@@ -102,6 +91,8 @@ namespace HH.MultiSceneToolsEditor
 
         void updateActiveSceneIndex()
         {
+            SerializedProperty _cachedScenes = _Scenes.Copy();
+            serializedObject.ApplyModifiedProperties();
             bool isUpdated = false;
             bool hasShiftedIndex = false;
             bool[] desiredStates = new bool[_Scenes.arraySize];
@@ -109,7 +100,7 @@ namespace HH.MultiSceneToolsEditor
             // find desired states of all scenes
             for (int i = 0; i < _Scenes.arraySize; i++)
             {
-                int _cachedIndex = (int)ActiveField.GetValue(script);
+                int _cachedIndex = (int)ActiveIndexField.GetValue(script);
                 bool _changed = _Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("wasChanged").boolValue;
                 bool _active = _Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("IsActive").boolValue;
 
@@ -120,7 +111,7 @@ namespace HH.MultiSceneToolsEditor
                     _cachedIndex = _Scenes.arraySize-1;
                     desiredStates[_cachedIndex] = _Scenes.GetArrayElementAtIndex(_cachedIndex).FindPropertyRelative("IsActive").boolValue;
                     isUpdated = true;
-                    ActiveField.SetValue(script, _cachedIndex);
+                    ActiveIndexField.SetValue(script, _cachedIndex);
                     break;
                 }
 
@@ -128,7 +119,7 @@ namespace HH.MultiSceneToolsEditor
                 {
                     desiredStates[i] = _Scenes.GetArrayElementAtIndex(i).FindPropertyRelative("IsActive").boolValue;
                     isUpdated = true;
-                    ActiveField.SetValue(script, i);
+                    ActiveIndexField.SetValue(script, i);
                     break;
                 }
 
@@ -137,6 +128,9 @@ namespace HH.MultiSceneToolsEditor
                     ActiveScenes.Add(i);
                 }
             }
+
+            serializedObject.Update();
+            _Scenes = _cachedScenes.Copy();
 
             // update desired states of all scenes
             for (int i = 0; i < _Scenes.arraySize; i++)
@@ -165,8 +159,10 @@ namespace HH.MultiSceneToolsEditor
             // if no valid index was set, set index to -1
             if(!isUpdated)
             {
-                ActiveField.SetValue(script, -1);
+                ActiveIndexField.SetValue(script, -1);
             }
+
+            EditorUtility.SetDirty(script);
         }
     }
 }

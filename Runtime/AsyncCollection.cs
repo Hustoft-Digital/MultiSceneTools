@@ -3,6 +3,8 @@
 // *   Copyright (C) 2025 Henrik Hustoft
 // *
 // *   Check the Unity Asset Store for licensing information
+// *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
+// *   https://unity.com/legal/as-terms
 
 using System.Collections.Generic;
 using UnityEngine;
@@ -110,14 +112,7 @@ namespace HH.MultiSceneTools
             }
 
             deferSceneUnload = false;
-            // if(!isBeingEnabled)
-            // {
-            //     Debug.LogWarning("Loading operations need to be complete and scenes must be enabled before scenes can be unloaded");
-            //     return;
-            // }
-
         }
-
 
         public async Task waitUntilIsCompleteAsync()
         {

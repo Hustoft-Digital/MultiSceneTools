@@ -3,6 +3,8 @@
 // *   Copyright (C) 2025 Henrik Hustoft
 // *
 // *   Check the Unity Asset Store for licensing information
+// *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
+// *   https://unity.com/legal/as-terms
 
 using HH.MultiSceneTools;
 using UnityEditor;
@@ -20,14 +22,6 @@ namespace HH.MultiSceneToolsEditor
         public static Texture FindTexture(string packageTexturePath)
         {
             // load texture from installed package
-            // Texture foundTexture = (Texture)AssetDatabase.LoadAssetAtPath("Packages/" + MultiSceneToolsEditorExtensions.packageName + packageTexturePath, typeof(Texture2D));
-
-            // load texture from development environment
-            // if(foundTexture == null)
-            // {
-                // foundTexture = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Multi Scene Tools Lite" + packageTexturePath, typeof(Texture2D));
-            // }
-
             if(MultiSceneToolsConfig.instance == null)
             {
                 return (Texture)AssetDatabase.LoadAssetAtPath(MultiSceneToolsEditorExtensions.packagePath + packageTexturePath, typeof(Texture2D));

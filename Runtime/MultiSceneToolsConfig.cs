@@ -3,11 +3,15 @@
 // *   Copyright (C) 2025 Henrik Hustoft
 // *
 // *   Check the Unity Asset Store for licensing information
+// *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
+// *   https://unity.com/legal/as-terms
 
 using UnityEngine;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Unity.Collections;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -29,6 +33,8 @@ namespace HH.MultiSceneTools
         [SerializeField, HideInInspector] string registeredPackageVersion = "0.0.0";
         public string packageVersion => registeredPackageVersion;
         public void setPackageVersion(string version) => registeredPackageVersion = version;
+        // # tried some Funky fix for not opening extra wizard windows that somehow cant be closed again, but it somehow fixed itself. keeping it here for now
+        // public object setupWindowInstance = null;
         #endif
         [field:SerializeField] public bool UseBootScene {get; private set;} = false;
         public static MultiSceneToolsConfig instance 
@@ -48,6 +54,7 @@ namespace HH.MultiSceneTools
                         loadedConfig = config;
                         return config;
                     }
+                    Debug.LogWarning("MultiSceneToolsConfig not found in Resources folder. Please create a new one through the setup wizard, or move the existing one to the correct location under the Resources folder.");
                     return null;
                 }
             }
@@ -60,14 +67,14 @@ namespace HH.MultiSceneTools
         static MultiSceneToolsConfig loadedConfig {set; get;}
         public List<SceneCollection> LoadedCollections => currentLoadedCollection;
         [field:SerializeField] List<SceneCollection> currentLoadedCollection = new List<SceneCollection>();
-        private SceneCollection[] EditorStartedInCollection;
+        [field:SerializeField] public SceneCollection[] EditorStartedInCollection {get; private set;} = new SceneCollection[0];
         [SerializeField, HideInInspector] List<SceneCollection> _ProjectCollections = new List<SceneCollection>();
         public SceneCollection[] GetSceneCollections() => _ProjectCollections.ToArray();
         [field:SerializeField, HideInInspector] public bool LogOnSceneChange {get; private set;}
         // [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
         [field:SerializeField, HideInInspector] public string _BootScenePath {get; private set;} = "Assets/Scenes/SampleScene.unity";
         [field:SerializeField, HideInInspector] public string _SceneCollectionPath {get; private set;} = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
-        [field:SerializeField] public Scene BootScene {get; private set;}
+        [field:SerializeField, HideInInspector] public Scene BootScene {get; private set;}
         #if UNITY_EDITOR
             [field:SerializeField, HideInInspector] public bool startWizardOnUpdate {get; private set;} = true;
             public void toggleWizardPopup() => startWizardOnUpdate = !startWizardOnUpdate;
@@ -109,6 +116,13 @@ namespace HH.MultiSceneTools
                         Debug.LogError("Unexpected value LoadCollectionMode = " + state);
                         throw new InvalidOperationException("Unexpected value of LoadCollectionMode = " + state);
                 }
+
+                #if UNITY_EDITOR
+                if(Application.isEditor && !Application.isPlaying)
+                {
+                    EditorStartedInCollection = currentLoadedCollection.ToArray();
+                }
+                #endif
                 return currentLoadedCollection.ToArray();
             }
 
@@ -131,6 +145,15 @@ namespace HH.MultiSceneTools
                         currentLoadedCollection.Add(Collections[i]);
                     }
                 }
+
+                #if UNITY_EDITOR
+                if(Application.isEditor && !Application.isPlaying)
+                {
+                    Debug.Log("EditorStartedInCollection: " + currentLoadedCollection.ToArray()[0].name);
+                    EditorStartedInCollection = currentLoadedCollection.ToArray();
+                }
+                #endif
+
                 return currentLoadedCollection.ToArray();
             }
 
@@ -205,6 +228,7 @@ namespace HH.MultiSceneTools
                 {
                     currentLoadedCollection = new List<SceneCollection>();
                 }
+
                 currentLoadedCollection.Clear();
                 currentLoadedCollection.Add(ScriptableObject.CreateInstance<SceneCollection>());
                 currentLoadedCollection[0].name = "None";
@@ -284,6 +308,11 @@ namespace HH.MultiSceneTools
                     {
                         currentLoadedCollection.Add(EditorStartedInCollection[i]);
                     }
+                }
+
+                if(state == PlayModeStateChange.ExitingEditMode)
+                {
+                    currentLoadedCollection[0].LoadCollection();                    
                 }
             }
 

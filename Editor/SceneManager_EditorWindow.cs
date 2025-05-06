@@ -3,9 +3,10 @@
 // *   Copyright (C) 2025 Henrik Hustoft
 // *
 // *   Check the Unity Asset Store for licensing information
+// *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
+// *   https://unity.com/legal/as-terms
 
 using System.Reflection;
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
@@ -13,6 +14,7 @@ using UnityEditor.SceneManagement;
 using System.Collections.Generic;
 using System.IO;
 using HH.MultiSceneTools;
+using System.Linq;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -38,7 +40,7 @@ namespace HH.MultiSceneToolsEditor
 
             if(MultiSceneToolsConfig.instance)
             {
-                return MultiSceneToolsConfig.instance.LoadedCollections.ToArray();  
+                return MultiSceneToolsConfig.instance.EditorStartedInCollection;  
             }
             else
             {
@@ -47,11 +49,6 @@ namespace HH.MultiSceneToolsEditor
         } 
         [SerializeField, HideInInspector] private SceneCollection SelectedCollection;
         int UnloadScene;
-
-        SceneManager_EditorWindow()
-        {
-            EditorApplication.playModeStateChanged += LogPlayModeState;
-        }
 
         [MenuItem("Tools/Multi Scene Tools Lite/Manager", false, 1)]
         static void Init()
@@ -78,18 +75,6 @@ namespace HH.MultiSceneToolsEditor
             var data = JsonUtility.ToJson(this, false);
             // And we save it
             EditorPrefs.SetString("MultiSceneManagerWindow", data);
-        }
-
-        private void LogPlayModeState(PlayModeStateChange state)
-        {
-            if(PlayModeStateChange.ExitingEditMode.Equals(state))
-            {
-                if(SelectedCollection)
-                {
-                    Debug.LogWarning("potential bug here");
-                    MultiSceneToolsConfig.instance.setLoadedCollection(SelectedCollection, LoadCollectionMode.Replace);
-                }
-            }
         }
 
         void OnGUI()
@@ -295,7 +280,6 @@ namespace HH.MultiSceneToolsEditor
             }
 
             SelectedCollection.LoadCollection();
-            EditorUtility.FocusProjectWindow();
         }
 
         void LoadSceneAdditively()
@@ -322,7 +306,15 @@ namespace HH.MultiSceneToolsEditor
             if(saveTarget)
             {
                 ActiveScene[] currLoadedAssets = GetSceneAssetsFromPaths(GetLoadedScenePaths());
+
+                string[] activeScenePath = {EditorSceneManager.GetActiveScene().path};
+                ActiveScene[] LoadedActiveScene = GetSceneAssetsFromPaths(activeScenePath);
+
+                ActiveScene active = currLoadedAssets.FirstOrDefault(x => x.TargetScene == LoadedActiveScene[0].TargetScene);
+                active.IsActive = true;
+
                 saveTarget.saveCollection(currLoadedAssets);
+                MultiSceneToolsConfig.instance.setLoadedCollection(saveTarget, LoadCollectionMode.Replace);
             }
             else
             {
