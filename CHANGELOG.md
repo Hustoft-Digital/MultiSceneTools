@@ -1,7 +1,6 @@
-# Version 1.0.1 - 06/05/25
+# Version 1.0.1 - 07/05/25
 - Fixed unexpected installation location issues with the asset store.
 - Added new setup option: installation path. moves the package to the desired path, supports automatic placement in packages folder. (I dont know how this works with detecting updates via the package manager yet)
-- Removed load collection button on SceneCollections. -> double click to open.
 - Fixed loading scenes through the scene manager window to register correctly in the config.
 - Fixed internal variable for the active scene index not saving after being edited.
 - Fixed SceneCollections not being set to currently loaded from calling SceneCollection.LoadCollection()

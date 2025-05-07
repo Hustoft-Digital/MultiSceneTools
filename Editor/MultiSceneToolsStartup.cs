@@ -6,7 +6,7 @@
 // *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
 // *   https://unity.com/legal/as-terms
 
-using UnityEditor;
+using UnityEditor; 
 using HH.MultiSceneTools;
 
 namespace HH.MultiSceneToolsEditor
@@ -18,9 +18,7 @@ namespace HH.MultiSceneToolsEditor
         [InitializeOnLoadMethod]
         static void Startup()
         {
-            // Events.registeredPackages += CheckUpdates;
-
-            CheckUpdates(true);
+            EditorApplication.delayCall += () => CheckUpdates(true);
 
             if(!MultiSceneToolsConfig.instance)
             {
@@ -36,7 +34,6 @@ namespace HH.MultiSceneToolsEditor
             if(MultiSceneToolsConfig.instance == null && tryOpenWizard)
             {
                 OpenWizard();
-                UnityEngine.Debug.Log("Multi Scene Tools: Opened Setup Wizard because no config was found.");
                 return;
             }
 

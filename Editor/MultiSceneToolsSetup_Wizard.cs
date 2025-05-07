@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEditor;
 using HH.MultiSceneTools;
 using System.IO;
+using System.Linq;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -28,21 +29,17 @@ namespace HH.MultiSceneToolsEditor
         bool preventPopupAgain;
 
         [MenuItem("Tools/Multi Scene Tools Lite/Setup", false, 1)]
-        public static void MenuEntryCall() 
+        public static void MenuEntryCall()  
         {
-        // # tried some Funky fix for not opening extra wizard windows that somehow cant be closed again, but it somehow fixed itself. keeping it here for now
-            if(MultiSceneToolsConfig.instance != null)
-            {
-                if(MultiSceneToolsConfig.instance.setupWindowInstance != null)
-                {
-                    return;
-                }
-            }
-            
-            MultiSceneToolsSetup_Wizard _Wizard = (MultiSceneToolsSetup_Wizard)GetWindow(typeof(MultiSceneToolsSetup_Wizard));
+            var _Wizard = Resources.FindObjectsOfTypeAll<MultiSceneToolsSetup_Wizard >().FirstOrDefault();
+            if (_Wizard == null)
+                _Wizard = CreateInstance<MultiSceneToolsSetup_Wizard >();
+
+            // Set properties on 'wizard'...
             _Wizard.titleContent = new GUIContent("Multi Scene Tools Setup", "Creates or updates the config");
             _Wizard.position = new Rect(Screen.currentResolution.width/3, Screen.currentResolution.height/4, _Wizard.position.width, _Wizard.position.height);
             _Wizard.minSize = new Vector2(684, 520);
+            
             _Wizard.Show();
         }
 
@@ -349,13 +346,9 @@ namespace HH.MultiSceneToolsEditor
         }
     #endif
 
-        private void OnDestroy() {
+        private void OnDestroy() 
+        {
             MultiSceneToolsStartup.HasShownUpdate();
-
-            if(MultiSceneToolsConfig.instance)
-            {
-                MultiSceneToolsConfig.instance.setupWindowInstance = null;
-            }
         }
     }
 }
