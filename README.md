@@ -69,10 +69,7 @@ To start the demo, open the "DemoAwake" unity scene. This scene demonstrates how
 
 ## Setup
 
-- Install via Package Manager → Add package via git URL: 
-    - https://github.com/HenrysHouses/MultiSceneTools.git
-- Alternatively, download and put the folder in your Assets
-- Create the config asset with the window popup
+- Refer to the installation guide: [INSTALLATION GUIDE](./INSTALLATION GUIDE.pdf)
 
 ## Author
 
@@ -80,4 +77,10 @@ To start the demo, open the "DemoAwake" unity scene. This scene demonstrates how
 
 ## License
 
-- Apache License 2.0 License. Refer to the [LICENSE](./LICENSE) file
+Extension Asset
+One license required for each individual user.
+For more information, check the EULA and FAQ.
+
+https://unity.com/legal/as-terms
+https://assetstore.unity.com/browse/eula-faq
+https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
