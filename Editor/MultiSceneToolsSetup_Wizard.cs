@@ -33,7 +33,9 @@ namespace HH.MultiSceneToolsEditor
         {
             var _Wizard = Resources.FindObjectsOfTypeAll<MultiSceneToolsSetup_Wizard >().FirstOrDefault();
             if (_Wizard == null)
+            {
                 _Wizard = CreateInstance<MultiSceneToolsSetup_Wizard >();
+            }
 
             // Set properties on 'wizard'...
             _Wizard.titleContent = new GUIContent("Multi Scene Tools Setup", "Creates or updates the config");
@@ -292,7 +294,6 @@ namespace HH.MultiSceneToolsEditor
 
                 // Move the file
                 File.Move(file, destinationFile);
-                // File.Copy(file, destinationFile, true);
             }
 
             AssetDatabase.Refresh();    

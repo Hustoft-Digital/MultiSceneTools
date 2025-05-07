@@ -13,8 +13,8 @@ namespace HH.MultiSceneTools.Demo
 {
     public class SceneTransition : MonoBehaviour
     {
-        [HideInInspector] public string TransitionIN = "Transition_IN";
-        [HideInInspector] public string TransitionOUT = "Transition_OUT";
+        [field:SerializeField] public string TransitionIN {get; private set;} = "Transition_IN";
+        [field:SerializeField] public string TransitionOUT {get; private set;} = "Transition_OUT";
         [SerializeField] Animator TransitionAnim;
         [SerializeField] bool isAnimatingIn;
         [SerializeField] bool isAnimatingOut;

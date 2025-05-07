@@ -16,7 +16,7 @@ namespace HH.MultiSceneToolsEditor
 {
     public static class CreateCollectionShortcut
     {
-        public const string shortcutPath = "Editor/MenuItemCollectionShortcuts.cs";
+        public static readonly string shortcutPath = "Editor/MenuItemCollectionShortcuts.cs";
 
         const string shortcutCode = 
             "\n\n    [MenuItem(\"Shortcuts/Load {0} Collection\")]\n    static void LoadCollectionShortcut_{0}()\n    {{\n        SceneCollection ShortcutCollection = AssetDatabase.LoadAssetAtPath<SceneCollection>(\"{1}\");\n        ShortcutCollection.LoadCollection();\n    }}\n}}\n#endif";
