@@ -69,11 +69,11 @@ To start the demo, open the "DemoAwake" unity scene. This scene demonstrates how
 
 ## Setup
 
-- Refer to the installation guide: [INSTALLATION GUIDE](./INSTALLATION GUIDE.pdf)
+- Refer to the installation guide: [INSTALLATION GUIDE](./INSTALLATION GUIDE)
 
 ## Author
 
-- [Henrik Hustoft](https://www.linkedin.com/in/henrik-hustoft-2366ab220/)
+- [Henrik Hustoft](https://linktr.ee/henryhouse)
 
 ## License
 
