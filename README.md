@@ -69,7 +69,7 @@ To start the demo, open the "DemoAwake" unity scene. This scene demonstrates how
 
 ## Setup
 
-- Refer to the installation guide: [INSTALLATION GUIDE](./INSTALLATION GUIDE)
+- Refer to the installation guide
 
 ## Author
 
@@ -81,6 +81,6 @@ Extension Asset
 One license required for each individual user.
 For more information, check the EULA and FAQ.
 
-https://unity.com/legal/as-terms
-https://assetstore.unity.com/browse/eula-faq
+https://unity.com/legal/as-terms    
+https://assetstore.unity.com/browse/eula-faq    
 https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
