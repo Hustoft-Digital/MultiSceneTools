@@ -164,6 +164,15 @@ namespace HH.MultiSceneTools
                 collectionsCurrentlyLoaded[0].name = "None";
             }
 
+            if(collectionsCurrentlyLoaded[0] == null)
+            {
+                collectionsCurrentlyLoaded = new List<SceneCollection>
+                {
+                    ScriptableObject.CreateInstance<SceneCollection>()
+                };
+                collectionsCurrentlyLoaded[0].name = "None";
+            }
+
             if(collectionsCurrentlyLoaded.Count == 0)
             {
                 collectionsCurrentlyLoaded.Add(ScriptableObject.CreateInstance<SceneCollection>());

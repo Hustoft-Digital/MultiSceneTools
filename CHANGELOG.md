@@ -1,3 +1,7 @@
+# Version 1.0.2 - 08/05/25
+- Fixed null argument error when no collection is loaded
+- Added missing demo script
+
 # Version 1.0.1 - 07/05/25
 - Fixed unexpected installation location issues with the asset store.
 - Added new setup option: installation path. moves the package to the desired path, supports automatic placement in packages folder. (I dont know how this works with detecting updates via the package manager yet)

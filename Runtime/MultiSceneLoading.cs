@@ -37,6 +37,15 @@ namespace HH.MultiSceneTools
                 collectionsCurrentlyLoaded[0].name = "None";
             }
 
+            if(collectionsCurrentlyLoaded[0] == null)
+            {
+                collectionsCurrentlyLoaded = new List<SceneCollection>
+                {
+                    ScriptableObject.CreateInstance<SceneCollection>()
+                };
+                collectionsCurrentlyLoaded[0].name = "None";
+            }
+
             if(MultiSceneToolsConfig.instance.LogOnSceneChange)
             {
                 AddLogOnLoad();
@@ -107,6 +116,15 @@ namespace HH.MultiSceneTools
                 };
                 collectionsCurrentlyLoaded[0].name = "None";
                 Debug.LogWarning("No scenes was detected, instantiating empty scene");
+            }
+
+            if(collectionsCurrentlyLoaded[0] == null)
+            {
+                collectionsCurrentlyLoaded = new List<SceneCollection>
+                {
+                    ScriptableObject.CreateInstance<SceneCollection>()
+                };
+                collectionsCurrentlyLoaded[0].name = "None";
             }
 
             if(MultiSceneToolsConfig.instance.LogOnSceneChange)
