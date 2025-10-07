@@ -27,7 +27,6 @@ namespace HH.MultiSceneToolsEditor
         private void OnEnable()
         {
             script = target as SceneCollection;
-            Debug.Log("Enabled Editor for " + script);
 
             TitleField = MultiSceneToolsEditorExtensions._getBackingField(script, "_Title");
             ActiveIndexField = MultiSceneToolsEditorExtensions._getBackingField(script, "_ActiveSceneIndex");
