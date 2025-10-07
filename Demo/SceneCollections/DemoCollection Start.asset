@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8554d268507aaa841afb43e28e84c809, type: 3}
   m_Name: DemoCollection Start
   m_EditorClassIdentifier: 
-  <Title>k__BackingField: Outside Demo
-  <ActiveSceneIndex>k__BackingField: 2
+  <_Title>k__BackingField: Demo Start
+  <_ActiveSceneIndex>k__BackingField: -1
   _SceneNames:
   - CameraScene
   - BuildingScene
