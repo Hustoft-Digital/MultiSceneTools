@@ -10,6 +10,7 @@ using System.Reflection;
 using UnityEngine;
 using HH.MultiSceneTools;
 using System.IO;
+using System.Collections.Generic;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -95,6 +96,26 @@ namespace HH.MultiSceneToolsEditor
         public static FieldInfo _getBackingField(object obj, string propertyName)
         {
             return obj.GetType().GetField(_getBackingFieldName(propertyName), BindingFlags.Instance | BindingFlags.NonPublic);
+        }
+
+        public static SceneCollection[] GetSceneCollectionObjects(List<ISceneCollection> sceneCollections)
+        {
+            SceneCollection[] Collections = new SceneCollection[sceneCollections.Count];  
+            for (int i = 0; i < sceneCollections.Count; i++)
+            {
+                Collections[i] = sceneCollections[i].GetCollectionObject();
+            }
+            return Collections;
+        }
+
+        public static SceneCollection[] GetSceneCollectionObjects(ISceneCollection[] sceneCollections)
+        {
+            SceneCollection[] Collections = new SceneCollection[sceneCollections.Length];  
+            for (int i = 0; i < sceneCollections.Length; i++)
+            {
+                Collections[i] = sceneCollections[i].GetCollectionObject();
+            }
+            return Collections;
         }
     }
 }

@@ -30,20 +30,22 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                collectionsCurrentlyLoaded = new List<SceneCollection>
+                SceneCollection defaultCollection = ScriptableObject.CreateInstance<SceneCollection>();
+                defaultCollection.name = "None";
+                collectionsCurrentlyLoaded = new List<ISceneCollection>
                 {
-                    ScriptableObject.CreateInstance<SceneCollection>()
+                    defaultCollection
                 };
-                collectionsCurrentlyLoaded[0].name = "None";
             }
 
             if(collectionsCurrentlyLoaded[0] == null)
             {
-                collectionsCurrentlyLoaded = new List<SceneCollection>
+                SceneCollection defaultCollection = ScriptableObject.CreateInstance<SceneCollection>();
+                defaultCollection.name = "None";
+                collectionsCurrentlyLoaded = new List<ISceneCollection>
                 {
-                    ScriptableObject.CreateInstance<SceneCollection>()
+                    defaultCollection
                 };
-                collectionsCurrentlyLoaded[0].name = "None";
             }
 
             if(MultiSceneToolsConfig.instance.LogOnSceneChange)
@@ -110,21 +112,23 @@ namespace HH.MultiSceneTools
         {
             if(collectionsCurrentlyLoaded == null)
             {
-                collectionsCurrentlyLoaded = new List<SceneCollection>
+                SceneCollection defaultCollection = ScriptableObject.CreateInstance<SceneCollection>();
+                defaultCollection.name = "None";
+                collectionsCurrentlyLoaded = new List<ISceneCollection>
                 {
-                    ScriptableObject.CreateInstance<SceneCollection>()
+                    defaultCollection
                 };
-                collectionsCurrentlyLoaded[0].name = "None";
                 Debug.LogWarning("No scenes was detected, instantiating empty scene");
             }
 
             if(collectionsCurrentlyLoaded[0] == null)
             {
-                collectionsCurrentlyLoaded = new List<SceneCollection>
+                SceneCollection defaultCollection = ScriptableObject.CreateInstance<SceneCollection>();
+                defaultCollection.name = "None";
+                collectionsCurrentlyLoaded = new List<ISceneCollection>
                 {
-                    ScriptableObject.CreateInstance<SceneCollection>()
+                    defaultCollection
                 };
-                collectionsCurrentlyLoaded[0].name = "None";
             }
 
             if(MultiSceneToolsConfig.instance.LogOnSceneChange)

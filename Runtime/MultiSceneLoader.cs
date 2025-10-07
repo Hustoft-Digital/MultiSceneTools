@@ -45,12 +45,12 @@ namespace HH.MultiSceneTools
 
     public static partial class MultiSceneLoader
     {
-        public static UnityEvent<SceneCollection, LoadCollectionMode> OnSceneCollectionLoaded {get; private set;} = new UnityEvent<SceneCollection, LoadCollectionMode>();
-        public static UnityEvent<SceneCollection, LoadCollectionMode> OnSceneCollectionLoadDebug {get; private set;} = new UnityEvent<SceneCollection, LoadCollectionMode>();
+        public static UnityEvent<ISceneCollection, LoadCollectionMode> OnSceneCollectionLoaded {get; private set;} = new UnityEvent<ISceneCollection, LoadCollectionMode>();
+        public static UnityEvent<ISceneCollection, LoadCollectionMode> OnSceneCollectionLoadDebug {get; private set;} = new UnityEvent<ISceneCollection, LoadCollectionMode>();
         private static bool IsLoggingOnSceneLoad;
         private static Scene loadedBootScene;
         public static SceneCollection KeepLoaded {private set; get;} 
-        public static List<SceneCollection> collectionsCurrentlyLoaded {private set; get;} = new List<SceneCollection>();
+        public static List<ISceneCollection> collectionsCurrentlyLoaded {private set; get;} = new List<ISceneCollection>();
         static List<AsyncCollection> asyncLoadingTask = new List<AsyncCollection>();
         static public List<AsyncCollection> currentAsyncTask => asyncLoadingTask;
         static bool initialized;
@@ -94,7 +94,7 @@ namespace HH.MultiSceneTools
                     operation.cancellationTokenSource.Cancel();
                 }
             }
-            public static SceneCollection[] setCurrentlyLoaded(List<SceneCollection> collections, LoadCollectionMode state)
+            public static ISceneCollection[] setCurrentlyLoaded(List<ISceneCollection> collections, LoadCollectionMode state)
             {
                 collectionsCurrentlyLoaded.Clear();
                 for (int i = 0; i < collections.Count; i++)
@@ -106,7 +106,7 @@ namespace HH.MultiSceneTools
             }
 
         #endif
-        static SceneCollection[] setCurrentlyLoaded(SceneCollection collection, LoadCollectionMode state)
+        static ISceneCollection[] setCurrentlyLoaded(ISceneCollection collection, LoadCollectionMode state)
         {
             switch(state)
             {
@@ -140,7 +140,7 @@ namespace HH.MultiSceneTools
             
             if(progress >= 1)
             {
-                Debug.LogWarning(targetCollection.LoadingCollection.Title + " is already being enabled", targetCollection.LoadingCollection);
+                Debug.LogWarning(targetCollection.LoadingCollection.Title + " is already being enabled", targetCollection.LoadingCollection.GetCollectionObject());
                 return;
             }
 
@@ -247,7 +247,7 @@ namespace HH.MultiSceneTools
             }
         }
 
-        static async Task setActiveScene(SceneCollection collection, CancellationToken token)
+        static async Task setActiveScene(ISceneCollection collection, CancellationToken token)
         {
             if(collection.ActiveSceneIndex < 0)
             {
@@ -294,7 +294,7 @@ namespace HH.MultiSceneTools
             return false;
         }
 
-        static SceneCollection FindCollection(string CollectionTitle)
+        static ISceneCollection FindCollection(string CollectionTitle)
         {
             foreach (SceneCollection target in MultiSceneToolsConfig.instance.GetSceneCollections())
             {
@@ -304,11 +304,11 @@ namespace HH.MultiSceneTools
                 }
             }
             Debug.LogWarning("Could not find collection");
-            return null;
+            return ScriptableObject.CreateInstance<NullSceneCollection>();
         }
 
         // * --- Debugging --- 
-        private static void CheckException_NoScenesInCollection(SceneCollection target)
+        private static void CheckException_NoScenesInCollection(ISceneCollection target)
         {
             if(target.SceneNames.Count != 0)
             {
@@ -318,7 +318,7 @@ namespace HH.MultiSceneTools
             throw new ArgumentException("Attempted to load a scene collection that contains no scenes");
         }
 
-        private static void logSceneChange(SceneCollection collection, LoadCollectionMode mode)
+        private static void logSceneChange(ISceneCollection collection, LoadCollectionMode mode)
         {
             Debug.Log("Loaded: \"" + collection.Title + "\" in mode: " + mode.ToString());
         } 

@@ -28,11 +28,11 @@ namespace HH.MultiSceneToolsEditor
         public static void GenerateShortcut()
         {
             Debug.LogWarning("only adds the first collection");
-            SceneCollection TargetCollection = MultiSceneToolsConfig.instance.LoadedCollections[0];
+            ISceneCollection TargetCollection = MultiSceneToolsConfig.instance.LoadedCollections[0];
 
             string path = Application.dataPath + "/" + shortcutPath;
-            string CollectionAssetPath = AssetDatabase.GetAssetPath(TargetCollection); 
-            string shortcutName = "Load " + TargetCollection.name + " Collection";
+            string CollectionAssetPath = AssetDatabase.GetAssetPath(TargetCollection.GetCollectionObject()); 
+            string shortcutName = "Load " + TargetCollection.GetName() + " Collection";
 
             if(!Directory.Exists(Application.dataPath + "/Editor"))
             {
@@ -65,7 +65,7 @@ namespace HH.MultiSceneToolsEditor
                 fileStream.Write(baseClassBytes, 0, baseClassBytes.Length);
             }
 
-            string _GeneratedShortcut = string.Format(shortcutCode, TargetCollection.name, CollectionAssetPath);
+            string _GeneratedShortcut = string.Format(shortcutCode, TargetCollection.GetName(), CollectionAssetPath);
             Debug.Log("Created Shortcut: _GeneratedShortcut");
             byte[] shortcutBytes = Encoding.ASCII.GetBytes(_GeneratedShortcut);
             fileStream.Seek(seekBy, SeekOrigin.End);

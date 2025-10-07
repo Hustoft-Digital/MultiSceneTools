@@ -6,12 +6,11 @@
 // *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
 // *   https://unity.com/legal/as-terms
 
-
+#nullable enable
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
-
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -20,11 +19,64 @@ using HH.MultiSceneToolsEditor;
 #endif
 
 namespace HH.MultiSceneTools
-{
-    public class SceneCollection : ScriptableObject
+{    
+    public interface ISceneCollection
     {
+        string Title {get;}
+        int ActiveSceneIndex {get;}
+        List<string> SceneNames {get;}
+        public void LoadCollection();
+        public string GetNameOfTargetActiveScene();
+        public SceneAsset[] GetSceneAssets();
+        public string GetName();
+        public SceneCollection? GetCollectionObject() 
+        {
+            #if UNITY_EDITOR
+            if(this is SceneCollection collection)
+            {
+                return collection;
+            }
+            else
+            {
+                Debug.LogWarning("MultiSceneTools: Can not get SceneCollection object from NullSceneCollection");
+                return null;
+            }
+            #else
+            return null;
+            #endif
+        }
+    }
+
+    public class NullSceneCollection : ScriptableObject, ISceneCollection
+    {
+        [field:SerializeField] public string _Title {get; protected set;} = "Null Collection";
+        [field:SerializeField] public int _ActiveSceneIndex {get; protected set;} = -1; 
+        [SerializeField] protected List<string> _SceneNames = new List<string>();
+        public string Title => _Title;
+        public int ActiveSceneIndex => _ActiveSceneIndex;
+        public List<string> SceneNames => _SceneNames.ToList();
+        public string GetNameOfTargetActiveScene() => throw new System.ArgumentNullException("MultiSceneTools: Can not get Active Scene from NullSceneCollection");
+        public SceneAsset[] GetSceneAssets() => throw new System.ArgumentNullException("MultiSceneTools: Can not get SceneAssets from NullSceneCollection");
+        public void LoadCollection() => throw new System.ArgumentNullException("MultiSceneTools: Can not load NullSceneCollection");
+
+        public string GetName()
+        {
+            throw new System.ArgumentNullException("MultiSceneTools: Can not get name of NullSceneCollection");
+        }
+    }
+
+    public class SceneCollection : ScriptableObject, ISceneCollection
+    {
+        [field:SerializeField] public string _Title {get; protected set;} = "Null Collection";
+        [field:SerializeField] public int _ActiveSceneIndex {get; protected set;} = -1; 
+        [field:SerializeField] protected List<string> _SceneNames = new List<string>();
+        public string Title => _Title;
+        public int ActiveSceneIndex => _ActiveSceneIndex;
+        public List<string> SceneNames => _SceneNames.ToList();
 
         #if UNITY_EDITOR
+        public SceneCollection GetCollectionObject() => this; 
+
         [MenuItem("Assets/Create/Multi Scene Tools/SceneCollection", false, 1)]
         public static void CreateSceneCollectionIfProjectWindowExists()
         {
@@ -59,7 +111,7 @@ namespace HH.MultiSceneTools
                 assetPath = AssetDatabase.GenerateUniqueAssetPath(path + "New SceneCollection.asset");
                 ProjectWindowUtil.StartNameEditingIfProjectWindowExists(newCollection.GetInstanceID(), ScriptableObject.CreateInstance<HH.MultiSceneTools.Internal.DoCreateNewCollection>(), assetPath, AssetPreview.GetMiniThumbnail(newCollection), null);
 
-                newCollection.Title = newCollection.name;
+                newCollection._Title = newCollection.name;
                 AssetDatabase.SaveAssets();
             }
         }
@@ -79,7 +131,7 @@ namespace HH.MultiSceneTools
             AssetDatabase.CreateAsset(newCollection, assetPath);
             Debug.Log("Created SceneCollection at: " + assetPath);
             Selection.activeObject = newCollection;
-            newCollection.Title = newCollection.name;
+            newCollection._Title = newCollection.name;
             string[] labels = {"MultiSceneTools", "SceneCollection"};
             AssetDatabase.SetLabels(newCollection, labels);
             AssetDatabase.SaveAssets();
@@ -87,10 +139,7 @@ namespace HH.MultiSceneTools
         }
         #endif
 
-        [field:SerializeField] public string Title {get; private set;}
-        [field:SerializeField] public int ActiveSceneIndex {get; private set;} 
-        [SerializeField] private List<string> _SceneNames = new List<string>();
-        public List<string> SceneNames => _SceneNames.ToList();
+        
         public string GetNameOfTargetActiveScene()
         {
             if(ActiveSceneIndex < 0)
@@ -115,6 +164,11 @@ namespace HH.MultiSceneTools
             return output;
         }
 
+        public string GetName()
+        {
+            return this.name;
+        }
+
         public void saveCollection(ActiveScene[] scenes)
         {
             List<ActiveScene> previousScenes = new List<ActiveScene>(Scenes);
@@ -125,13 +179,13 @@ namespace HH.MultiSceneTools
 
             if(keepPreviousActive)
             {
-                ActiveSceneIndex = previousScenes
+                _ActiveSceneIndex = previousScenes
                     .Select((item, idx) => new { item, idx }) // Project items with their indices
                     .FirstOrDefault(x => x.item.TargetScene == previousActive[0].TargetScene)?.idx ?? -1;
             }
             else
             {
-                ActiveSceneIndex = scenes
+                _ActiveSceneIndex = scenes
                     .Select((item, idx) => new { item, idx }) // Project items with their indices
                     .FirstOrDefault(x => x.item.TargetScene == newActive[0].TargetScene)?.idx ?? -1;
             }

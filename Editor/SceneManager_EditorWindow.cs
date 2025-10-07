@@ -13,8 +13,8 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using System.Collections.Generic;
 using System.IO;
-using HH.MultiSceneTools;
 using System.Linq;
+using HH.MultiSceneTools;
 
 namespace HH.MultiSceneToolsEditor
 {
@@ -35,12 +35,12 @@ namespace HH.MultiSceneToolsEditor
         {
             if(EditorApplication.isPlaying)
             {
-                return MultiSceneLoader.collectionsCurrentlyLoaded.ToArray();
+                return MultiSceneToolsEditorExtensions.GetSceneCollectionObjects(MultiSceneLoader.collectionsCurrentlyLoaded);
             }
 
             if(MultiSceneToolsConfig.instance)
             {
-                return MultiSceneToolsConfig.instance.EditorStartedInCollection;  
+                return MultiSceneToolsEditorExtensions.GetSceneCollectionObjects(MultiSceneToolsConfig.instance.EditorStartedInCollection);  
             }
             else
             {

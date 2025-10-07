@@ -34,7 +34,11 @@ namespace HH.MultiSceneToolsEditor
                 return;
             }
 
-            Collections = MultiSceneToolsConfig.instance.LoadedCollections.ToArray();
+            Collections = new SceneCollection[MultiSceneToolsConfig.instance.LoadedCollections.Count];  
+            for (int i = 0; i < MultiSceneToolsConfig.instance.LoadedCollections.Count; i++)
+            {
+                Collections[i] = MultiSceneToolsConfig.instance.LoadedCollections[i].GetCollectionObject();
+            }
 
             if(checkMark_N == null)
             {

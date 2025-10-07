@@ -6,11 +6,13 @@
 // *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
 // *   https://unity.com/legal/as-terms
 
+#nullable enable
 using UnityEngine;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using Unity.Collections;
+using PlasticGui.WorkspaceWindow;
 
 
 #if UNITY_EDITOR
@@ -40,7 +42,7 @@ namespace HH.MultiSceneTools
         } 
         #endif
         [field:SerializeField] public bool UseBootScene {get; private set;} = false;
-        public static MultiSceneToolsConfig instance 
+        public static MultiSceneToolsConfig ?instance 
         {
             get 
             {
@@ -67,12 +69,12 @@ namespace HH.MultiSceneTools
             }
         }
 
-        static MultiSceneToolsConfig loadedConfig {set; get;}
-        public List<SceneCollection> LoadedCollections => currentLoadedCollection;
-        [field:SerializeField] List<SceneCollection> currentLoadedCollection = new List<SceneCollection>();
-        [field:SerializeField] public SceneCollection[] EditorStartedInCollection {get; private set;} = new SceneCollection[0];
-        [SerializeField, HideInInspector] List<SceneCollection> _ProjectCollections = new List<SceneCollection>();
-        public SceneCollection[] GetSceneCollections() => _ProjectCollections.ToArray();
+        static MultiSceneToolsConfig ?loadedConfig {set; get;}
+        public List<ISceneCollection> LoadedCollections => currentLoadedCollection;
+        [field:SerializeField] List<ISceneCollection> currentLoadedCollection = new List<ISceneCollection>();
+        [field:SerializeField] public ISceneCollection[] EditorStartedInCollection {get; private set;} = new ISceneCollection[0];
+        [SerializeField, HideInInspector] List<ISceneCollection> _ProjectCollections = new List<ISceneCollection>();
+        public ISceneCollection[] GetSceneCollections() => _ProjectCollections.ToArray();
         [field:SerializeField, HideInInspector] public bool LogOnSceneChange {get; private set;}
         // [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
         [field:SerializeField, HideInInspector] public string _BootScenePath {get; private set;} = "Assets/Scenes/SampleScene.unity";
@@ -92,7 +94,7 @@ namespace HH.MultiSceneTools
             {   
                 LogOnSceneChange = state;
             }
-            public SceneCollection[] setLoadedCollection(SceneCollection Collection, LoadCollectionMode state)
+            public ISceneCollection[] setLoadedCollection(ISceneCollection Collection, LoadCollectionMode state)
             {
                 wasCollectionOpened = true;
 
@@ -129,7 +131,7 @@ namespace HH.MultiSceneTools
                 return currentLoadedCollection.ToArray();
             }
 
-            public SceneCollection[] setLoadedCollection(List<SceneCollection> Collections, LoadCollectionMode state)
+            public ISceneCollection[] setLoadedCollection(List<ISceneCollection> Collections, LoadCollectionMode state)
             {
                 if(state == LoadCollectionMode.Additive ||state == LoadCollectionMode.DifferenceAdditive)
                 {
@@ -152,7 +154,7 @@ namespace HH.MultiSceneTools
                 #if UNITY_EDITOR
                 if(Application.isEditor && !Application.isPlaying)
                 {
-                    Debug.Log("EditorStartedInCollection: " + currentLoadedCollection.ToArray()[0].name);
+                    Debug.Log("EditorStartedInCollection: " + currentLoadedCollection.ToArray()[0].GetName());
                     EditorStartedInCollection = currentLoadedCollection.ToArray();
                 }
                 #endif
@@ -229,12 +231,13 @@ namespace HH.MultiSceneTools
             {
                 if(currentLoadedCollection == null)
                 {
-                    currentLoadedCollection = new List<SceneCollection>();
+                    currentLoadedCollection = new List<ISceneCollection>();
                 }
 
                 currentLoadedCollection.Clear();
-                currentLoadedCollection.Add(ScriptableObject.CreateInstance<SceneCollection>());
-                currentLoadedCollection[0].name = "None";
+                SceneCollection defaultCollection = ScriptableObject.CreateInstance<SceneCollection>();
+                defaultCollection.name = "None";
+                currentLoadedCollection.Add(defaultCollection);
                 MultiSceneLoader.setCurrentlyLoaded(currentLoadedCollection, LoadCollectionMode.Additive);
             }
 
@@ -343,7 +346,7 @@ namespace HH.MultiSceneTools
                     OpenScenes[i] = AssetDatabase.LoadAssetAtPath<SceneAsset>(Scene);
                 }
 
-                SceneCollection[] collections = MultiSceneToolsConfig.instance.GetSceneCollections();
+                ISceneCollection[] collections = MultiSceneToolsConfig.instance.GetSceneCollections();
 
                 if(collections == null)
                 {

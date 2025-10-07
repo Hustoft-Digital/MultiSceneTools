@@ -151,32 +151,36 @@ namespace HH.MultiSceneTools
             }
         }
 
-        private static async Task loadCollectionAsync(AsyncCollection task, SceneCollection Collection, LoadCollectionMode mode, bool preload = false, bool updateActiveScene = true)
+        private static async Task loadCollectionAsync(AsyncCollection task, ISceneCollection Collection, LoadCollectionMode mode, bool preload = false, bool updateActiveScene = true)
         {
             CancellationTokenSource source = new CancellationTokenSource();
             
             if(collectionsCurrentlyLoaded == null)
             {
-                collectionsCurrentlyLoaded = new List<SceneCollection>
+                SceneCollection defaultCollection = ScriptableObject.CreateInstance<SceneCollection>();
+                defaultCollection.name = "None";
+                collectionsCurrentlyLoaded = new List<ISceneCollection>
                 {
-                    ScriptableObject.CreateInstance<SceneCollection>()
+                    defaultCollection
                 };
-                collectionsCurrentlyLoaded[0].name = "None";
             }
 
             if(collectionsCurrentlyLoaded[0] == null)
             {
-                collectionsCurrentlyLoaded = new List<SceneCollection>
+                SceneCollection defaultCollection = ScriptableObject.CreateInstance<SceneCollection>();
+                defaultCollection.name = "None";
+                collectionsCurrentlyLoaded = new List<ISceneCollection>
                 {
                     ScriptableObject.CreateInstance<SceneCollection>()
                 };
-                collectionsCurrentlyLoaded[0].name = "None";
             }
 
             if(collectionsCurrentlyLoaded.Count == 0)
             {
-                collectionsCurrentlyLoaded.Add(ScriptableObject.CreateInstance<SceneCollection>());
-                collectionsCurrentlyLoaded[0].name = "None";
+
+                SceneCollection defaultCollection = ScriptableObject.CreateInstance<SceneCollection>();
+                defaultCollection.name = "None";
+                collectionsCurrentlyLoaded.Add(defaultCollection);
             }
 
             if(MultiSceneToolsConfig.instance.LogOnSceneChange)
@@ -246,7 +250,7 @@ namespace HH.MultiSceneTools
             #endif
         }
 
-        static void loadDifferenceReplaceAsync(ref AsyncCollection task, SceneCollection Collection, bool preload = true)
+        static void loadDifferenceReplaceAsync(ref AsyncCollection task, ISceneCollection Collection, bool preload = true)
         {
             if(collectionsCurrentlyLoaded == null)
             {
@@ -336,7 +340,7 @@ namespace HH.MultiSceneTools
             asyncLoadingTask.Add(task);
         }
 
-        static void loadDifferenceAdditiveAsync(ref AsyncCollection task, SceneCollection Collection, bool preload = true)
+        static void loadDifferenceAdditiveAsync(ref AsyncCollection task, ISceneCollection Collection, bool preload = true)
         {
             if(collectionsCurrentlyLoaded == null)
             {
@@ -390,7 +394,7 @@ namespace HH.MultiSceneTools
             asyncLoadingTask.Add(task);
         }
 
-        static void loadReplaceAsync(ref AsyncCollection task, SceneCollection Collection, bool preload = true)
+        static void loadReplaceAsync(ref AsyncCollection task, ISceneCollection Collection, bool preload = true)
         {
             bool loadBoot = MultiSceneToolsConfig.instance.UseBootScene;
             bool bootIsLoaded = false;
@@ -433,7 +437,7 @@ namespace HH.MultiSceneTools
             asyncLoadingTask.Add(task);
         }
 
-        static void loadAdditiveAsync(ref AsyncCollection task, SceneCollection Collection, bool preload = true)
+        static void loadAdditiveAsync(ref AsyncCollection task, ISceneCollection Collection, bool preload = true)
         {
             if(collectionsCurrentlyLoaded == null)
             {

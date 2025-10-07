@@ -24,16 +24,15 @@ namespace HH.MultiSceneToolsEditor
         SerializedProperty _Scenes;
         SerializedProperty _Color;
         
-
         private void OnEnable()
         {
             script = target as SceneCollection;
+            Debug.Log("Enabled Editor for " + script);
 
-            TitleField = MultiSceneToolsEditorExtensions._getBackingField(script, "Title");
-            ActiveIndexField = MultiSceneToolsEditorExtensions._getBackingField(script, "ActiveSceneIndex");
-            _Scenes = serializedObject.FindProperty("Scenes");
-            _Color = serializedObject.FindProperty("hierarchyColor");
-
+            TitleField = MultiSceneToolsEditorExtensions._getBackingField(script, "_Title");
+            ActiveIndexField = MultiSceneToolsEditorExtensions._getBackingField(script, "_ActiveSceneIndex");
+            _Scenes = serializedObject.FindProperty("Scenes"); // editor only property
+            _Color = serializedObject.FindProperty("hierarchyColor"); // editor only property
         }
 
         public override void OnInspectorGUI()

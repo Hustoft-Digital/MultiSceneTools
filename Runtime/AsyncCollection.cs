@@ -6,6 +6,7 @@
 // *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
 // *   https://unity.com/legal/as-terms
 
+#nullable enable
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace HH.MultiSceneTools
 {
     public class AsyncCollection 
     {
-        public SceneCollection LoadingCollection {get; private set;}
+        public ISceneCollection LoadingCollection {get; private set;}
         public LoadCollectionMode loadMode {get; private set;}
         private readonly Dictionary<AsyncOperation, LoadSceneMode> _loadingOperations = new Dictionary<AsyncOperation, LoadSceneMode>();
         public  Dictionary<AsyncOperation, LoadSceneMode> loadingOperations => _loadingOperations.ToDictionary(entry => entry.Key, entry => entry.Value);
@@ -33,7 +34,7 @@ namespace HH.MultiSceneTools
         public UnityEvent OnComplete {get; private set;} = new UnityEvent();
         private bool isLoadingComplete = false;
 
-        public AsyncCollection(SceneCollection TargetCollection, LoadCollectionMode mode, CancellationTokenSource tokenSource, bool deferSceneUnload)
+        public AsyncCollection(ISceneCollection TargetCollection, LoadCollectionMode mode, CancellationTokenSource tokenSource, bool deferSceneUnload)
         {
             LoadingCollection = TargetCollection;
             loadMode = mode;
