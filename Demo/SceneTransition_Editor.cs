@@ -6,6 +6,7 @@
 // *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
 // *   https://unity.com/legal/as-terms
 
+#if UNITY_EDITOR
 using UnityEditor;
 using HH.MultiSceneTools.Demo;
 
@@ -31,3 +32,4 @@ namespace HH.MultiSceneToolsEditor
         }
     }
 }
+#endif

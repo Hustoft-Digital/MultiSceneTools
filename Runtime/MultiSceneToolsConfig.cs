@@ -11,9 +11,6 @@ using UnityEngine;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Unity.Collections;
-using PlasticGui.WorkspaceWindow;
-
 
 #if UNITY_EDITOR
 using UnityEditor;

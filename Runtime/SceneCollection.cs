@@ -25,10 +25,12 @@ namespace HH.MultiSceneTools
         string Title {get;}
         int ActiveSceneIndex {get;}
         List<string> SceneNames {get;}
-        public void LoadCollection();
         public string GetNameOfTargetActiveScene();
+        #if UNITY_EDITOR
+        public void LoadCollection();
         public SceneAsset[] GetSceneAssets();
         public string GetName();
+        #endif
         public SceneCollection? GetCollectionObject() 
         {
             #if UNITY_EDITOR
@@ -56,7 +58,9 @@ namespace HH.MultiSceneTools
         public int ActiveSceneIndex => _ActiveSceneIndex;
         public List<string> SceneNames => _SceneNames.ToList();
         public string GetNameOfTargetActiveScene() => throw new System.ArgumentNullException("MultiSceneTools: Can not get Active Scene from NullSceneCollection");
+        #if UNITY_EDITOR
         public SceneAsset[] GetSceneAssets() => throw new System.ArgumentNullException("MultiSceneTools: Can not get SceneAssets from NullSceneCollection");
+        #endif
         public void LoadCollection() => throw new System.ArgumentNullException("MultiSceneTools: Can not load NullSceneCollection");
 
         public string GetName()
