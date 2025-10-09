@@ -6,6 +6,7 @@
 // *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
 // *   https://unity.com/legal/as-terms
 
+#nullable disable
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
