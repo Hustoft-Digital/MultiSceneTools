@@ -6,6 +6,7 @@
 // *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
 // *   https://unity.com/legal/as-terms
 
+#nullable enable
 #define MULTI_SCENES_ASYNC
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -48,14 +49,20 @@ namespace HH.MultiSceneTools
         public static UnityEvent<ISceneCollection, LoadCollectionMode> OnSceneCollectionLoaded {get; private set;} = new UnityEvent<ISceneCollection, LoadCollectionMode>();
         public static UnityEvent<ISceneCollection, LoadCollectionMode> OnSceneCollectionLoadDebug {get; private set;} = new UnityEvent<ISceneCollection, LoadCollectionMode>();
         private static bool IsLoggingOnSceneLoad;
-        private static Scene loadedBootScene;
-        public static SceneCollection KeepLoaded {private set; get;} 
+        private static Scene? loadedBootScene;
+        public static SceneCollection? KeepLoaded {private set; get;} 
         public static List<ISceneCollection> collectionsCurrentlyLoaded {private set; get;} = new List<ISceneCollection>();
         static List<AsyncCollection> asyncLoadingTask = new List<AsyncCollection>();
         static public List<AsyncCollection> currentAsyncTask => asyncLoadingTask;
         static bool initialized;
         public static void InitCollectionChecker()
         {
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                MultiSceneToolsConfig.ThrowMissingConfigError();
+                return;
+            }
+
             if(initialized)
             {
                 return;
@@ -80,6 +87,11 @@ namespace HH.MultiSceneTools
             {
                 collectionsCurrentlyLoaded.Clear();
                 #if UNITY_EDITOR
+                    if(MultiSceneToolsConfig.instance == null)
+                    {
+                        MultiSceneToolsConfig.ThrowMissingConfigError();
+                        return;
+                    }
                     MultiSceneToolsConfig.instance.SetCurrentCollectionEmpty(); 
                 #endif
             }
@@ -165,10 +177,16 @@ namespace HH.MultiSceneTools
 
         static void setCurrentUnloadingScenes(ref AsyncCollection asyncCollection)
         {
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                MultiSceneToolsConfig.ThrowMissingConfigError();
+                return;
+            }
+
             string bootScene = getBootSceneName();
             bool shouldKeepBoot = false;
             
-            if(loadedBootScene.name != null)
+            if(loadedBootScene?.name != null)
             {
                 shouldKeepBoot = true;
             }
@@ -211,7 +229,7 @@ namespace HH.MultiSceneTools
                                 continue;
                             }
 
-                            if(unloadedScenes != collectionsCurrentlyLoaded[i].SceneNames.Count || loadedBootScene.name != null)
+                            if(unloadedScenes != collectionsCurrentlyLoaded[i].SceneNames.Count || loadedBootScene?.name != null)
                             {
                                 unloadedScenes++;
                                 asyncCollection.addUnloadScene(collectionsCurrentlyLoaded[i].SceneNames[j]);
@@ -270,11 +288,24 @@ namespace HH.MultiSceneTools
 
         static string getBootSceneName()
         {
-            return MultiSceneToolsConfig.instance.BootScene.name;
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                MultiSceneToolsConfig.ThrowMissingConfigError();
+                return "";
+            }
+
+            if(MultiSceneToolsConfig.instance.BootScene == null)
+            {
+                return "";
+            }
+
+            Scene s = MultiSceneToolsConfig.instance.BootScene.Value;
+
+            return s.name;
         }
 
         // * --- Utility ---
-        private static bool SceneIsLoaded(string Name, out Scene foundScene)
+        private static bool SceneIsLoaded(string Name, out Scene? foundScene)
         {
             foundScene = default;
 
@@ -294,8 +325,14 @@ namespace HH.MultiSceneTools
             return false;
         }
 
-        static ISceneCollection FindCollection(string CollectionTitle)
+        static ISceneCollection? FindCollection(string CollectionTitle)
         {
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                MultiSceneToolsConfig.ThrowMissingConfigError();
+                return null;
+            }
+
             foreach (SceneCollection target in MultiSceneToolsConfig.instance.GetSceneCollections())
             {
                 if(target.Title == CollectionTitle)

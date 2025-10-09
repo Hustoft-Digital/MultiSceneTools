@@ -6,6 +6,7 @@
 // *   https://assetstore.unity.com/packages/tools/utilities/multi-scene-tools-lite-304636
 // *   https://unity.com/legal/as-terms
 
+#nullable enable
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
@@ -28,6 +29,12 @@ namespace HH.MultiSceneTools
 
         public static void loadCollection(string CollectionTitle, LoadCollectionMode mode)
         {
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                MultiSceneToolsConfig.ThrowMissingConfigError();
+                return;
+            }
+
             if(collectionsCurrentlyLoaded == null)
             {
                 SceneCollection defaultCollection = ScriptableObject.CreateInstance<SceneCollection>();
@@ -53,7 +60,7 @@ namespace HH.MultiSceneTools
                 AddLogOnLoad();
             }
 
-            SceneCollection TargetCollection = null;
+            SceneCollection? TargetCollection = null;
 
             foreach (SceneCollection target in MultiSceneToolsConfig.instance.GetSceneCollections())
             {
@@ -110,6 +117,12 @@ namespace HH.MultiSceneTools
 
         public static void loadCollection(SceneCollection Collection, LoadCollectionMode mode)
         {
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                MultiSceneToolsConfig.ThrowMissingConfigError();
+                return;
+            }
+
             if(collectionsCurrentlyLoaded == null)
             {
                 SceneCollection defaultCollection = ScriptableObject.CreateInstance<SceneCollection>();
@@ -188,6 +201,12 @@ namespace HH.MultiSceneTools
 
         static void loadDifferenceReplace(SceneCollection Collection)
         {
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                MultiSceneToolsConfig.ThrowMissingConfigError();
+                return;
+            }
+
             if(collectionsCurrentlyLoaded == null)
             {
                 Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
@@ -203,7 +222,7 @@ namespace HH.MultiSceneTools
             bool shouldKeepBoot = false;
             bool shouldReplaceScene = false;
             
-            if(loadedBootScene.name != null)
+            if(loadedBootScene?.name != null)
             {
                 shouldKeepBoot = true;
             }
@@ -238,7 +257,7 @@ namespace HH.MultiSceneTools
                         continue;
                     }
 
-                    if(unloadedScenes != collectionsCurrentlyLoaded[i].SceneNames.Count-1 || loadedBootScene.name != null)
+                    if(unloadedScenes != collectionsCurrentlyLoaded[i].SceneNames.Count-1 || loadedBootScene?.name != null)
                     {
                         unloadedScenes++;
                         unload(collectionsCurrentlyLoaded[i].SceneNames[j]);
@@ -258,7 +277,7 @@ namespace HH.MultiSceneTools
                     bool difference = true;
                     foreach (string LoadedScene in collectionsCurrentlyLoaded[i].SceneNames)
                     {
-                        if(targetScene.Equals(bootScene) && loadedBootScene.name != null)
+                        if(targetScene.Equals(bootScene) && loadedBootScene?.name != null)
                         {
                             difference = false;
                         }
@@ -287,6 +306,12 @@ namespace HH.MultiSceneTools
 
         static void loadDifferenceAdditive(SceneCollection Collection)
         {
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                MultiSceneToolsConfig.ThrowMissingConfigError();
+                return;
+            }
+
             if(collectionsCurrentlyLoaded == null)
             {
                 Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
@@ -313,7 +338,7 @@ namespace HH.MultiSceneTools
                     bool difference = true;
                     foreach (string LoadedScene in collectionsCurrentlyLoaded[i].SceneNames)
                     {
-                        if(targetScene.Equals(bootScene) && loadedBootScene.name != null)
+                        if(targetScene.Equals(bootScene) && loadedBootScene?.name != null)
                         {
                             difference = false;
                         }
@@ -338,12 +363,18 @@ namespace HH.MultiSceneTools
 
         static void loadReplace(SceneCollection Collection)
         {
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                MultiSceneToolsConfig.ThrowMissingConfigError();
+                return;
+            }
+
             bool loadBoot = MultiSceneToolsConfig.instance.UseBootScene;
             string bootScene = getBootSceneName();
             bool shouldKeepBoot = false;
             bool shouldReplaceScene = false;
 
-            if(loadedBootScene.name != null)
+            if(loadedBootScene?.name != null)
             {
                 shouldKeepBoot = true;
             }
@@ -356,7 +387,7 @@ namespace HH.MultiSceneTools
                     loadedBootScene = MultiSceneToolsConfig.instance.BootScene;
                 }
 
-                if(loadBoot && loadedBootScene.name == null)
+                if(loadBoot && loadedBootScene?.name == null)
                 {
                     shouldReplaceScene = true;
                 }
@@ -376,12 +407,12 @@ namespace HH.MultiSceneTools
                         continue;
                     }
 
-                    if(collectionsCurrentlyLoaded[i].SceneNames[j].Equals(bootScene) && loadedBootScene.name != null)
+                    if(collectionsCurrentlyLoaded[i].SceneNames[j].Equals(bootScene) && loadedBootScene?.name != null)
                     {
                         continue;
                     }
 
-                    if(unloadedScenes != collectionsCurrentlyLoaded[i].SceneNames.Count-1 || loadedBootScene.name != null)
+                    if(unloadedScenes != collectionsCurrentlyLoaded[i].SceneNames.Count-1 || loadedBootScene?.name != null)
                     {
                         unloadedScenes++;
                         unload(collectionsCurrentlyLoaded[i].SceneNames[j]);
@@ -452,6 +483,12 @@ namespace HH.MultiSceneTools
 
         static void loadSubtractive(SceneCollection Collection)
         {
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                MultiSceneToolsConfig.ThrowMissingConfigError();
+                return;
+            }
+
             if(collectionsCurrentlyLoaded == null)
             {
                 Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
@@ -467,7 +504,7 @@ namespace HH.MultiSceneTools
             string bootScene = getBootSceneName();
             bool shouldKeepBoot = false;
 
-            if(loadedBootScene.name != null)
+            if(loadedBootScene?.name != null)
             {
                 shouldKeepBoot = true;
             }

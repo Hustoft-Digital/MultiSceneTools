@@ -14,6 +14,7 @@ using System.Threading;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using System;
 
 namespace HH.MultiSceneTools
 {
@@ -34,8 +35,13 @@ namespace HH.MultiSceneTools
         public UnityEvent OnComplete {get; private set;} = new UnityEvent();
         private bool isLoadingComplete = false;
 
-        public AsyncCollection(ISceneCollection TargetCollection, LoadCollectionMode mode, CancellationTokenSource tokenSource, bool deferSceneUnload)
+        public AsyncCollection(ISceneCollection? TargetCollection, LoadCollectionMode mode, CancellationTokenSource tokenSource, bool deferSceneUnload)
         {
+            if(TargetCollection == null)
+            {
+                throw new ArgumentNullException("MultiSceneTools: cannot load a null collection");
+            }
+
             LoadingCollection = TargetCollection;
             loadMode = mode;
             cancellationTokenSource = tokenSource;

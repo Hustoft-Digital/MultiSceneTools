@@ -39,7 +39,7 @@ namespace HH.MultiSceneTools
         } 
         #endif
         [field:SerializeField] public bool UseBootScene {get; private set;} = false;
-        public static MultiSceneToolsConfig ?instance 
+        public static MultiSceneToolsConfig? instance 
         {
             get 
             {
@@ -76,14 +76,14 @@ namespace HH.MultiSceneTools
         // [field:SerializeField, HideInInspector] public bool AllowCrossSceneReferences {get; private set;}
         [field:SerializeField, HideInInspector] public string _BootScenePath {get; private set;} = "Assets/Scenes/SampleScene.unity";
         [field:SerializeField, HideInInspector] public string _SceneCollectionPath {get; private set;} = "Assets/_ScriptableObjects/MultiSceneTools/Collections";
-        [field:SerializeField, HideInInspector] public Scene BootScene {get; private set;}
+        [field:SerializeField, HideInInspector] public Scene? BootScene {get; private set;}
         #if UNITY_EDITOR
             [field:SerializeField, HideInInspector] public bool startWizardOnUpdate {get; private set;} = true;
             public void toggleWizardPopup() => startWizardOnUpdate = !startWizardOnUpdate;
             public void setUseBootScene(bool state) => UseBootScene = state;
             public void setBootScenePath(string path) => _BootScenePath = path;
             public void setSceneCollectionFolder(string path) => _SceneCollectionPath = path;
-            [field:SerializeField, HideInInspector] public SceneAsset _TargetBootScene {private set; get;}
+            [field:SerializeField, HideInInspector] public SceneAsset? _TargetBootScene {private set; get;}
             public bool wasCollectionClosed;
             public bool wasCollectionOpened;
             // public bool setAllowCrossSceneReferences(bool state) => AllowCrossSceneReferences = state;
@@ -165,7 +165,12 @@ namespace HH.MultiSceneTools
             }
             static void CheckCollectionState(Scene scene, LoadSceneMode mode)
             {
-                if(!instance.wasCollectionClosed && !instance.wasCollectionOpened || instance.wasCollectionClosed)
+                if(instance == null)
+                {
+                    ThrowMissingConfigError();
+                }
+
+                if(instance?.wasCollectionClosed == false && !instance.wasCollectionOpened || instance?.wasCollectionClosed == true)
                 {
                     instance.SetCurrentCollectionEmpty(); 
                 }
@@ -196,6 +201,11 @@ namespace HH.MultiSceneTools
                 if(currentLoadedCollection == null)
                 {
                     SetCurrentCollectionEmpty();
+                }
+
+                if(currentLoadedCollection == null)
+                {
+                    return;
                 }
                     
                 EditorStartedInCollection = currentLoadedCollection.ToArray();
@@ -350,7 +360,14 @@ namespace HH.MultiSceneTools
                     return;
                 }
 
-                currentLoadedCollection.Clear();
+                if(currentLoadedCollection != null)
+                {
+                    currentLoadedCollection.Clear();
+                }
+                else
+                {
+                    currentLoadedCollection = currentLoadedCollection = new List<ISceneCollection>();
+                }
 
                 for (int i = 0; i < collections.Length; i++)
                 {
@@ -370,5 +387,9 @@ namespace HH.MultiSceneTools
                 }
             }
         #endif
+        internal static void ThrowMissingConfigError()
+        {
+            throw new ArgumentNullException("MultiSceneTools: missing config instance");
+        }
     }
 }

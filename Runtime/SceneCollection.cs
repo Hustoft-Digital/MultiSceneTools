@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using System;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -120,7 +122,7 @@ namespace HH.MultiSceneTools
             }
         }
 
-        public static SceneCollection CreateSceneCollection()
+        public static SceneCollection? CreateSceneCollection()
         {
             SceneCollection newCollection = CreateInstance<SceneCollection>();
 
@@ -129,6 +131,11 @@ namespace HH.MultiSceneTools
             if(target != null) 
             {
                 path = AssetDatabase.GetAssetPath(target.GetInstanceID());
+            }
+
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                return null;
             }
 
             string assetPath = AssetDatabase.GenerateUniqueAssetPath(MultiSceneToolsConfig.instance._SceneCollectionPath + "/New SceneCollection.asset");
@@ -264,6 +271,12 @@ namespace HH.MultiSceneTools
                 EditorSceneManager.SetActiveScene(EditorSceneManager.GetSceneByName(_SceneNames[ActiveSceneIndex]));
             }
 
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                MultiSceneToolsConfig.ThrowMissingConfigError();
+                return;
+            }
+
             MultiSceneToolsConfig.instance.setLoadedCollection(this, LoadCollectionMode.Replace);
             MultiSceneToolsConfig.instance.wasCollectionOpened = false;
             MultiSceneToolsConfig.instance.wasCollectionClosed = false;
@@ -271,6 +284,11 @@ namespace HH.MultiSceneTools
 
         public void LoadAdditive()
         {
+            if(MultiSceneToolsConfig.instance == null)
+            {
+                MultiSceneToolsConfig.ThrowMissingConfigError();
+                return;
+            }
             if(MultiSceneToolsConfig.instance.LoadedCollections.Contains(this))
             {
                 return; 
@@ -282,6 +300,7 @@ namespace HH.MultiSceneTools
 
                 EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
             }
+
             MultiSceneToolsConfig.instance.setLoadedCollection(this, LoadCollectionMode.Additive);
         }
 
@@ -312,7 +331,7 @@ namespace HH.MultiSceneTools
         {
             public override void Action(int instanceId, string pathName, string resourceFile)
             {
-                Object obj = EditorUtility.InstanceIDToObject(instanceId);
+                UnityEngine.Object obj = EditorUtility.InstanceIDToObject(instanceId);
 
                 AssetDatabase.CreateAsset(obj,
                     AssetDatabase.GenerateUniqueAssetPath(pathName));
