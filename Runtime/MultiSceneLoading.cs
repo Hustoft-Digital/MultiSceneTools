@@ -210,7 +210,7 @@ namespace HH.MultiSceneTools
             if(collectionsCurrentlyLoaded == null)
             {
                 Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
-                throw new InvalidOperationException("Current scene collection was null.");
+                throw new NullReferenceException("Current scene collection was null.");
             }
             else if(collectionsCurrentlyLoaded[0] == null)
             {
@@ -315,7 +315,7 @@ namespace HH.MultiSceneTools
             if(collectionsCurrentlyLoaded == null)
             {
                 Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
-                throw new InvalidOperationException("Current scene collection was null.");
+                throw new NullReferenceException("Current scene collection was null.");
             }
             else if(collectionsCurrentlyLoaded[0] == null)
             {
@@ -466,7 +466,7 @@ namespace HH.MultiSceneTools
             if(collectionsCurrentlyLoaded == null)
             {
                 Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
-                throw new InvalidOperationException("Current scene collection was null.");
+                throw new NullReferenceException("Current scene collection was null.");
             }
             else if(collectionsCurrentlyLoaded[0] == null)
             {
@@ -492,7 +492,7 @@ namespace HH.MultiSceneTools
             if(collectionsCurrentlyLoaded == null)
             {
                 Debug.LogError("Current loaded scene collection was null, it should contain a default empty collection with a null scene reference.");
-                throw new InvalidOperationException("Current scene collection was null.");
+                throw new NullReferenceException("Current scene collection was null.");
             }
             else if(collectionsCurrentlyLoaded[0] == null)
             {
